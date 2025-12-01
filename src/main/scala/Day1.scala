@@ -32,7 +32,7 @@ object Day1:
         val movement = line.charAt(0) match
           case 'L' => Left
           case 'R' => Right
-        val value = Integer.parseInt(line.substring(1))
+        val value = line.substring(1).toInt
         Rotation(value % 100, value / 100, movement)
 
   def part1(input: String): Int = 
