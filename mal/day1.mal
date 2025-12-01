@@ -1,0 +1,29 @@
+(import java.lang.String lines)
+(import java.lang.String charAt 1)
+(import java.lang.String substring 1)
+(import java.lang.Integer parseInt 1)
+
+(load-file "mal/aoc.mal")
+
+(def! split-pair (fn* [s] (list (charAt s 0) (parseInt (substring s 1)))))
+
+(def! parse (fn* [file]
+    (let* (input (slurp file)) (map split-pair (lines input)))))
+
+(def! input "input/day1.txt")
+;(def! input "input/day1-test.txt")
+
+(def! next (fn* [rotation position] 
+    (cond
+        (= (first rotation) "R") (% (+ position (second rotation)) 100)
+        (= (first rotation) "L") (% (+ position (- 100 (second rotation))) 100)
+    )
+))
+
+(println 
+    (count 
+        (filter (fn* [a] (= a 0)) 
+            (fold (list 50) 
+                (fn* [state move] (cons (next move (first state)) state)) 
+                (parse input)
+))))
