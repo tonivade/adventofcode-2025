@@ -10,22 +10,42 @@ object Day1:
 
   import Movement.*
 
-  case class Rotation(value: Int, movement: Movement)
+  case class Rotation(reminder: Int, times: Int, movement: Movement):
+    def move(position:Int): Int =
+      movement match
+        case Right => (position + reminder) % 100
+        case Left => (position + (100 - reminder)) % 100
 
-  def part1(input: String): Int = 
+    def zeros(position:Int): Int = 
+      movement match
+        case Right if (position + reminder) >= 100 => 1 + times
+        case Left if position != 0 && (position - reminder) <= 0 => 1 + times
+        case _ => times
+
+  case class State(position: Int, zeros: Int):
+    def apply(rotation: Rotation): State =
+      State(rotation.move(position), zeros + rotation.zeros(position))
+
+  def parse(input: String): Array[Rotation] =
     input.split("\n")
       .map: line => 
         val movement = line.charAt(0) match
           case 'L' => Left
           case 'R' => Right
-        Rotation(Integer.parseInt(line.substring(1)), movement)
+        val value = Integer.parseInt(line.substring(1))
+        Rotation(value % 100, value / 100, movement)
+
+  def part1(input: String): Int = 
+    parse(input)
       .foldLeft(50 :: Nil):
-        case (current, Rotation(value, Right)) => (current.head + value) % 100 :: current
-        case (current, Rotation(value, Left)) if (current.head - value) > 0 => current.head - value :: current
-        case (current, Rotation(value, Left)) => (100 + (current.head - value)) % 100 :: current
+        case (current, rotation) => rotation.move(current.head) :: current
       .count(_ == 0)
 
-  def part2(input: String): Int = ???
+  def part2(input: String): Int = 
+    parse(input)
+      .foldLeft(State(50, 0) :: Nil):
+        case (current, rotation) => current.head(rotation) :: current
+      .head.zeros
 
 @main def main: Unit =
   val input = Source.fromFile("input/day1.txt").getLines().mkString("\n")
