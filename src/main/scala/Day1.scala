@@ -43,9 +43,9 @@ object Day1:
 
   def part2(input: String): Int = 
     parse(input)
-      .foldLeft(State(50, 0) :: Nil):
-        case (current, rotation) => current.head(rotation) :: current
-      .head.zeros
+      .foldLeft(State(50, 0)):
+        case (current, rotation) => current(rotation)
+      .zeros
 
 @main def main: Unit =
   val input = Source.fromFile("input/day1.txt").getLines().mkString("\n")
