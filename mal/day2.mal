@@ -13,6 +13,14 @@
 (def! parse (fn* [file]
     (let* (input (slurp file)) (map split-pair (split input ",")))))
 
+(def! is-repeated? (fn* [s]
+    (let* (i (/ (length s) 2)) (= (substring s 0 i) (substring s i (length s))))
+))
+
+(def! is-invalid? (fn* [number]
+    (let* (s (toString number)) (and (= (% (length s) 2) 0) (is-repeated? s)))
+))
+
 (def! unfold (fn* [range]
     (if (= (first range) (second range))
         (if (is-invalid? (first range))
@@ -24,14 +32,6 @@
             (unfold (list (incr (first range)) (second range)))
         )
     )
-))
-
-(def! is-repeated? (fn* [s]
-    (let* (i (/ (length s) 2)) (= (substring s 0 i) (substring s i (length s))))
-))
-
-(def! is-invalid? (fn* [number]
-    (let* (s (toString number)) (and (= (% (length s) 2) 0) (is-repeated? s)))
 ))
 
 (def! input "input/day2.txt")
