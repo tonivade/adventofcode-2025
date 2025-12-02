@@ -1,0 +1,47 @@
+(import java.lang.String lines)
+(import java.lang.String split 1)
+(import java.lang.String length)
+(import java.lang.String trim)
+(import java.lang.String substring 2)
+(import java.lang.Long parseLong 1)
+(import java.lang.Long toString 1)
+
+(load-file "mal/aoc.mal")
+
+(def! split-pair (fn* [s] (map parseLong (split (trim s) "-"))))
+
+(def! parse (fn* [file]
+    (let* (input (slurp file)) (map split-pair (split input ",")))))
+
+(def! unfold (fn* [range]
+    (if (= (first range) (second range))
+        (if (is-invalid? (first range))
+            (list (first range))
+            (list)
+        )
+        (if (is-invalid? (first range))
+            (cons (first range) (unfold (list (incr (first range)) (second range))))
+            (unfold (list (incr (first range)) (second range)))
+        )
+    )
+))
+
+(def! is-repeated? (fn* [s]
+    (let* (i (/ (length s) 2)) (= (substring s 0 i) (substring s i (length s))))
+))
+
+(def! is-invalid? (fn* [number]
+    (let* (s (toString number)) (and (= (% (length s) 2) 0) (is-repeated? s)))
+))
+
+(def! input "input/day2.txt")
+;(def! input "input/day2-test.txt")
+
+; part1
+(println
+    (reduce 0 +
+        (flatten 
+            (map unfold (parse input))
+        )
+    )
+)
