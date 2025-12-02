@@ -19,7 +19,7 @@ object Day1:
     def zeros(position:Int): Int = 
       movement match
         case Right if (position + reminder) >= 100 => 1 + times
-        case Left if position != 0 && (position - reminder) <= 0 => 1 + times
+        case Left if position > 0 && (position - reminder) <= 0 => 1 + times
         case _ => times
 
   case class State(position: Int, zeros: Int):

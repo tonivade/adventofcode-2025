@@ -6,6 +6,7 @@
 (def! abs (fn* [n] (if (>= n 0) n (* n -1))))
 (def! incr (fn* [n] (+ n 1)))
 (def! decr (fn* [n] (- n 1)))
+(def! peek (fn* [i] (do (println i) i)))
 
 (def! zip-list (fn* [l r]
     (if (or (empty? l) (empty? r))

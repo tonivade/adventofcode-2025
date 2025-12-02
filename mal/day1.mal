@@ -10,20 +10,42 @@
 (def! parse (fn* [file]
     (let* (input (slurp file)) (map split-pair (lines input)))))
 
-(def! input "input/day1.txt")
-;(def! input "input/day1-test.txt")
-
-(def! next (fn* [rotation position] 
+(def! next (fn* [move position]
     (cond
-        (= (first rotation) "R") (% (+ position (second rotation)) 100)
-        (= (first rotation) "L") (% (+ position (- 100 (second rotation))) 100)
+        (= (first move) "R") (% (+ position (% (second move) 100)) 100)
+        (= (first move) "L") (% (+ position (- 100 (% (second move) 100))) 100)
     )
 ))
 
+(def! zeros (fn* [move position] 
+    (cond
+        (and (= (first move) "R") (>= (+ position (% (second move) 100)) 100)) (incr (/ (second move) 100))
+        (and (= (first move) "L") (> position 0) (<= (- position (% (second move) 100)) 0)) (incr (/ (second move) 100))
+        true (/ (second move) 100)
+    )
+))
+
+(def! input "input/day1.txt")
+;(def! input "input/day1-test.txt")
+
+; part1
 (println 
     (count 
         (filter (fn* [a] (= a 0)) 
             (fold (list 50) 
                 (fn* [state move] (cons (next move (first state)) state)) 
                 (parse input)
-))))
+            )
+        )
+    )
+)
+
+; part2
+(println 
+    (second
+        (fold (list 50 0) 
+            (fn* [state move] (list (next move (first state)) (+ (second state) (zeros move (first state)))))
+            (parse input)
+        )
+    )
+)
