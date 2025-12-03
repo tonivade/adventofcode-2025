@@ -54,6 +54,12 @@
     )
 )
 
+(def! unfold-sum
+    (fn* [range]
+        (reduce 0 + (unfold range))
+    )
+)
+
 (def! all-the-same? 
     (fn* [xs]
         (if (empty? xs)
@@ -110,23 +116,21 @@
     )
 )
 
+(def! unfold2-sum
+    (fn* [range]
+        (reduce 0 + (unfold2 range))
+    )
+)
+
 (def! input "input/day2.txt")
 ;(def! input "input/day2-test.txt")
 
 ; part1
 (println
-    (reduce 0 +
-        (flatten 
-            (map unfold (parse input))
-        )
-    )
+    (timed (fn* [] (reduce 0 + (map unfold-sum (parse input)))))
 )
 
 ; part2
 (println
-    (reduce 0 +
-        (flatten 
-            (map unfold2 (parse input))
-        )
-    )
+    (timed (fn* [] (reduce 0 + (map unfold2-sum (parse input)))))
 )
