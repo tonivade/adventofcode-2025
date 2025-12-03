@@ -41,24 +41,31 @@
 (def! input "input/day1.txt")
 ;(def! input "input/day1-test.txt")
 
-; part1
-(println 
-    (count 
-        (filter (fn* [a] (= a 0)) 
-            (fold (list 50) 
-                (fn* [state move] (cons (next move (first state)) state)) 
+(def! part1 
+    (fn* []
+        (count 
+            (filter (fn* [a] (= a 0)) 
+                (fold (list 50) 
+                    (fn* [state move] (cons (next move (first state)) state)) 
+                    (parse input)
+                )
+            )
+        )
+    )
+)
+
+(def! part2 
+    (fn* []
+        (second
+            (fold (list 50 0) 
+                (fn* [state move] 
+                    (list (next move (first state)) (+ (second state) (zeros move (first state)))))
                 (parse input)
             )
         )
     )
 )
 
-; part2
-(println 
-    (second
-        (fold (list 50 0) 
-            (fn* [state move] (list (next move (first state)) (+ (second state) (zeros move (first state)))))
-            (parse input)
-        )
-    )
-)
+(println (timed part1))
+
+(println (timed part2))

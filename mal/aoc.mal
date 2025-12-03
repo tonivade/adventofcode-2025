@@ -141,3 +141,14 @@
         )
     )
 )
+
+(def! timed
+    (fn* [f]
+        (let* (start (time-ms) result (f) end (time-ms))
+            (do
+                (println "Elapsed time:" (- end start) "ms")
+                result
+            )
+        )
+    )
+)
