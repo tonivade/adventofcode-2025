@@ -4,46 +4,106 @@
 (import java.lang.String split 1)
 (import java.lang.String length)
 (import java.lang.String trim)
+(import java.lang.String charAt 1)
 (import java.lang.String substring 2)
 (import java.lang.Long parseLong 1)
 (import java.lang.Long toString 1)
 
 (load-file "mal/aoc.mal")
 
-(def! split-pair (fn* [s] (map parseLong (split (trim s) "-"))))
+(def! split-pair 
+    (fn* [s] 
+        (map parseLong (split (trim s) "-"))
+    )
+)
 
-(def! parse (fn* [file]
-    (let* (input (slurp file)) (map split-pair (split input ",")))))
-
-(def! is-repeated? (fn* [s]
-    (let* (i (/ (length s) 2)) (= (substring s 0 i) (substring s i (length s))))
-))
-
-(def! is-invalid? (fn* [number]
-    (let* (s (toString number)) (and (= (% (length s) 2) 0) (is-repeated? s)))
-))
-
-(def! unfold (fn* [range]
-    (if (= (first range) (second range))
-        (if (is-invalid? (first range))
-            (list (first range))
-            (list)
-        )
-        (if (is-invalid? (first range))
-            (cons (first range) (unfold (list (incr (first range)) (second range))))
-            (unfold (list (incr (first range)) (second range)))
+(def! parse 
+    (fn* [file]
+        (let* (input (slurp file)) 
+            (map split-pair (split input ","))
         )
     )
-))
+)
 
-(def! input "input/day2.txt")
-;(def! input "input/day2-test.txt")
+(def! is-repeated? 
+    (fn* [s]
+        (let* (i (/ (length s) 2)) 
+            (= (substring s 0 i) (substring s i (length s)))
+        )
+    )
+)
+
+(def! is-invalid? 
+    (fn* [number]
+        (let* (s (toString number)) 
+            (and (= (% (length s) 2) 0) (is-repeated? s))
+        )
+    )
+)
+
+(def! all-the-same? 
+    (fn* [s]
+        (let* (f (charAt s 0)) 
+            (for-all? (fn* [c] (= c f)) (seq s))
+        )
+    )
+)
+
+(def! is-invalid2? 
+    (fn* [number]
+        (let* (s (toString number)) 
+            (or (all-the-same? s) (and (= (% (length s) 2) 0) (is-repeated? s)))
+        )
+    )
+)
+
+(def! unfold 
+    (fn* [range]
+        (if (= (first range) (second range))
+            (if (is-invalid? (first range))
+                (list (first range))
+                (list)
+            )
+            (if (is-invalid? (first range))
+                (cons (first range) (unfold (list (incr (first range)) (second range))))
+                (unfold (list (incr (first range)) (second range)))
+            )
+        )
+    )
+)
+
+(def! unfold2 
+    (fn* [range]
+        (if (= (first range) (second range))
+            (if (is-invalid2? (first range))
+                (list (first range))
+                (list)
+            )
+            (if (is-invalid2? (first range))
+                (cons (first range) (unfold2 (list (incr (first range)) (second range))))
+                (unfold2 (list (incr (first range)) (second range)))
+            )
+        )
+    )
+)
+
+;(def! input "input/day2.txt")
+(def! input "input/day2-test.txt")
 
 ; part1
 (println
     (reduce 0 +
         (flatten 
             (map unfold (parse input))
+        )
+    )
+)
+
+; part2
+(println
+    (reduce 0 +
+        (flatten 
+            (map unfold2 (parse input))
         )
     )
 )

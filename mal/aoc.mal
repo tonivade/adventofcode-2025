@@ -8,65 +8,116 @@
 (def! decr (fn* [n] (- n 1)))
 (def! peek (fn* [i] (do (println i) i)))
 
-(def! zip-list (fn* [l r]
-    (if (or (empty? l) (empty? r))
-        (list)
-        (cons (list (first l) (first r)) (zip-list (rest l) (rest r))))))
+(def! zip-list 
+    (fn* [l r]
+        (if (or (empty? l) (empty? r))
+            (list)
+            (cons (list (first l) (first r)) (zip-list (rest l) (rest r)))
+        )
+    )
+)
 
-(def! zip-with-index (fn* [l i]
-    (if (empty? l)
-        l
-        (cons (list (first l) i) (zip-with-index (rest l) (incr i))))))
+(def! zip-with-index 
+    (fn* [l i]
+        (if (empty? l)
+            l
+            (cons (list (first l) i) (zip-with-index (rest l) (incr i)))
+        )
+    )
+)
 
-(def! take (fn* [l i]
-    (if (empty? l)
-        l
-        (if (> i 0)
-            (cons (first l) (take (rest l) (decr i)))
-            (list)))))
+(def! take 
+    (fn* [l i]
+        (if (empty? l)
+            l
+            (if (> i 0)
+                (cons (first l) (take (rest l) (decr i)))
+                (list)
+            )
+        )
+    )
+)
 
-(def! drop (fn* [l i]
-    (if (empty? l)
-        l
-        (if (> i 0)
-            (drop (rest l) (decr i))
-            l))))
+(def! drop 
+    (fn* [l i]
+        (if (empty? l)
+            l
+            (if (> i 0)
+                (drop (rest l) (decr i))
+                l
+            )
+        )
+    )
+)
 
-(def! for-all? (fn* [c l]
-    (if (empty? l)
-        true
-        (and (c (first l)) (for-all? c (rest l))))))
+(def! for-all? 
+    (fn* [c l]
+        (if (empty? l)
+            true
+            (and (c (first l)) (for-all? c (rest l)))
+        )
+    )
+)
 
-(def! exists? (fn* [c l]
-    (if (empty? l)
-        false
-        (or (c (first l)) (exists? c (rest l))))))
+(def! exists? 
+    (fn* [c l]
+        (if (empty? l)
+            false
+            (or (c (first l)) (exists? c (rest l)))
+        )
+    )
+)
 
-(def! filter (fn* [c l]
-    (if (empty? l)
-        l
-        (if (c (first l))
-            (cons (first l) (filter c (rest l)))
-            (filter c (rest l))))))
+(def! filter 
+    (fn* [c l]
+        (if (empty? l)
+            l
+            (if (c (first l))
+                (cons (first l) (filter c (rest l)))
+                (filter c (rest l))
+            )
+        )
+    )
+)
 
-(def! insert-sort (fn* [item l] 
-    (if (or (empty? l) (< item (first l)))
-        (cons item l) 
-        (cons (first l) (insert-sort item (rest l))))))
+(def! insert-sort 
+    (fn* [item l] 
+        (if (or (empty? l) (< item (first l)))
+            (cons item l) 
+            (cons (first l) (insert-sort item (rest l)))
+        )
+    )
+)
 
-(def! sort-list (fn* [l] 
-    (if (empty? l) 
-        l 
-        (insert-sort (first l) (sort-list (rest l))))))
+(def! sort-list 
+    (fn* [l] 
+        (if (empty? l) 
+            l 
+            (insert-sort (first l) (sort-list (rest l)))
+        )
+    )
+)
 
-(def! reduce (fn* [z f l] 
-    (if (empty? l) 
-        z 
-        (f (first l) (reduce z f (rest l))))))
+(def! reduce 
+    (fn* [z f l] 
+        (if (empty? l) 
+            z 
+            (f (first l) (reduce z f (rest l)))
+        )
+    )
+)
 
-(def! fold (fn* [z f l] 
-    (if (empty? l) 
-        z 
-        (fold (f z (first l)) f (rest l)))))
+(def! fold 
+    (fn* [z f l] 
+        (if (empty? l) 
+            z 
+            (fold (f z (first l)) f (rest l))
+        )
+    )
+)
 
-(def! flatten (fn* [l] (reduce (list) concat l)))
+(def! flatten 
+    (fn* [l] 
+        (reduce (list) concat l)
+    )
+)

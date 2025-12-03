@@ -7,25 +7,36 @@
 
 (load-file "mal/aoc.mal")
 
-(def! split-pair (fn* [s] (list (charAt s 0) (parseInt (substring s 1)))))
-
-(def! parse (fn* [file]
-    (let* (input (slurp file)) (map split-pair (lines input)))))
-
-(def! next (fn* [move position]
-    (cond
-        (= (first move) "R") (% (+ position (% (second move) 100)) 100)
-        (= (first move) "L") (% (+ position (- 100 (% (second move) 100))) 100)
+(def! split-pair 
+    (fn* [s] 
+        (list (charAt s 0) (parseInt (substring s 1)))
     )
-))
+)
 
-(def! zeros (fn* [move position] 
-    (cond
-        (and (= (first move) "R") (>= (+ position (% (second move) 100)) 100)) (incr (/ (second move) 100))
-        (and (= (first move) "L") (> position 0) (<= (- position (% (second move) 100)) 0)) (incr (/ (second move) 100))
-        true (/ (second move) 100)
+(def! parse 
+    (fn* [file]
+        (let* (input (slurp file)) (map split-pair (lines input)))
     )
-))
+)
+
+(def! next 
+    (fn* [move position]
+        (cond
+            (= (first move) "R") (% (+ position (% (second move) 100)) 100)
+            (= (first move) "L") (% (+ position (- 100 (% (second move) 100))) 100)
+        )
+    )
+)
+
+(def! zeros 
+    (fn* [move position] 
+        (cond
+            (and (= (first move) "R") (>= (+ position (% (second move) 100)) 100)) (incr (/ (second move) 100))
+            (and (= (first move) "L") (> position 0) (<= (- position (% (second move) 100)) 0)) (incr (/ (second move) 100))
+            true (/ (second move) 100)
+        )
+    )
+)
 
 (def! input "input/day1.txt")
 ;(def! input "input/day1-test.txt")
