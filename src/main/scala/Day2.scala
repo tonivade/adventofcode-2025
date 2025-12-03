@@ -4,7 +4,20 @@ import scala.io.Source
 
 // https://adventofcode.com/2025/day/2
 object Day2:
-  def part1(input: String): Int = ???
+
+  def isInvalid(number:Long):Boolean =
+    val string = number.toString
+    val mid = string.size / 2
+    (string.size % 2 == 0) && string.substring(0, mid) == string.substring(mid)
+
+  def part1(input: String): Long = 
+    input.split(",").map(_.split("-"))
+      .map:
+        case Array(a, b) => a.toLong to b.toLong
+      .flatMap(_.toList)
+      .filter(isInvalid)
+      .sum
+
   def part2(input: String): Int = ???
 
 @main def main: Unit =
