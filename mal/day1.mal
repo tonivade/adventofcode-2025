@@ -1,3 +1,5 @@
+; https://adventofcode.com/2025/day/1
+
 (import java.lang.String lines)
 (import java.lang.String charAt 1)
 (import java.lang.String substring 1)

@@ -1,3 +1,5 @@
+; https://adventofcode.com/2025/day/2
+
 (import java.lang.String lines)
 (import java.lang.String split 1)
 (import java.lang.String length)
