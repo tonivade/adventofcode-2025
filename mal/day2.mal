@@ -1,10 +1,8 @@
 ; https://adventofcode.com/2025/day/2
 
-(import java.lang.String lines)
 (import java.lang.String split 1)
 (import java.lang.String length)
 (import java.lang.String trim)
-(import java.lang.String charAt 1)
 (import java.lang.String substring 2)
 (import java.lang.Long parseLong 1)
 (import java.lang.Long toString 1)
@@ -41,6 +39,21 @@
     )
 )
 
+(def! unfold 
+    (fn* [range]
+        (if (= (first range) (second range))
+            (if (is-invalid? (first range))
+                (list (first range))
+                (list)
+            )
+            (if (is-invalid? (first range))
+                (cons (first range) (unfold (list (incr (first range)) (second range))))
+                (unfold (list (incr (first range)) (second range)))
+            )
+        )
+    )
+)
+
 (def! all-the-same? 
     (fn* [xs]
         (if (empty? xs)
@@ -54,11 +67,14 @@
 
 (def! expand 
     (fn* [input start]
-        (let* (end (/ (count input) 2))
-            (if (= start end)
-                (list (peek (map join (chunks input start))))
-                (cons (peek (map join (chunks input start))) (expand input (incr start)))
+        (if (> (count input) 1)
+            (let* (end (/ (count input) 2))
+                (if (>= start end)
+                    (list (map join (chunks input start)))
+                    (cons (map join (chunks input start)) (expand input (incr start)))
+                )
             )
+            (list)
         )
     )
 )
@@ -67,7 +83,7 @@
     (fn* [input]
         (not 
             (empty?
-                (filter all-the-same? (expand (seq input) 2))
+                (filter all-the-same? (expand (seq input) 1))
             )
         )
     )
@@ -75,24 +91,7 @@
 
 (def! is-invalid2? 
     (fn* [number]
-        (let* (s (toString number)) 
-            (or (all-the-same? (seq s)) (and (= (% (length s) 2) 0) (is-repeated2? s)))
-        )
-    )
-)
-
-(def! unfold 
-    (fn* [range]
-        (if (= (first range) (second range))
-            (if (is-invalid? (first range))
-                (list (first range))
-                (list)
-            )
-            (if (is-invalid? (first range))
-                (cons (first range) (unfold (list (incr (first range)) (second range))))
-                (unfold (list (incr (first range)) (second range)))
-            )
-        )
+        (let* (s (toString number)) (is-repeated2? s))
     )
 )
 
@@ -111,8 +110,8 @@
     )
 )
 
-;(def! input "input/day2.txt")
-(def! input "input/day2-test.txt")
+(def! input "input/day2.txt")
+;(def! input "input/day2-test.txt")
 
 ; part1
 (println
