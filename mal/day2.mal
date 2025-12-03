@@ -42,9 +42,33 @@
 )
 
 (def! all-the-same? 
-    (fn* [s]
-        (let* (f (charAt s 0)) 
-            (for-all? (fn* [c] (= c f)) (seq s))
+    (fn* [xs]
+        (if (empty? xs)
+            true
+            (let* (frst (first xs)) 
+                (for-all? (fn* [item] (= item frst)) xs)
+            )
+        )
+    )
+)
+
+(def! expand 
+    (fn* [input start]
+        (let* (end (/ (count input) 2))
+            (if (= start end)
+                (list (peek (map join (chunks input start))))
+                (cons (peek (map join (chunks input start))) (expand input (incr start)))
+            )
+        )
+    )
+)
+
+(def! is-repeated2?
+    (fn* [input]
+        (not 
+            (empty?
+                (filter all-the-same? (expand (seq input) 2))
+            )
         )
     )
 )
@@ -52,7 +76,7 @@
 (def! is-invalid2? 
     (fn* [number]
         (let* (s (toString number)) 
-            (or (all-the-same? s) (and (= (% (length s) 2) 0) (is-repeated? s)))
+            (or (all-the-same? (seq s)) (and (= (% (length s) 2) 0) (is-repeated2? s)))
         )
     )
 )

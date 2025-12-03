@@ -8,6 +8,15 @@
 (def! decr (fn* [n] (- n 1)))
 (def! peek (fn* [i] (do (println i) i)))
 
+(def! join 
+    (fn* [xs]
+        (if (empty? xs)
+            ""
+            (str (first xs) (join (rest xs)))
+        )
+    )
+)
+
 (def! zip-list 
     (fn* [l r]
         (if (or (empty? l) (empty? r))
@@ -119,5 +128,16 @@
 (def! flatten 
     (fn* [l] 
         (reduce (list) concat l)
+    )
+)
+
+(def! chunks
+    (fn* [lst size]
+        (if (or (= size 0) (empty? lst))
+            (list)
+            (let* (group (take lst size) rst (drop lst size))
+                (cons group (chunks rst size))
+            )
+        )
     )
 )
