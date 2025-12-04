@@ -9,121 +9,93 @@
 
 (load-file "mal/aoc.mal")
 
-(def! split-pair 
-    (fn* [s] 
-        (map parseLong (split (trim s) "-"))
+(defn split-pair [s] 
+    (map parseLong (split (trim s) "-"))
+)
+
+(defn parse [file]
+    (let* (input (slurp file)) 
+        (map split-pair (split input ","))
     )
 )
 
-(def! parse 
-    (fn* [file]
-        (let* (input (slurp file)) 
-            (map split-pair (split input ","))
-        )
+(defn is-repeated? [s]
+    (let* (i (/ (length s) 2)) 
+        (= (substring s 0 i) (substring s i (length s)))
     )
 )
 
-(def! is-repeated? 
-    (fn* [s]
-        (let* (i (/ (length s) 2)) 
-            (= (substring s 0 i) (substring s i (length s)))
-        )
+(defn is-invalid? [number]
+    (let* (s (toString number)) 
+        (and (= (% (length s) 2) 0) (is-repeated? s))
     )
 )
 
-(def! is-invalid? 
-    (fn* [number]
-        (let* (s (toString number)) 
-            (and (= (% (length s) 2) 0) (is-repeated? s))
-        )
-    )
-)
-
-(def! unfold 
-    (fn* [range]
-        (if (= (first range) (second range))
-            (if (is-invalid? (first range))
-                (list (first range))
-                (list)
-            )
-            (if (is-invalid? (first range))
-                (cons (first range) (unfold (list (incr (first range)) (second range))))
-                (unfold (list (incr (first range)) (second range)))
-            )
-        )
-    )
-)
-
-(def! unfold-sum
-    (fn* [range]
-        (reduce 0 + (unfold range))
-    )
-)
-
-(def! all-the-same? 
-    (fn* [xs]
-        (if (empty? xs)
-            true
-            (let* (frst (first xs)) 
-                (for-all? (fn* [item] (= item frst)) xs)
-            )
-        )
-    )
-)
-
-(def! expand 
-    (fn* [input start]
-        (if (> (count input) 1)
-            (let* (end (/ (count input) 2))
-                (if (>= start end)
-                    (list (map join (chunks input start)))
-                    (cons (map join (chunks input start)) (expand input (incr start)))
-                )
-            )
+(defn unfold [range]
+    (if (= (first range) (second range))
+        (if (is-invalid? (first range))
+            (list (first range))
             (list)
         )
-    )
-)
-
-(def! is-repeated2?
-    (fn* [input]
-        (not 
-            (empty?
-                (filter all-the-same? (expand (seq input) 1))
-            )
+        (if (is-invalid? (first range))
+            (cons (first range) (unfold (list (incr (first range)) (second range))))
+            (unfold (list (incr (first range)) (second range)))
         )
     )
 )
 
-(def! is-invalid2? 
-    (fn* [number]
-        (let* (s (toString number)) (is-repeated2? s))
-    )
-)
+(defn unfold-sum [range] (reduce 0 + (unfold range)))
 
-(def! unfold2 
-    (fn* [range]
-        (if (= (first range) (second range))
-            (if (is-invalid2? (first range))
-                (list (first range))
-                (list)
-            )
-            (if (is-invalid2? (first range))
-                (cons (first range) (unfold2 (list (incr (first range)) (second range))))
-                (unfold2 (list (incr (first range)) (second range)))
-            )
+(defn all-the-same? [xs]
+    (if (empty? xs)
+        true
+        (let* (frst (first xs)) 
+            (for-all? (fn* [item] (= item frst)) xs)
         )
     )
 )
 
-(def! unfold2-sum
-    (fn* [range]
-        (reduce 0 + (unfold2 range))
+(defn expand [input start]
+    (if (> (count input) 1)
+        (let* (end (/ (count input) 2))
+            (if (>= start end)
+                (list (map join (chunks input start)))
+                (cons (map join (chunks input start)) (expand input (incr start)))
+            )
+        )
+        (list)
     )
 )
 
-(def! input "input/day2.txt")
-;(def! input "input/day2-test.txt")
+(defn is-repeated2? [input]
+    (not 
+        (empty?
+            (filter all-the-same? (expand (seq input) 1))
+        )
+    )
+)
+
+(defn is-invalid2? [number]
+    (let* (s (toString number)) (is-repeated2? s))
+)
+
+(defn unfold2 [range]
+    (if (= (first range) (second range))
+        (if (is-invalid2? (first range))
+            (list (first range))
+            (list)
+        )
+        (if (is-invalid2? (first range))
+            (cons (first range) (unfold2 (list (incr (first range)) (second range))))
+            (unfold2 (list (incr (first range)) (second range)))
+        )
+    )
+)
+
+(defn unfold2-sum [range] (reduce 0 + (unfold2 range)))
+
+;(def! input "input/day2.txt")
+(def! input "input/day2-test.txt")
 
 ; part1
 (println

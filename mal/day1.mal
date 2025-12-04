@@ -7,61 +7,49 @@
 
 (load-file "mal/aoc.mal")
 
-(def! split-pair 
-    (fn* [s] 
-        (list (charAt s 0) (parseInt (substring s 1)))
+(defn split-pair [s] 
+    (list (charAt s 0) (parseInt (substring s 1)))
+)
+
+(defn parse [file]
+    (let* (input (slurp file)) (map split-pair (lines input)))
+)
+
+(defn next [move position]
+    (cond
+        (= (first move) "R") (% (+ position (% (second move) 100)) 100)
+        (= (first move) "L") (% (+ position (- 100 (% (second move) 100))) 100)
     )
 )
 
-(def! parse 
-    (fn* [file]
-        (let* (input (slurp file)) (map split-pair (lines input)))
-    )
-)
-
-(def! next 
-    (fn* [move position]
-        (cond
-            (= (first move) "R") (% (+ position (% (second move) 100)) 100)
-            (= (first move) "L") (% (+ position (- 100 (% (second move) 100))) 100)
-        )
-    )
-)
-
-(def! zeros 
-    (fn* [move position] 
-        (cond
-            (and (= (first move) "R") (>= (+ position (% (second move) 100)) 100)) (incr (/ (second move) 100))
-            (and (= (first move) "L") (> position 0) (<= (- position (% (second move) 100)) 0)) (incr (/ (second move) 100))
-            true (/ (second move) 100)
-        )
+(defn zeros [move position] 
+    (cond
+        (and (= (first move) "R") (>= (+ position (% (second move) 100)) 100)) (incr (/ (second move) 100))
+        (and (= (first move) "L") (> position 0) (<= (- position (% (second move) 100)) 0)) (incr (/ (second move) 100))
+        true (/ (second move) 100)
     )
 )
 
 (def! input "input/day1.txt")
 ;(def! input "input/day1-test.txt")
 
-(def! part1 
-    (fn* []
-        (count 
-            (filter (fn* [a] (= a 0)) 
-                (fold (list 50) 
-                    (fn* [state move] (cons (next move (first state)) state)) 
-                    (parse input)
-                )
+(defn part1 []
+    (count 
+        (filter (fn* [a] (= a 0)) 
+            (fold (list 50) 
+                (fn* [state move] (cons (next move (first state)) state)) 
+                (parse input)
             )
         )
     )
 )
 
-(def! part2 
-    (fn* []
-        (second
-            (fold (list 50 0) 
-                (fn* [state move] 
-                    (list (next move (first state)) (+ (second state) (zeros move (first state)))))
-                (parse input)
-            )
+(defn part2 []
+    (second
+        (fold (list 50 0) 
+            (fn* [state move] 
+                (list (next move (first state)) (+ (second state) (zeros move (first state)))))
+            (parse input)
         )
     )
 )

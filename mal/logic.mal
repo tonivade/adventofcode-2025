@@ -39,3 +39,10 @@
           true             (let* (condvar (gensym))
                              `(let* (~condvar ~(first xs))
                                (if ~condvar (and ~@(rest xs)) ~condvar))))))
+
+;; shortcut for (def! (fn* ...))
+(defmacro! defn
+    (fn* (name params & body)
+        `(def! ~name (fn* ~params ~@body))
+    )
+)
