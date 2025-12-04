@@ -31,20 +31,11 @@
     )
 )
 
-(defn unfold [range]
-    (if (= (first range) (second range))
-        (if (is-invalid? (first range))
-            (list (first range))
-            (list)
-        )
-        (if (is-invalid? (first range))
-            (cons (first range) (unfold (list (incr (first range)) (second range))))
-            (unfold (list (incr (first range)) (second range)))
-        )
-    )
+(defn unfold1 [range]
+    (filter is-invalid? (generate (first range) (second range)))
 )
 
-(defn unfold-sum [range] (reduce 0 + (unfold range)))
+(defn unfold1-sum [range] (reduce 0 + (unfold1 range)))
 
 (defn all-the-same? [xs]
     (if (empty? xs)
@@ -55,22 +46,19 @@
     )
 )
 
-(defn expand [input start]
+(defn expand [input]
     (if (> (count input) 1)
         (let* (end (/ (count input) 2))
-            (if (>= start end)
-                (list (map join (chunks input start)))
-                (cons (map join (chunks input start)) (expand input (incr start)))
-            )
+            (map (fn* [s] (map join (chunks input s))) (generate 1 end))
         )
-        (list)
+        ()
     )
 )
 
 (defn is-repeated2? [input]
     (not 
         (empty?
-            (filter all-the-same? (expand (seq input) 1))
+            (filter all-the-same? (expand (seq input)))
         )
     )
 )
@@ -80,16 +68,7 @@
 )
 
 (defn unfold2 [range]
-    (if (= (first range) (second range))
-        (if (is-invalid2? (first range))
-            (list (first range))
-            (list)
-        )
-        (if (is-invalid2? (first range))
-            (cons (first range) (unfold2 (list (incr (first range)) (second range))))
-            (unfold2 (list (incr (first range)) (second range)))
-        )
-    )
+    (filter is-invalid2? (generate (first range) (second range)))
 )
 
 (defn unfold2-sum [range] (reduce 0 + (unfold2 range)))
@@ -99,7 +78,7 @@
 
 ; part1
 (println
-    (timed (fn* [] (reduce 0 + (map unfold-sum (parse input)))))
+    (timed (fn* [] (reduce 0 + (map unfold1-sum (parse input)))))
 )
 
 ; part2
