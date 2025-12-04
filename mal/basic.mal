@@ -42,7 +42,7 @@
 
 ;; shortcut for (def! (fn* ...))
 (defmacro! defn
-    (fn* (name params & body)
-        `(def! ~name (fn* ~params ~@body))
-    )
+  (fn* (name params & body)
+    `(def! ~name (fn* ~params ~@body))
+  )
 )
