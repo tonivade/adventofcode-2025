@@ -4,8 +4,6 @@ import scala.io.Source
 
 // https://adventofcode.com/2025/day/3
 object Day3:
-  case class Bat(jolts: Int, position: Int)
-
   def active(bank: Seq[Int]): Int =
     var all = for {
       i <- 0 until bank.length
