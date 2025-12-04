@@ -8,12 +8,6 @@
 (def! decr (fn* [n] (- n 1)))
 (def! peek (fn* [i] (do (println i) i)))
 
-(defmacro! defn
-    (fn* (name params & body)
-        `(def! ~name (fn* ~params ~@body))
-    )
-)
-
 (defn join [xs]
     (if (empty? xs)
         ""
