@@ -2,11 +2,11 @@
 
 (load-file "mal/logic.mal")
 
-(def! second (fn* [l] (nth l 1)))
-(def! abs (fn* [n] (if (>= n 0) n (* n -1))))
-(def! incr (fn* [n] (+ n 1)))
-(def! decr (fn* [n] (- n 1)))
-(def! peek (fn* [i] (do (println i) i)))
+(defn second [l] (nth l 1))
+(defn abs [n] (if (>= n 0) n (* n -1)))
+(defn incr [n] (+ n 1))
+(defn decr [n] (- n 1))
+(defn peek [i] (do (println i) i))
 
 (defn join [xs]
     (if (empty? xs)
