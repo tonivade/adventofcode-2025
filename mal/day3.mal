@@ -1,0 +1,43 @@
+; https://adventofcode.com/2025/day/2
+
+(import java.lang.String lines)
+(import java.lang.Integer parseInt 1)
+
+(load-file "mal/aoc.mal")
+
+(defn parse [file]
+    (let* (input (slurp file)) 
+        (map seq (lines input))
+    )
+)
+
+(defn combinations [xs]
+    (let* (len (decr (count xs)))
+        (flatten 
+            (map 
+                (fn* [x] 
+                    (map 
+                        (fn* [y] 
+                            (list (nth xs x) (nth xs y))
+                        ) 
+                        (generate (incr x) len)
+                    )
+                ) 
+                (generate 0 (decr len))
+            )
+        )
+    )
+)
+
+(defn jolts [item] (+ (* 10 (parseInt (first item))) (parseInt (second item))))
+
+(defn maximize [xs]
+    (max
+        (map jolts (combinations xs))
+    )
+)
+
+;(def! input "input/day3.txt")
+(def! input "input/day3-test.txt")
+
+(println (timed (fn* [] (sum (map maximize (parse input))))))

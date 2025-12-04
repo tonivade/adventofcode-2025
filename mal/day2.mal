@@ -35,7 +35,7 @@
     (filter is-invalid? (generate (first range) (second range)))
 )
 
-(defn unfold1-sum [range] (reduce 0 + (unfold1 range)))
+(defn unfold1-sum [range] (sum (unfold1 range)))
 
 (defn all-the-same? [xs]
     (if (empty? xs)
@@ -71,17 +71,17 @@
     (filter is-invalid2? (generate (first range) (second range)))
 )
 
-(defn unfold2-sum [range] (reduce 0 + (unfold2 range)))
+(defn unfold2-sum [range] (sum (unfold2 range)))
 
 ;(def! input "input/day2.txt")
 (def! input "input/day2-test.txt")
 
 ; part1
 (println
-    (timed (fn* [] (reduce 0 + (map unfold1-sum (parse input)))))
+    (timed (fn* [] (sum (map unfold1-sum (parse input)))))
 )
 
 ; part2
 (println
-    (timed (fn* [] (reduce 0 + (map unfold2-sum (parse input)))))
+    (timed (fn* [] (sum (map unfold2-sum (parse input)))))
 )
