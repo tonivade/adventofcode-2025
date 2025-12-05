@@ -1,6 +1,7 @@
 package day1
 
 import scala.io.Source
+import aoc.timed
 
 // https://adventofcode.com/2025/day/1
 object Day1:
@@ -49,6 +50,8 @@ object Day1:
 
 @main def main: Unit =
   val input = Source.fromFile("input/day1.txt").getLines().mkString("\n")
-  println(Day1.part1(input))
-  println(Day1.part2(input))
+  timed():
+    println(s"Part 1: ${Day1.part1(input)}")
+  timed():
+    println(s"Part 2: ${Day1.part2(input)}")
 

@@ -11,6 +11,7 @@ cat << EOF > "src/main/scala/Day${next_day}.scala"
 package day${next_day}
 
 import scala.io.Source
+import aoc.timed
 
 // https://adventofcode.com/${year}/day/${next_day}
 object Day${next_day}:
@@ -19,8 +20,10 @@ object Day${next_day}:
 
 @main def main: Unit =
   val input = Source.fromFile("input/day${next_day}.txt").getLines().mkString("\n")
-  println(Day${next_day}.part1(input))
-  println(Day${next_day}.part2(input))
+  timed():
+    println(s"Part 1: \${Day${next_day}.part1(input)}")
+  timed():
+    println(s"Part 2: \${Day${next_day}.part2(input)}")
 
 EOF
 

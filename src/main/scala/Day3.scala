@@ -2,6 +2,7 @@ package day3
 
 import scala.io.Source
 import scala.annotation.tailrec
+import aoc.timed
 
 // https://adventofcode.com/2025/day/3
 object Day3:
@@ -46,6 +47,8 @@ object Day3:
 
 @main def main: Unit =
   val input = Source.fromFile("input/day3.txt").getLines().mkString("\n")
-  println(Day3.part1(input))
-  println(Day3.part2(input))
+  timed():
+    println(s"Part 1: ${Day3.part1(input)}")
+  timed():
+    println(s"Part 2: ${Day3.part2(input)}")
 
