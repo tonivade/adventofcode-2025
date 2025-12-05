@@ -53,6 +53,22 @@
     )
 )
 
+(defn remove-all [matrix to-remove]
+    (if (empty? to-remove)
+        matrix
+        (remove-all (dissoc matrix (first to-remove)) (rest to-remove))
+    )
+)
+
+(defn step [matrix acc]
+    (let* (to-remove (removable matrix))
+        (if (empty? to-remove)
+            acc
+            (step (remove-all matrix to-remove) (+ acc (count to-remove)))
+        )
+    )
+)
+
 (defn parse [file]
     (let* (input (slurp file))
         (list-to-map
@@ -76,3 +92,5 @@
 (def! input (if-defined DEBUG-EVAL "input/day4-test.txt" "input/day4.txt"))
 
 (println (timed! (count (removable (parse input)))))
+
+(println (timed! (step (parse input) 0)))

@@ -37,7 +37,7 @@ object Day4:
     if (toRemove.isEmpty)
       acc
     else
-      val next = matrix.removedAll(removable(matrix))
+      val next = matrix.removedAll(toRemove)
       step(next, acc + toRemove.size)
 
   def part2(input: String): Int = 
