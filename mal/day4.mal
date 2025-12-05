@@ -1,0 +1,77 @@
+; https://adventofcode.com/2025/day/4
+
+(import java.lang.String lines)
+
+(load-file "mal/aoc.mal")
+
+(defn right [point] (list (incr (first point)) (second point)))
+(defn left [point] (list (decr (first point)) (second point)))
+(defn up [point] (list (first point) (incr (second point))))
+(defn down [point] (list (first point) (decr (second point))))
+
+(defn right-up [point] (list (incr (first point)) (incr (second point))))
+(defn right-down [point] (list (incr (first point)) (decr (second point))))
+(defn left-up [point] (list (decr (first point)) (incr (second point))))
+(defn left-down [point] (list (decr (first point)) (decr (second point))))
+
+(defn adjacent [point]
+    (list 
+        (right point)
+        (left point)
+        (up point)
+        (down point)
+
+        (right-up point)
+        (right-down point)
+        (left-up point)
+        (left-down point)
+    )
+)
+
+(defn count-paper [point matrix]
+    (let* (points (adjacent point))
+        (count
+            (filter 
+                (fn* [p] (contains? p matrix))
+                points
+            )
+        )
+    )
+)
+
+(defn removable [matrix]
+    (count
+        (filter
+            (fn* [p] (< (count-paper p matrix) 4))
+            matrix
+        )
+    )
+)
+
+(defn parse [file]
+    (let* (input (slurp file)) 
+        (map
+            (fn* [point] (first point))
+            (filter 
+                (fn* [point] (= "@" (second point)))
+                (flatten
+                    (map 
+                        (fn* [row] 
+                            (map 
+                                (fn* [cell] 
+                                    (list (list (second row) (second cell)) (first cell))
+                                ) 
+                                (first row)
+                            )
+                        )
+                        (zip-with-index (map zip-with-index (map seq (lines input))))
+                    )
+                )
+            )
+        )
+    )
+)
+
+(def! input (if-defined DEBUG-EVAL "input/day4-test.txt" "input/day4.txt"))
+
+(println (timed! (removable (parse input))))

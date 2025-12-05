@@ -22,12 +22,13 @@
     )
 )
 
-(defn zip-with-index [l i]
-    (if (empty? l)
-        l
-        (cons (list (first l) i) (zip-with-index (rest l) (incr i)))
-    )
-)
+(defn zip-with-index [l]
+  (let* (go (fn* [l i]
+              (if (empty? l)
+                  ()
+                  (cons (list (first l) i)
+                        (go (rest l) (incr i))))))
+    (go l 0)))
 
 (defn take [l i]
     (if (empty? l)
@@ -60,6 +61,13 @@
     (if (empty? l)
         false
         (or (c (first l)) (exists? c (rest l)))
+    )
+)
+
+(defn contains? [i l]
+    (if (empty? l)
+        false
+        (or (= (first l) i) (contains? i (rest l)))
     )
 )
 
