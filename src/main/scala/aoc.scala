@@ -11,6 +11,11 @@ def timed[R](label: String = "")(block: => R): R =
     println(s"Elapsed time: $elapsedMs ms")
   result
 
+def peek[R]: (R => R) =
+  r => 
+    println(r)
+    r
+
 case class Position(x: Int, y: Int):
   def right = Position(x + 1, y)
   def left = Position(x - 1, y)

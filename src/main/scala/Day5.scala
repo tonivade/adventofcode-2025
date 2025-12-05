@@ -11,7 +11,7 @@ object Day5:
       other >= start && other <= end
     def overlaps(other: Interval): Boolean =
       end >= other.start && start <= other.end
-    def size: BigInt = end - start
+    def size: BigInt = (end - start) + 1
     def merge(other: Interval): Interval =
       require(overlaps(other), s"Intervals $this and $other do not overlap")
       Interval(
@@ -35,7 +35,7 @@ object Day5:
     val Array(r, p) = input.split("\n\n")
     val ranges = parseRanges(r)
 
-    val grouped = ranges.foldLeft(List.empty[List[Interval]]):
+    val grouped = ranges.sortBy(_.start).foldLeft(List.empty[List[Interval]]):
       case (state, interval) => 
         val group = state.indexWhere(_.exists(_.overlaps(interval)))
         if (group >= 0)
@@ -45,10 +45,6 @@ object Day5:
 
     grouped.map:
         group => group.reduce(_ `merge` _)
-      .map:
-        p =>
-          println(p)
-          p
       .map(_.size)
       .sum
 
