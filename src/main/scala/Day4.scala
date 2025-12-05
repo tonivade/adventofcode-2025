@@ -13,17 +13,22 @@ object Day4:
   
   import Item.*
 
-  def part1(input: String): Int = 
-    val matrix = input.split("\n")
+  def parse(input: String): Map[Position, Item] =
+    input.split("\n")
       .zipWithIndex.flatMap:
         case (line, y) => line.zipWithIndex.map:
           case ('@', x) => Position(x, y) -> Paper
           case (_, x) => Position(x, y) -> Free
       .toMap
-
+  
+  def removable(matrix: Map[Position, Item]): Seq[Position] =
     matrix.filter(_._2 == Paper).keys.filter:
         p => p.adjacent.count(matrix.getOrElse(_, Free) == Paper) < 4
-      .size
+      .toList
+
+  def part1(input: String): Int = 
+    val matrix = parse(input)
+    removable(matrix).size
 
   def part2(input: String): Int = ???
 
