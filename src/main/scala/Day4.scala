@@ -3,6 +3,7 @@ package day4
 import scala.io.Source
 import aoc.timed
 import aoc.Position
+import scala.annotation.tailrec
 
 // https://adventofcode.com/2025/day/4
 object Day4:
@@ -30,7 +31,18 @@ object Day4:
     val matrix = parse(input)
     removable(matrix).size
 
-  def part2(input: String): Int = ???
+  @tailrec
+  def step(matrix: Map[Position, Item], acc: Int = 0): Int =
+    val toRemove = removable(matrix);
+    if (toRemove.isEmpty)
+      acc
+    else
+      val next = matrix.removedAll(removable(matrix))
+      step(next, acc + toRemove.size)
+
+  def part2(input: String): Int = 
+    val matrix = parse(input)
+    step(matrix)
 
 @main def main: Unit =
   val input = Source.fromFile("input/day4.txt").getLines().mkString("\n")
