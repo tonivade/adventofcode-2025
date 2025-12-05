@@ -37,7 +37,6 @@
     )
 )
 
-;(def! input "input/day3.txt")
-(def! input "input/day3-test.txt")
+(def! input (if-defined DEBUG-EVAL "input/day3-test.txt" "input/day3.txt"))
 
-(println (timed (fn* [] (sum (map maximize (parse input))))))
+(println (timed! (sum (map maximize (parse input)))))

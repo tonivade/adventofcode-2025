@@ -46,3 +46,12 @@
     `(def! ~name (fn* ~params ~@body))
   )
 )
+
+(defmacro! if-defined
+  (fn* (sym then else)
+    `(try*
+      (do ~sym ~then)
+      (catch* e ~else)
+    )
+  )
+)

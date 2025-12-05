@@ -30,8 +30,7 @@
     )
 )
 
-(def! input "input/day1.txt")
-;(def! input "input/day1-test.txt")
+(def! input (if-defined DEBUG-EVAL "input/day1-test.txt" "input/day1.txt"))
 
 (defn part1 []
     (count 

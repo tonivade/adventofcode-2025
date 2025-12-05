@@ -123,6 +123,12 @@
     )
 )
 
+(defmacro! timed! 
+    (fn* (& body) 
+        `(timed (fn* [] ~@body))
+    )
+)
+
 (defn generate [start end]
     (if (> start end)
         (list)

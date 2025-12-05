@@ -73,15 +73,14 @@
 
 (defn unfold2-sum [range] (sum (unfold2 range)))
 
-;(def! input "input/day2.txt")
-(def! input "input/day2-test.txt")
+(def! input (if-defined DEBUG-EVAL "input/day2-test.txt" "input/day2.txt"))
 
 ; part1
 (println
-    (timed (fn* [] (sum (map unfold1-sum (parse input)))))
+    (timed! (sum (map unfold1-sum (parse input))))
 )
 
 ; part2
 (println
-    (timed (fn* [] (sum (map unfold2-sum (parse input)))))
+    (timed! (sum (map unfold2-sum (parse input))))
 )
