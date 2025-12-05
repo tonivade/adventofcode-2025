@@ -16,15 +16,17 @@
 (defn left-down [point] (list (decr (first point)) (decr (second point))))
 
 (defn adjacent [point]
-    (list
-        (right point)
-        (left point)
-        (up point)
-        (down point)
-        (right-up point)
-        (right-down point)
-        (left-up point)
-        (left-down point)
+    (map to-key
+        (list
+            (right point)
+            (left point)
+            (up point)
+            (down point)
+            (right-up point)
+            (right-down point)
+            (left-up point)
+            (left-down point)
+        )
     )
 )
 
@@ -35,10 +37,8 @@
     (let* (points (adjacent point))
         (count
             (filter
-                (fn* [p]
-                    (let* (k (to-key p))
-                        (and (contains? matrix k) (= (get matrix k) "@"))
-                    )
+                (fn* [k]
+                    (and (contains? matrix k) (= (get matrix k) "@"))
                 )
                 points
             )
@@ -47,11 +47,9 @@
 )
 
 (defn removable [matrix]
-    (count
-        (filter
-            (fn* [p] (< (count-paper (to-pair p) matrix) 4))
-            (filter (fn* [k] (= (get matrix k) "@")) (keys matrix))
-        )
+    (filter
+        (fn* [p] (< (count-paper (to-pair p) matrix) 4))
+        (filter (fn* [k] (= (get matrix k) "@")) (keys matrix))
     )
 )
 
@@ -77,4 +75,4 @@
 
 (def! input (if-defined DEBUG-EVAL "input/day4-test.txt" "input/day4.txt"))
 
-(println (timed! (removable (parse input))))
+(println (timed! (count (removable (parse input)))))
