@@ -6,12 +6,12 @@ import aoc.timed
 // https://adventofcode.com/2025/day/5
 object Day5:
 
-  case class Interval(start: BigInt, end: BigInt):
-    def contains(other: BigInt): Boolean =
+  case class Interval(start: Long, end: Long):
+    def contains(other: Long): Boolean =
       other >= start && other <= end
     def overlaps(other: Interval): Boolean =
       end >= other.start && start <= other.end
-    def size: BigInt = (end - start) + 1
+    def size: Long = (end - start) + 1
     def merge(other: Interval): Interval =
       require(overlaps(other), s"Intervals $this and $other do not overlap")
       Interval(
@@ -22,16 +22,16 @@ object Day5:
   def parseRanges(ranges: String): Array[Interval] =
     ranges.split("\n")
       .map(_.split("-")).map:
-        case Array(start, end) => Interval(BigInt(start), BigInt(end))
+        case Array(start, end) => Interval(start.toLong, end.toLong)
 
   def part1(input: String): Int = 
     val Array(r, p) = input.split("\n\n")
     val ranges = parseRanges(r)
-    val products = p.split("\n").map(BigInt(_))
+    val products = p.split("\n").map(_.toLong)
 
     products.count(i => ranges.exists(_.contains(i)))
 
-  def part2(input: String): BigInt = 
+  def part2(input: String): Long = 
     val Array(r, p) = input.split("\n\n")
     val ranges = parseRanges(r)
 
