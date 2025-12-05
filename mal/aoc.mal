@@ -64,13 +64,6 @@
     )
 )
 
-(defn contains? [i l]
-    (if (empty? l)
-        false
-        (or (= (first l) i) (contains? i (rest l)))
-    )
-)
-
 (defn filter [c l]
     (if (empty? l)
         l
@@ -148,5 +141,13 @@
     (if (empty? lst)
         ()
         (concat (reverse (rest lst)) (list (first lst)))
+    )
+)
+
+(defn list-to-map [lst]
+    (reduce 
+        {}
+        (fn* [pair m] (assoc m (first pair) (second pair)))
+        lst
     )
 )
