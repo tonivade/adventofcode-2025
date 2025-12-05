@@ -135,3 +135,10 @@
         (cons start (generate (incr start) end))
     )
 )
+
+(defn reverse [lst]
+    (if (empty? lst)
+        ()
+        (concat (reverse (rest lst)) (list (first lst)))
+    )
+)

@@ -2,6 +2,7 @@
 
 (import java.lang.String lines)
 (import java.lang.Integer parseInt 1)
+(import java.lang.Long parseLong 1)
 
 (load-file "mal/aoc.mal")
 
@@ -31,12 +32,38 @@
 
 (defn jolts [item] (+ (* 10 (parseInt (first item))) (parseInt (second item))))
 
-(defn maximize [xs]
+(defn maximize [bank]
     (max
-        (map jolts (combinations xs))
+        (map jolts (combinations bank))
+    )
+)
+
+(defn process [remaining stack dropped maxDrop]
+    (if (empty? remaining)
+        stack
+        (let* (head (first remaining) tail (rest remaining))
+            (if (and (not (empty? stack)) (< dropped maxDrop) (< (first stack) head))
+                (process remaining (rest stack) (incr dropped) maxDrop)
+                (process tail (cons head stack) dropped maxDrop)
+            )
+        )
+    )
+)
+
+(defn maximize2 [bank]
+    (parseLong 
+        (join 
+            (take 
+                (reverse 
+                    (process (map parseLong bank) (list) 0 (- (count bank) 12))
+                ) 
+                12
+            )
+        )
     )
 )
 
 (def! input (if-defined DEBUG-EVAL "input/day3-test.txt" "input/day3.txt"))
 
 (println (timed! (sum (map maximize (parse input)))))
+(println (timed! (sum (map maximize2 (parse input)))))
