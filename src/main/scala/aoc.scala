@@ -6,7 +6,18 @@ def timed[R](label: String = "")(block: => R): R =
   val end = System.nanoTime()
   val elapsedMs = (end - start) / 1_000_000.0
   if (label.nonEmpty) 
-      println(s"[$label] Elapsed time: $elapsedMs ms")
+    println(s"[$label] Elapsed time: $elapsedMs ms")
   else 
-      println(s"Elapsed time: $elapsedMs ms")
+    println(s"Elapsed time: $elapsedMs ms")
   result
+
+case class Position(x: Int, y: Int):
+  def right = Position(x + 1, y)
+  def left = Position(x - 1, y)
+  def up = Position(x, y + 1)
+  def down = Position(x, y - 1)
+  def rightUp = Position(x + 1, y + 1)
+  def rightDown = Position(x + 1, y - 1)
+  def leftUp = Position(x - 1, y + 1)
+  def leftDown = Position(x - 1, y - 1)
+  def adjacent = List(up, down, left, right, rightUp, rightDown, leftUp, leftDown)
