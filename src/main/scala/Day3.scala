@@ -5,6 +5,7 @@ import scala.annotation.tailrec
 
 // https://adventofcode.com/2025/day/3
 object Day3:
+  // brute force solution
   def active(bank: Seq[Int]): Int =
     var all = for {
       i <- 0 until bank.length
@@ -14,6 +15,7 @@ object Day3:
         case (i, j) => (i * 10) + j
       .max
 
+  // monotonic stack solution
   def active2(bank: Seq[Long]): Long = 
     val toKeep = 12
     val maxDrop = bank.length - toKeep
