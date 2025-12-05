@@ -4,7 +4,16 @@ import Day4._
 
 class Day4Suite extends munit.FunSuite:
 
-  val input = """""".stripMargin
+  val input = """..@@.@@@@.
+                |@@@.@.@.@@
+                |@@@@@.@.@@
+                |@.@@@@..@.
+                |@@.@@@@.@@
+                |.@@@@@@@.@
+                |.@.@.@.@@@
+                |@.@@@.@@@@
+                |.@@@@@@@@.
+                |@.@.@@@.@.""".stripMargin
 
   test("Day4 part1".ignore):
     assertEquals(part1(input), 1)
