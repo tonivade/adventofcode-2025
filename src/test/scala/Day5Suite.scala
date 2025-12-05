@@ -16,8 +16,8 @@ class Day5Suite extends munit.FunSuite:
                 |17
                 |32""".stripMargin
 
-  test("Day5 part1".ignore):
-    assertEquals(part1(input), 1)
+  test("Day5 part1"):
+    assertEquals(part1(input), 3)
 
   test("Day5 part2".ignore):
     assertEquals(part2(input), 1)
