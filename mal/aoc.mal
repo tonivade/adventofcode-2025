@@ -74,18 +74,22 @@
     )
 )
 
-(defn insert-sort [item l] 
-    (if (or (empty? l) (< item (first l)))
+(defn insert-sort-by [c item l] 
+    (if (or (empty? l) (c item (first l)))
         (cons item l) 
-        (cons (first l) (insert-sort item (rest l)))
+        (cons (first l) (insert-sort-by c item (rest l)))
+    )
+)
+
+(defn sort-list-by [c l] 
+    (if (empty? l) 
+        l 
+        (insert-sort-by c (first l) (sort-list-by c (rest l)))
     )
 )
 
 (defn sort-list [l] 
-    (if (empty? l) 
-        l 
-        (insert-sort (first l) (sort-list (rest l)))
-    )
+    (sort-list-by (fn* [a b] (< a b)) l)
 )
 
 (defn reduce [z f l] 
@@ -149,5 +153,27 @@
         {}
         (fn* [pair m] (assoc m (first pair) (second pair)))
         lst
+    )
+)
+
+(defn replace-nth [lst n val]
+    (if (empty? lst)
+        ()
+        (if (= n 0)
+            (cons val (rest lst))               ; replace head
+            (cons (first lst)                   ; keep head, recurse
+                (replace-nth (rest lst) (decr n) val))
+        )
+    )
+)
+
+(defn index-where [lst c]
+    (let* (go (fn* (lst c i)
+              (if (empty? lst)
+                  nil
+                  (if (c (first lst))
+                      i
+                      (go (rest lst) c (incr i))))))
+        (go lst c 0)
     )
 )

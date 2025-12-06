@@ -24,6 +24,21 @@
    (and (>= num (first range)) (<= num (second range)))
 )
 
+(defn range-size [range]
+    (incr (- (second range) (first range)))
+)
+
+(defn overlaps [left right]
+    (and (>= (second left) (first right)) (<= (first left) (second right)))
+)
+
+(defn merge [left right]
+    (list 
+        (if (< (first left) (first right)) (first left) (first right))
+        (if (> (second left) (second right)) (second left) (second right))
+    )
+)
+
 (defn is-fresh [ranges product]
     (exists?
         (fn* [r] (in-range r product))
@@ -40,10 +55,40 @@
     )
 )
 
+(defn merge-ranges [ranges]
+    (let* (sorted-ranges (sort-list-by (fn* [a b] (< (first a) (first b))) ranges))
+        (reduce 
+            ()
+            (fn* [range acc] 
+                (let* 
+                    (group (index-where acc (fn* [r] (overlaps range r))))
+                    (if (nil? group)
+                        (cons range acc)
+                        (replace-nth acc group (merge (nth acc group) range))
+                    )
+                )
+            )
+            sorted-ranges
+        )
+    )
+)
+
 (println 
     (timed! 
         (let* (parsed (parse input))
             (count-fresh (first parsed) (second parsed))
+        )
+    )
+)
+
+(println 
+    (timed! 
+        (let* (parsed (parse input))
+            (sum
+                (map 
+                    range-size
+                    (merge-ranges (first parsed)))
+            )
         )
     )
 )

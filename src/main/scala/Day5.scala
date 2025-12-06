@@ -35,18 +35,15 @@ object Day5:
     val Array(r, p) = input.split("\n\n")
     val ranges = parseRanges(r)
 
-    val grouped = ranges.sortBy(_.start).foldLeft(List.empty[List[Interval]]):
+    val grouped = ranges.sortBy(_.start).foldLeft(List.empty[Interval]):
       case (state, interval) => 
-        val group = state.indexWhere(_.exists(_.overlaps(interval)))
+        val group = state.indexWhere(_.overlaps(interval))
         if (group >= 0)
-          state.updated(group, state(group) :+ interval)
+          state.updated(group, state(group) `merge` interval)
         else
-          state :+ List(interval)
+          state :+ interval
 
-    grouped.map:
-        group => group.reduce(_ `merge` _)
-      .map(_.size)
-      .sum
+    grouped.map(_.size).sum
 
 @main def main: Unit =
   val input = Source.fromFile("input/day5.txt").getLines().mkString("\n")
