@@ -188,3 +188,18 @@
         )
     )
 )
+
+(defn group-by [f lst]
+    (reduce
+        {}
+        (fn* [item acc]
+            (let* (k (str (f item)))
+                (if (contains? acc k)
+                    (assoc acc k (cons (first item) (get acc k)))
+                    (assoc acc k (list (first item)))
+                )
+            )
+        )
+        lst
+    )
+)

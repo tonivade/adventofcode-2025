@@ -12,16 +12,8 @@
 (defn parse [file]
     (let* (input (lines (slurp file)))
         (vals
-            (reduce
-                {}
-                (fn* [item acc]
-                    (let* (k (str (second item)))
-                        (if (contains? acc k)
-                            (assoc acc k (cons (first item) (get acc k)))
-                            (assoc acc k (list (first item)))
-                        )
-                    )
-                )
+            (group-by 
+                second
                 (flatten 
                     (map
                         zip-with-index
