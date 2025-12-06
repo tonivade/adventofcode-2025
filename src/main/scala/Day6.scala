@@ -5,6 +5,7 @@ import aoc.timed
 
 // https://adventofcode.com/2025/day/6
 object Day6:
+
   def solve(input: Array[String]): Long =
     input.foldRight(("", 0L)):
         case ("+", (_, acc)) => ("+", 0L)
@@ -13,13 +14,16 @@ object Day6:
         case (a, ("*", acc)) => ("*", acc * a.toLong)
       ._2
 
-  def part1(input: String): Long = 
+  def parse(input: String): Iterable[Array[String]] =
     input.split("\n")
       .map(_.trim)
       .map(_.split("\\s+"))
       .flatMap(_.zipWithIndex)
       .groupMap(_._2)(_._1)
       .values
+
+  def part1(input: String): Long = 
+    parse(input)
       .map(solve)
       .sum
 
