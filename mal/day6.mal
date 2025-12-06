@@ -2,14 +2,16 @@
 
 (import java.lang.String lines)
 (import java.lang.String trim)
+(import java.lang.String length)
 (import java.lang.String split 1)
+(import java.lang.String substring 2)
 (import java.lang.Long parseLong 1)
 
 (load-file "mal/aoc.mal")
 
 (def! input (if-defined DEBUG-EVAL "input/day6-test.txt" "input/day6.txt"))
 
-(defn parse [file]
+(defn parse1 [file]
     (let* (input (lines (slurp file)))
         (vals
             (group-by 
@@ -28,6 +30,48 @@
     )
 )
 
+(defn parse-line [line cols]
+    (map 
+        (fn* [window] 
+            (let* (start (first window) end (decr (second window)))
+                (substring line start end)
+            )
+        ) 
+        cols
+    )
+)
+
+(defn parse2 [file]
+    (let* (input (lines (slurp file)) cols (columns (first (reverse input))))
+        (vals
+            (group-by 
+                second
+                (flatten 
+                    (map
+                        zip-with-index
+                        (map 
+                            (fn* [line] (parse-line line cols))
+                            input
+                        )
+                    )
+                )
+            )
+        )
+    )
+)
+
+(defn columns [row]
+    (sliding2
+        (reverse 
+            (reduce
+                (list 0)
+                (fn* [item acc] (cons (+ (first acc) item) acc))
+                (rest (map incr (map length (split (str row " ") "[\\*\\+]"))))
+            )
+        )
+    )
+)
+
 (defn solve (input)
     (let* (lst (reverse input))
         (let* (op (first lst) values (map parseLong (rest lst)))
@@ -40,5 +84,5 @@
 )
 
 (println 
-    (timed! (sum (map solve (parse input))))
+    (timed! (sum (map solve (parse1 input))))
 )

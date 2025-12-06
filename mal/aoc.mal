@@ -203,3 +203,13 @@
         lst
     )
 )
+
+(defn sliding2 [lst]
+    (if (or (empty? lst) (empty? (rest lst)))
+        ()
+        (cons 
+            (list (first lst) (first (rest lst))) 
+            (sliding2 (rest lst))
+        )
+    )
+)
