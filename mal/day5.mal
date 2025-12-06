@@ -1,0 +1,49 @@
+; https://adventofcode.com/2025/day/5
+
+(import java.lang.String lines)
+(import java.lang.String split 1)
+(import java.lang.Long parseLong 1)
+
+(load-file "mal/aoc.mal")
+
+(def! input (if-defined DEBUG-EVAL "input/day5-test.txt" "input/day5.txt"))
+
+(defn to-range (input)
+    (map parseLong (split input "-"))
+)
+
+(defn parse [file]
+    (let* (input (split (slurp file) "\n\n"))
+        (let* (ranges (first input) products (second input))
+            (list (map to-range (lines ranges)) (map parseLong (lines products)))
+        )
+    )
+)
+
+(defn in-range [range num]
+   (and (>= num (first range)) (<= num (second range)))
+)
+
+(defn is-fresh [ranges product]
+    (exists?
+        (fn* [r] (in-range r product))
+        ranges
+    )
+)
+
+(defn count-fresh [ranges products]
+    (count
+        (filter
+            (fn* [p] (is-fresh ranges p))
+            products
+        )
+    )
+)
+
+(println 
+    (timed! 
+        (let* (parsed (parse input))
+            (count-fresh (first parsed) (second parsed))
+        )
+    )
+)
