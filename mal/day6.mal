@@ -41,6 +41,16 @@
     )
 )
 
+(defn columns [row]
+    (sliding2
+        (reduce
+            (list (incr (length row)))
+            (fn* [item acc] (cons (- (first acc) item) acc))
+            (map incr (map length (rest (split (str row " ") "[\\*\\+]"))))
+        )
+    )
+)
+
 (defn parse2 [file]
     (let* (input (lines (slurp file)) cols (columns (first (reverse input))))
         (vals
@@ -60,29 +70,38 @@
     )
 )
 
-(defn columns [row]
-    (sliding2
-        (reverse 
-            (reduce
-                (list 0)
-                (fn* [item acc] (cons (+ (first acc) item) acc))
-                (rest (map incr (map length (split (str row " ") "[\\*\\+]"))))
+(defn transform [col]
+    (let* (op (trim (first (reverse col))) numbers (reverse (rest (reverse col))))
+        (concat
+            (map trim
+                (map 
+                    join
+                    (vals
+                        (group-by 
+                            second
+                            (flatten (map zip-with-index (map seq numbers)))
+                        )
+                    )
+                )
             )
+            (list op)
         )
     )
 )
 
 (defn solve (input)
-    (let* (lst (reverse input))
-        (let* (op (first lst) values (map parseLong (rest lst)))
-            (cond 
-                (= op "+") (sum values)
-                (= op "*") (mul values)
-            )
+    (let* (lst (reverse input) op (first lst) values (map parseLong (rest lst)))
+        (cond 
+            (= op "+") (sum values)
+            (= op "*") (mul values)
         )
     )
 )
 
 (println 
     (timed! (sum (map solve (parse1 input))))
+)
+
+(println 
+    (timed! (sum (map solve (map transform (parse2 input)))))
 )
