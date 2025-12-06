@@ -28,13 +28,12 @@ object Day6:
       .split("[\\*\\+]")
       .tail
       .map(_.size + 1)
-      .toList
+      .scanLeft(0)(_ + _)
     lines
       .map:
-        line => widths.scanLeft(0)(_ + _)
-          .sliding(2)
+        line => widths.sliding(2)
           .map:
-            case List(start, end) => line.slice(start, end).take(end - start - 1)
+            case Array(start, end) => line.slice(start, end).take(end - start - 1)
       .flatMap(_.zipWithIndex)
       .groupMap(_._2)(_._1)
       .values
