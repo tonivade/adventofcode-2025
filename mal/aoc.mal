@@ -108,6 +108,7 @@
 
 (defn flatten [l] (reduce (list) concat l))
 (defn sum [l] (reduce 0 + l))
+(defn mul [l] (reduce 1 * l))
 (defn max [l] (reduce 0 (fn* [i j] (if (> i j) i j)) l))
 
 (defn chunks [lst size]
