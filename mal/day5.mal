@@ -61,10 +61,10 @@
             ()
             (fn* [range acc] 
                 (let* 
-                    (group (index-where acc (fn* [r] (overlaps range r))))
-                    (if (nil? group)
+                    (i (index-where acc (fn* [r] (overlaps range r))))
+                    (if (nil? i)
                         (cons range acc)
-                        (replace-nth acc group (merge (nth acc group) range))
+                        (replace-nth acc i (merge (nth acc i) range))
                     )
                 )
             )
@@ -83,12 +83,8 @@
 
 (println 
     (timed! 
-        (let* (parsed (parse input))
-            (sum
-                (map 
-                    range-size
-                    (merge-ranges (first parsed)))
-            )
+        (let* (ranges (merge-ranges (first (parse input))))
+            (sum (map range-size ranges))
         )
     )
 )

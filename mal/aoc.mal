@@ -177,3 +177,13 @@
         (go lst c 0)
     )
 )
+
+(defn foreach [lst f]
+    (if (empty? lst)
+        nil
+        (do
+            (f (first lst))
+            (foreach (rest lst) f)
+        )
+    )
+)
