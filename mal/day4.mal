@@ -77,7 +77,7 @@
                     (fn* [row]
                         (map
                             (fn* [cell]
-                                (list (str (second row) "," (second cell)) (first cell))
+                                (list (to-key (list (second row) (second cell))) (first cell))
                             )
                             (first row)
                         )
