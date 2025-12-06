@@ -55,21 +55,23 @@
     )
 )
 
+(defn sort-ranges [ranges]
+    (sort-list-by (fn* [a b] (< (first a) (first b))) ranges)
+)
+
 (defn merge-ranges [ranges]
-    (let* (sorted-ranges (sort-list-by (fn* [a b] (< (first a) (first b))) ranges))
-        (reduce 
-            ()
-            (fn* [range acc] 
-                (let* 
-                    (i (index-where acc (fn* [r] (overlaps range r))))
-                    (if (nil? i)
-                        (cons range acc)
-                        (replace-nth acc i (merge (nth acc i) range))
-                    )
+    (reduce 
+        ()
+        (fn* [range acc] 
+            (let* 
+                (i (index-where acc (fn* [r] (overlaps range r))))
+                (if (nil? i)
+                    (sort-ranges (cons range acc))
+                    (replace-nth acc i (merge (nth acc i) range))
                 )
             )
-            sorted-ranges
         )
+        (sort-ranges ranges)
     )
 )
 
@@ -83,7 +85,8 @@
 
 (println 
     (timed! 
-        (let* (ranges (merge-ranges (first (parse input))))
+        ; for some reason, the merge algorithm is not merging some ranges and I have to apply twice
+        (let* (ranges (merge-ranges (merge-ranges (first (parse input)))))
             (sum (map range-size ranges))
         )
     )
