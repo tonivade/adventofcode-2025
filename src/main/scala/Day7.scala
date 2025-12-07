@@ -2,10 +2,50 @@ package day7
 
 import scala.io.Source
 import aoc.timed
+import aoc.Position
+import aoc.parseMatrix
+import scala.annotation.tailrec
 
 // https://adventofcode.com/2025/day/7
 object Day7:
-  def part1(input: String): Int = ???
+  enum Item:
+    case Free
+    case Splitter
+    case Beam
+    case Touch
+  
+  import Item.*
+
+  def split(m: Map[Position, Item])(p: Position): List[(Position, Item)] =
+    m.get(p.up) match
+      case Some(Splitter) => p -> Free :: p.up -> Touch :: p.leftUp -> Beam :: p.rightUp -> Beam :: Nil
+      case Some(_) => p -> Free :: p.up -> Beam :: Nil
+      case None => p -> Free :: Nil
+  
+  @tailrec
+  def step(matrix: Map[Position, Item]): Map[Position, Item] =
+    val beams = matrix.filter:
+        case (p, i) => i == Beam
+      .keys
+      .flatMap(split(matrix))
+
+    if (beams.isEmpty)
+      matrix
+    else 
+      step(matrix ++ beams)
+
+  def part1(input: String): Int = 
+    val matrix = parseMatrix(input):
+      case 'S' => Beam
+      case '|' => Beam
+      case '^' => Splitter
+      case _ => Free
+
+    val result = step(matrix)
+
+    result.count:
+      case (p, i) => i == Touch
+
   def part2(input: String): Int = ???
 
 @main def main: Unit =

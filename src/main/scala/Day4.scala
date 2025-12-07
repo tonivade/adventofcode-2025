@@ -3,6 +3,7 @@ package day4
 import scala.io.Source
 import aoc.timed
 import aoc.Position
+import aoc.parseMatrix
 import scala.annotation.tailrec
 
 // https://adventofcode.com/2025/day/4
@@ -15,12 +16,9 @@ object Day4:
   import Item.*
 
   def parse(input: String): Map[Position, Item] =
-    input.split("\n")
-      .zipWithIndex.flatMap:
-        case (line, y) => line.zipWithIndex.map:
-          case ('@', x) => Position(x, y) -> Paper
-          case (_, x) => Position(x, y) -> Free
-      .toMap
+    parseMatrix(input):
+      case '@' => Paper
+      case _ => Free
   
   def removable(matrix: Map[Position, Item]): Seq[Position] =
     matrix.filter(_._2 == Paper).keys.filter:

@@ -26,3 +26,10 @@ case class Position(x: Int, y: Int):
   def leftUp = Position(x - 1, y + 1)
   def leftDown = Position(x - 1, y - 1)
   def adjacent = List(up, down, left, right, rightUp, rightDown, leftUp, leftDown)
+
+def parseMatrix[I](input: String)(converter: Char => I): Map[Position, I] =
+  input.split("\n")
+    .zipWithIndex.flatMap:
+      case (line, y) => line.zipWithIndex.map:
+        case (ch, x) => Position(x, y) -> converter(ch)
+    .toMap
