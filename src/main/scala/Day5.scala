@@ -20,14 +20,15 @@ object Day5:
       )
   
   def parseRanges(ranges: String): Array[Interval] =
-    ranges.split("\n")
+    ranges.linesIterator
       .map(_.split("-")).map:
         case Array(start, end) => Interval(start.toLong, end.toLong)
+      .toArray
 
   def part1(input: String): Int = 
     val Array(r, p) = input.split("\n\n")
     val ranges = parseRanges(r)
-    val products = p.split("\n").map(_.toLong)
+    val products = p.linesIterator.map(_.toLong)
 
     products.count(i => ranges.exists(_.contains(i)))
 

@@ -28,13 +28,14 @@ object Day1:
       State(rotation.move(position), zeros + rotation.zeros(position))
 
   def parse(input: String): Array[Rotation] =
-    input.split("\n")
+    input.linesIterator
       .map: line => 
         val movement = line.charAt(0) match
           case 'L' => Left
           case 'R' => Right
         val value = line.substring(1).toInt
         Rotation(value % 100, value / 100, movement)
+      .toArray
 
   def part1(input: String): Int = 
     parse(input)

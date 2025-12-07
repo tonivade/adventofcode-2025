@@ -35,12 +35,12 @@ object Day3:
     process(bank).reverse.take(toKeep).mkString.toLong
 
   def part1(input: String): Int = 
-    input.split("\n")
+    input.linesIterator
       .map(_.map(_.toInt).map(_ - '0'.toInt))
       .map(active)
       .sum
   def part2(input: String): Long = 
-    input.split("\n")
+    input.linesIterator
       .map(_.map(_.toLong).map(_ - '0'.toLong))
       .map(active2)
       .sum

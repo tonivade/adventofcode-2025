@@ -23,7 +23,7 @@ object Day6:
       .values
 
   def parse2(input: String): Iterable[Array[String]] =
-    val lines = input.split("\n").toArray
+    val lines = input.split("\n")
     val widths = (lines.last + " ")
       .split("[\\*\\+]")
       .tail
