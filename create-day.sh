@@ -46,7 +46,7 @@ class Day${next_day}Suite extends munit.FunSuite:
 EOF
 
 cat << EOF > "mal/day${next_day}.mal"
-; https://adventofcode.com/2025/day/${next_day}
+; https://adventofcode.com/${year}/day/${next_day}
 
 (import java.lang.String lines)
 
