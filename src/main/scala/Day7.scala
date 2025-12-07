@@ -24,20 +24,51 @@ object Day7:
   
   @tailrec
   def step(matrix: Map[Position, Item]): Map[Position, Item] =
-    val beams = matrix.filter:
-        case (p, i) => i == Beam
+    val next = matrix.filter(_._2 == Beam)
       .keys
       .flatMap(split(matrix))
 
-    if (beams.isEmpty)
+    if (next.isEmpty)
       matrix
     else 
-      step(matrix ++ beams)
+      step(matrix ++ next)
+
+  @tailrec
+  def step2(matrix: Map[Position, Item], rowCount: Map[Int, Long]): (Map[Position, Item], Map[Int, Long]) =
+    val next = matrix.filter(_._2 == Beam)
+      .keys
+      .flatMap(split(matrix))
+
+    if (next.isEmpty)
+      (matrix, rowCount)
+    else
+      val beams = next.filter(_._2 == Beam).map(_._1)
+      val splitters = next.filter(_._2 == Touch).map(_._1)
+
+      val nextRowCount = beams.foldLeft(Map.empty[Int, Long]):
+        case (current, p) => 
+          val down = 
+            if (matrix.getOrElse(p.down, Free) == Beam)
+              rowCount.getOrElse(p.down.x, 0L)
+            else 0L
+
+          val left = 
+            if (matrix.getOrElse(p.left, Free) == Splitter)
+              rowCount.getOrElse(p.leftDown.x, 0L)
+            else 0L
+
+          val right = 
+            if (matrix.getOrElse(p.right, Free) == Splitter)
+              rowCount.getOrElse(p.rightDown.x, 0L)
+            else 0L
+          
+          current.updated(p.x, down + left + right)
+
+      step2(matrix ++ next, if nextRowCount.isEmpty then rowCount else nextRowCount)
 
   def parse(input: String): Map[Position, Item] =
     parseMatrix(input):
       case 'S' => Beam
-      case '|' => Beam
       case '^' => Splitter
       case _ => Free
 
@@ -46,13 +77,16 @@ object Day7:
 
     val result = step(matrix)
 
-    result.count:
-      case (p, i) => i == Touch
+    result.count(_._2 == Touch)
 
-  def part2(input: String): Int =
+  def part2(input: String): Long =
     val matrix = parse(input)
 
-    0
+    val start = matrix.find(_._2 == Beam).get._1
+    
+    val (_, count) = step2(matrix, Map(start.x -> 1L))
+
+    count.values.sum
 
 @main def main: Unit =
   val input = Source.fromFile("input/day7.txt").getLines().mkString("\n")
