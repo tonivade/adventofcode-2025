@@ -149,6 +149,9 @@
     )
 )
 
+(defn last [lst] (first (reverse lst)))
+(defn drop-last [lst] (reverse (rest (reverse lst))))
+
 (defn list-to-map [lst]
     (reduce 
         {}
@@ -212,4 +215,8 @@
             (sliding2 (rest lst))
         )
     )
+)
+
+(defn append [lst item]
+    (concat lst (list item))
 )

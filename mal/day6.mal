@@ -52,7 +52,7 @@
 )
 
 (defn parse2 [file]
-    (let* (input (lines (slurp file)) cols (columns (first (reverse input))))
+    (let* (input (lines (slurp file)) cols (columns (last input)))
         (vals
             (group-by 
                 second
@@ -71,8 +71,8 @@
 )
 
 (defn transform [col]
-    (let* (op (trim (first (reverse col))) numbers (reverse (rest (reverse col))))
-        (concat
+    (let* (op (trim (last col)) numbers (drop-last col))
+        (append
             (map trim
                 (map 
                     join
@@ -84,7 +84,7 @@
                     )
                 )
             )
-            (list op)
+            op
         )
     )
 )
