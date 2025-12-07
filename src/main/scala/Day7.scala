@@ -33,44 +33,44 @@ object Day7:
     else 
       step1(matrix ++ next)
   
-  def timelines(matrix: Map[Position, Item], beams: Iterable[Position], rowCount: Map[Int, Long]): Map[Int, Long] =
+  def calculateTimelines(matrix: Map[Position, Item], beams: Iterable[Position], timelines: Map[Int, Long]): Map[Int, Long] =
     beams.foldLeft(Map.empty[Int, Long]):
       case (current, p) => 
         val down = 
           if (matrix.getOrElse(p.down, Free) == Beam)
-            rowCount.getOrElse(p.down.x, 0L)
+            timelines.getOrElse(p.down.x, 0L)
           else 0L
 
         val left = 
           if (matrix.getOrElse(p.left, Free) == Splitter)
-            rowCount.getOrElse(p.leftDown.x, 0L)
+            timelines.getOrElse(p.leftDown.x, 0L)
           else 0L
 
         val right = 
           if (matrix.getOrElse(p.right, Free) == Splitter)
-            rowCount.getOrElse(p.rightDown.x, 0L)
+            timelines.getOrElse(p.rightDown.x, 0L)
           else 0L
         
         current.updated(p.x, down + left + right)
 
   @tailrec
-  def step2(matrix: Map[Position, Item], rowCount: Map[Int, Long]): (Map[Position, Item], Map[Int, Long]) =
+  def step2(matrix: Map[Position, Item], timelines: Map[Int, Long]): (Map[Position, Item], Map[Int, Long]) =
     val next = matrix.filter(_._2 == Beam)
       .keys
       .flatMap(split(matrix))
 
     if (next.isEmpty)
-      (matrix, rowCount)
+      (matrix, timelines)
     else
       val beams = next.filter(_._2 == Beam).map(_._1)
 
-      val nextRowCount = 
+      val nextTimelines = 
         if (beams.isEmpty)
-          rowCount
+          timelines
         else
-          timelines(matrix, beams, rowCount)
+          calculateTimelines(matrix, beams, timelines)
 
-      step2(matrix ++ next, nextRowCount)
+      step2(matrix ++ next, nextTimelines)
 
   def parse(input: String): Map[Position, Item] =
     parseMatrix(input):
