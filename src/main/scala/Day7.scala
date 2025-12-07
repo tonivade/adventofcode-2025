@@ -23,7 +23,7 @@ object Day7:
       case None => p -> Free :: Nil
   
   @tailrec
-  def step(matrix: Map[Position, Item]): Map[Position, Item] =
+  def step1(matrix: Map[Position, Item]): Map[Position, Item] =
     val next = matrix.filter(_._2 == Beam)
       .keys
       .flatMap(split(matrix))
@@ -31,7 +31,27 @@ object Day7:
     if (next.isEmpty)
       matrix
     else 
-      step(matrix ++ next)
+      step1(matrix ++ next)
+  
+  def timelines(matrix: Map[Position, Item], beams: Iterable[Position], rowCount: Map[Int, Long]): Map[Int, Long] =
+    beams.foldLeft(Map.empty[Int, Long]):
+      case (current, p) => 
+        val down = 
+          if (matrix.getOrElse(p.down, Free) == Beam)
+            rowCount.getOrElse(p.down.x, 0L)
+          else 0L
+
+        val left = 
+          if (matrix.getOrElse(p.left, Free) == Splitter)
+            rowCount.getOrElse(p.leftDown.x, 0L)
+          else 0L
+
+        val right = 
+          if (matrix.getOrElse(p.right, Free) == Splitter)
+            rowCount.getOrElse(p.rightDown.x, 0L)
+          else 0L
+        
+        current.updated(p.x, down + left + right)
 
   @tailrec
   def step2(matrix: Map[Position, Item], rowCount: Map[Int, Long]): (Map[Position, Item], Map[Int, Long]) =
@@ -43,28 +63,14 @@ object Day7:
       (matrix, rowCount)
     else
       val beams = next.filter(_._2 == Beam).map(_._1)
-      val splitters = next.filter(_._2 == Touch).map(_._1)
 
-      val nextRowCount = beams.foldLeft(Map.empty[Int, Long]):
-        case (current, p) => 
-          val down = 
-            if (matrix.getOrElse(p.down, Free) == Beam)
-              rowCount.getOrElse(p.down.x, 0L)
-            else 0L
+      val nextRowCount = 
+        if (beams.isEmpty)
+          rowCount
+        else
+          timelines(matrix, beams, rowCount)
 
-          val left = 
-            if (matrix.getOrElse(p.left, Free) == Splitter)
-              rowCount.getOrElse(p.leftDown.x, 0L)
-            else 0L
-
-          val right = 
-            if (matrix.getOrElse(p.right, Free) == Splitter)
-              rowCount.getOrElse(p.rightDown.x, 0L)
-            else 0L
-          
-          current.updated(p.x, down + left + right)
-
-      step2(matrix ++ next, if nextRowCount.isEmpty then rowCount else nextRowCount)
+      step2(matrix ++ next, nextRowCount)
 
   def parse(input: String): Map[Position, Item] =
     parseMatrix(input):
@@ -75,7 +81,7 @@ object Day7:
   def part1(input: String): Int = 
     val matrix = parse(input)
 
-    val result = step(matrix)
+    val result = step1(matrix)
 
     result.count(_._2 == Touch)
 
