@@ -34,19 +34,25 @@ object Day7:
     else 
       step(matrix ++ beams)
 
-  def part1(input: String): Int = 
-    val matrix = parseMatrix(input):
+  def parse(input: String): Map[Position, Item] =
+    parseMatrix(input):
       case 'S' => Beam
       case '|' => Beam
       case '^' => Splitter
       case _ => Free
+
+  def part1(input: String): Int = 
+    val matrix = parse(input)
 
     val result = step(matrix)
 
     result.count:
       case (p, i) => i == Touch
 
-  def part2(input: String): Int = ???
+  def part2(input: String): Int =
+    val matrix = parse(input)
+
+    0
 
 @main def main: Unit =
   val input = Source.fromFile("input/day7.txt").getLines().mkString("\n")

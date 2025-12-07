@@ -2,7 +2,7 @@
 
 (load-file "mal/basic.mal")
 
-(defn second [l] (nth l 1))
+(defn second [xs] (nth xs 1))
 (defn abs [n] (if (>= n 0) n (* n -1)))
 (defn incr [n] (+ n 1))
 (defn decr [n] (- n 1))
@@ -22,106 +22,101 @@
     )
 )
 
-(defn zip-with-index [l]
-  (let* (go (fn* [l i]
-              (if (empty? l)
+(defn zip-with-index [xs]
+    (let* (go (fn* [xs i]
+              (if (empty? xs)
                   ()
-                  (cons (list (first l) i)
-                        (go (rest l) (incr i))))))
-    (go l 0)))
+                  (cons (list (first xs) i)
+                        (go (rest xs) (incr i))))))
+        (go xs 0)
+    )
+)
 
-(defn take [l i]
-    (if (empty? l)
-        l
+(defn take [xs i]
+    (if (empty? xs)
+        xs
         (if (> i 0)
-            (cons (first l) (take (rest l) (decr i)))
+            (cons (first xs) (take (rest xs) (decr i)))
             (list)
         )
     )
 )
 
-(defn drop [l i]
-    (if (empty? l)
-        l
+(defn drop [xs i]
+    (if (empty? xs)
+        xs
         (if (> i 0)
-            (drop (rest l) (decr i))
-            l
+            (drop (rest xs) (decr i))
+            xs
         )
     )
 )
 
-(defn for-all? [c l]
-    (if (empty? l)
+(defn for-all? [cmp xs]
+    (if (empty? xs)
         true
-        (and (c (first l)) (for-all? c (rest l)))
+        (and (cmp (first xs)) (for-all? cmp (rest xs)))
     )
 )
 
-(defn exists? [c l]
-    (if (empty? l)
+(defn exists? [cmp xs]
+    (if (empty? xs)
         false
-        (or (c (first l)) (exists? c (rest l)))
+        (or (cmp (first xs)) (exists? cmp (rest xs)))
     )
 )
 
-(defn filter [c l]
-    (if (empty? l)
-        l
-        (if (c (first l))
-            (cons (first l) (filter c (rest l)))
-            (filter c (rest l))
+(defn filter [cmp xs]
+    (if (empty? xs)
+        xs
+        (if (cmp (first xs))
+            (cons (first xs) (filter cmp (rest xs)))
+            (filter cmp (rest xs))
         )
     )
 )
 
-(defn insert-sort-by [c item l] 
-    (if (or (empty? l) (c item (first l)))
-        (cons item l) 
-        (cons (first l) (insert-sort-by c item (rest l)))
+(defn insert-sort-by [cmp item xs] 
+    (if (or (empty? xs) (cmp item (first xs)))
+        (cons item xs) 
+        (cons (first xs) (insert-sort-by cmp item (rest xs)))
     )
 )
 
-(defn sort-list-by [c l] 
-    (if (empty? l) 
-        l 
-        (insert-sort-by c (first l) (sort-list-by c (rest l)))
+(defn sort-list-by [cmp xs] 
+    (if (empty? xs) 
+        xs 
+        (insert-sort-by cmp (first xs) (sort-list-by cmp (rest xs)))
     )
 )
 
-(defn sort-list [l] 
-    (sort-list-by (fn* [a b] (< a b)) l)
+(defn sort-list [xs] 
+    (sort-list-by (fn* [a b] (< a b)) xs)
 )
 
-(defn reduce [z f l] 
-    (if (empty? l) 
-        z 
-        (f (first l) (reduce z f (rest l)))
+(defn reduce [initial func xs] 
+    (if (empty? xs) 
+        initial 
+        (reduce (func (first xs) initial) func (rest xs))
     )
 )
 
-(defn fold [z f l] 
-    (if (empty? l) 
-        z 
-        (fold (f z (first l)) f (rest l))
-    )
-)
+(defn flatten [xs] (reduce (list) concat xs))
+(defn sum [xs] (reduce 0 + xs))
+(defn mul [xs] (reduce 1 * xs))
+(defn max [xs] (reduce 0 (fn* [i j] (if (> i j) i j)) xs))
 
-(defn flatten [l] (reduce (list) concat l))
-(defn sum [l] (reduce 0 + l))
-(defn mul [l] (reduce 1 * l))
-(defn max [l] (reduce 0 (fn* [i j] (if (> i j) i j)) l))
-
-(defn chunks [lst size]
-    (if (or (= size 0) (empty? lst))
+(defn chunks [xs size]
+    (if (or (= size 0) (empty? xs))
         (list)
-        (let* (group (take lst size) rst (drop lst size))
+        (let* (group (take xs size) rst (drop xs size))
             (cons group (chunks rst size))
         )
     )
 )
 
-(defn timed [f]
-    (let* (start (time-ms) result (f) end (time-ms))
+(defn timed [func]
+    (let* (start (time-ms) result (func) end (time-ms))
         (do
             (println "Elapsed time:" (- end start) "ms")
             result
@@ -142,81 +137,80 @@
     )
 )
 
-(defn reverse [lst]
-    (if (empty? lst)
-        ()
-        (concat (reverse (rest lst)) (list (first lst)))
-    )
-)
+(defn last [xs] (first (reverse xs)))
+(defn drop-last [xs] (reverse (rest (reverse xs))))
+(defn append [xs item] (concat xs (list item)))
 
-(defn last [lst] (first (reverse lst)))
-(defn drop-last [lst] (reverse (rest (reverse lst))))
-
-(defn list-to-map [lst]
+(defn list-to-map [xs]
     (reduce 
         {}
         (fn* [pair m] (assoc m (first pair) (second pair)))
-        lst
+        xs
     )
 )
 
-(defn replace-nth [lst n val]
-    (if (empty? lst)
+(defn replace-nth [xs n val]
+    (if (empty? xs)
         ()
         (if (= n 0)
-            (cons val (rest lst))               ; replace head
-            (cons (first lst)                   ; keep head, recurse
-                (replace-nth (rest lst) (decr n) val))
+            (cons val (rest xs))               ; replace head
+            (cons (first xs)                   ; keep head, recurse
+                (replace-nth (rest xs) (decr n) val))
         )
     )
 )
 
-(defn index-where [lst c]
-    (let* (go (fn* (lst c i)
-              (if (empty? lst)
+(defn index-where [xs cmp]
+    (let* (go (fn* (xs cmp i)
+              (if (empty? xs)
                   nil
-                  (if (c (first lst))
+                  (if (cmp (first xs))
                       i
-                      (go (rest lst) c (incr i))))))
-        (go lst c 0)
+                      (go (rest xs) cmp (incr i))))))
+        (go xs cmp 0)
     )
 )
 
-(defn foreach [lst f]
-    (if (empty? lst)
+(defn foreach [xs func]
+    (if (empty? xs)
         nil
         (do
-            (f (first lst))
-            (foreach (rest lst) f)
+            (func (first xs))
+            (foreach (rest xs) func)
         )
     )
 )
 
-(defn group-by [f lst]
+(defn group-by [func xs]
     (reduce
         {}
         (fn* [item acc]
-            (let* (k (str (f item)))
+            (let* (k (str (func item)))
                 (if (contains? acc k)
                     (assoc acc k (cons (first item) (get acc k)))
                     (assoc acc k (list (first item)))
                 )
             )
         )
-        lst
+        xs
     )
 )
 
-(defn sliding2 [lst]
-    (if (or (empty? lst) (empty? (rest lst)))
+(defn sliding2 [xs]
+    (if (or (empty? xs) (empty? (rest xs)))
         ()
         (cons 
-            (list (first lst) (first (rest lst))) 
-            (sliding2 (rest lst))
+            (list (first xs) (first (rest xs))) 
+            (sliding2 (rest xs))
         )
     )
 )
 
-(defn append [lst item]
-    (concat lst (list item))
+(defn reverse [xs]
+    (let* (go (fn* (l acc)
+              (if (empty? l)
+                  acc
+                  (go (rest l) (cons (first l) acc)))))
+        (go xs ())
+    )
 )

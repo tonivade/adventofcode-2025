@@ -69,23 +69,25 @@
     )
 )
 
-(defn parse [file]
-    (let* (input (slurp file))
-        (list-to-map
-            (flatten
+(defn parse-list [input]
+    (flatten
+        (map
+            (fn* [row]
                 (map
-                    (fn* [row]
-                        (map
-                            (fn* [cell]
-                                (list (to-key (list (second row) (second cell))) (first cell))
-                            )
-                            (first row)
-                        )
+                    (fn* [cell]
+                        (list (to-key (list (second row) (second cell))) (first cell))
                     )
-                    (zip-with-index (map zip-with-index (map seq (lines input))))
+                    (first row)
                 )
             )
+            (zip-with-index (map zip-with-index (map seq (lines input))))
         )
+    )
+)
+
+(defn parse [file]
+    (let* (input (slurp file))
+        (list-to-map (parse-list input))
     )
 )
 

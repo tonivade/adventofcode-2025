@@ -44,8 +44,8 @@
 (defn columns [row]
     (sliding2
         (reduce
-            (list (incr (length row)))
-            (fn* [item acc] (cons (- (first acc) item) acc))
+            (list 0)
+            (fn* [item acc] (append acc (+ (last acc) item)))
             (map incr (map length (rest (split (str row " ") "[\\*\\+]"))))
         )
     )
