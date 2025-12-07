@@ -6,6 +6,7 @@ source .env
 next_day="${1?required day}"
 
 mkdir -p src/{main,test}/scala
+mkdir -p mal
 
 cat << EOF > "src/main/scala/Day${next_day}.scala"
 package day${next_day}
@@ -42,6 +43,22 @@ class Day${next_day}Suite extends munit.FunSuite:
   test("Day${next_day} part2".ignore):
     assertEquals(part2(input), 1)
 
+EOF
+
+cat << EOF > "mal/day${next_day}.mal"
+; https://adventofcode.com/2025/day/${next_day}
+
+(import java.lang.String lines)
+
+(load-file "mal/aoc.mal")
+
+(def! input (if-defined DEBUG-EVAL "input/day${next_day}-test.txt" "input/day${next_day}.txt"))
+
+(defn parse [file]
+    (let* (input (lines (slurp file)))
+        input
+    )
+)
 EOF
 
 ./download-day.sh $next_day
