@@ -137,8 +137,19 @@
     )
 )
 
-(defn last [xs] (first (reverse xs)))
-(defn drop-last [xs] (reverse (rest (reverse xs))))
+(defn last [xs] 
+    (let* (pos (decr (count xs)))
+        (nth xs pos)
+    )
+)
+
+(defn drop-last [xs] 
+    (if (or (empty? xs) (empty? (rest xs)))
+        ()
+        (cons (first xs) (drop-last (rest xs)))
+    )
+)
+
 (defn append [xs item] (concat xs (list item)))
 
 (defn list-to-map [xs]
