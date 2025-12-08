@@ -47,21 +47,21 @@
                 (
                     fall-down 
                         (if (= (get matrix (to-key (down p))) "|") 
-                            (get timelines (str (first (down p))))
+                            (or-default (get timelines (str (first (down p)))) 0)
                             0
                         )
                     fall-left 
                         (if (= (get matrix (to-key (left p))) "^")
-                            (get timelines (str (first (left-down p))))
+                            (or-default (get timelines (str (first (left-down p)))) 0)
                             0
                         )
                     fall-right
                         (if (= (get matrix (to-key (right p))) "^")
-                            (get timelines (str (first (right-down p))))
+                            (or-default (get timelines (str (first (right-down p)))) 0)
                             0
                         )
                 )
-                (assoc acc (str (first p)) (+ (or-default fall-down 0) (+ (or-default fall-left 0) (or-default fall-right 0))))
+                (assoc acc (str (first p)) (+ fall-down (+ fall-left fall-right)))
             )
         )
         beams
