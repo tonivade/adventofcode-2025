@@ -39,10 +39,62 @@
     )
 )
 
+(defn calculate-timelines [matrix beams timelines]
+    (reduce
+        {}
+        (fn* [p acc] 
+            (let* 
+                (
+                    fall-down 
+                        (if (= (get matrix (to-key (down p))) "|") 
+                            (get timelines (str (first (down p))))
+                            0
+                        )
+                    fall-left 
+                        (if (= (get matrix (to-key (left p))) "^")
+                            (get timelines (str (first (left-down p))))
+                            0
+                        )
+                    fall-right
+                        (if (= (get matrix (to-key (right p))) "^")
+                            (get timelines (str (first (right-down p))))
+                            0
+                        )
+                )
+                (assoc acc (str (first p)) (+ (or-default fall-down 0) (+ (or-default fall-left 0) (or-default fall-right 0))))
+            )
+        )
+        beams
+    )
+)
+
+(defn step2 [matrix timelines]
+    (let* (next (flatten (map (fn* [b] (move-beam matrix b)) (map to-pair (keys-by-value matrix "|")))))
+        (if (empty? next)
+            (list matrix timelines)
+            (let* 
+                (
+                    beams (map to-pair (keys-by-value (list-to-map next) "|")) 
+                    next-timelines (if (empty? beams) timelines (calculate-timelines matrix beams timelines))
+                )
+                (step2 (assoc-many matrix next) next-timelines)
+            )
+        )
+    )
+)
+
 (println 
     (timed!
         (let* (matrix (parse-matrix input) start (first (keys-by-value matrix "S")))
             (count (keys-by-value (step1 (assoc matrix start "|")) "T"))
+        )
+    )
+)
+
+(println 
+    (timed!
+        (let* (matrix (parse-matrix input) start (first (keys-by-value matrix "S")))
+            (sum (vals (second (step2 (assoc matrix start "|") (hash-map (str (first (to-pair start))) 1)))))
         )
     )
 )
