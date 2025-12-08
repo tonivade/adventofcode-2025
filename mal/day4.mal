@@ -5,33 +5,7 @@
 (import java.lang.Integer parseInt 1)
 
 (load-file "mal/aoc.mal")
-
-(defn right [point] (list (incr (first point)) (second point)))
-(defn left [point] (list (decr (first point)) (second point)))
-(defn up [point] (list (first point) (incr (second point))))
-(defn down [point] (list (first point) (decr (second point))))
-(defn right-up [point] (list (incr (first point)) (incr (second point))))
-(defn right-down [point] (list (incr (first point)) (decr (second point))))
-(defn left-up [point] (list (decr (first point)) (incr (second point))))
-(defn left-down [point] (list (decr (first point)) (decr (second point))))
-
-(defn adjacent [point]
-    (map to-key
-        (list
-            (right point)
-            (left point)
-            (up point)
-            (down point)
-            (right-up point)
-            (right-down point)
-            (left-up point)
-            (left-down point)
-        )
-    )
-)
-
-(defn to-pair [k] (map parseInt (split (str k) ",")))
-(defn to-key [p] (str (first p) "," (second p)))
+(load-file "mal/matrix.mal")
 
 (defn count-paper [point matrix]
     (let* (points (adjacent point))
@@ -69,30 +43,8 @@
     )
 )
 
-(defn parse-list [input]
-    (flatten
-        (map
-            (fn* [row]
-                (map
-                    (fn* [cell]
-                        (list (to-key (list (second row) (second cell))) (first cell))
-                    )
-                    (first row)
-                )
-            )
-            (zip-with-index (map zip-with-index (map seq (lines input))))
-        )
-    )
-)
-
-(defn parse [file]
-    (let* (input (slurp file))
-        (list-to-map (parse-list input))
-    )
-)
-
 (def! input (if-defined DEBUG-EVAL "input/day4-test.txt" "input/day4.txt"))
 
-(println (timed! (count (removable (parse input)))))
+(println (timed! (count (removable (parse-matrix input)))))
 
-(println (timed! (step (parse input) 0)))
+(println (timed! (step (parse-matrix input) 0)))

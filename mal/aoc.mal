@@ -225,3 +225,27 @@
         (go xs ())
     )
 )
+
+(defn keys-by-value [m target]
+    (let* (ks (keys m))
+        (let* (go (fn* (ks acc)
+                (if (empty? ks)
+                    acc
+                    (let* (k (first ks))
+                        (if (= (get m k) target)
+                            (go (rest ks) (cons k acc))
+                            (go (rest ks) acc))))))
+            (go ks ())
+        )
+    )
+)
+
+(defn assoc-many [m pairs]
+    (if (empty? pairs)
+        m
+        (let* (p (first pairs) k (first p) v (first (rest p)))
+            (assoc-many (assoc m k v) (rest pairs))
+        )
+    )
+)
+

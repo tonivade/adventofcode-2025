@@ -3,11 +3,46 @@
 (import java.lang.String lines)
 
 (load-file "mal/aoc.mal")
+(load-file "mal/matrix.mal")
 
 (def! input (if-defined DEBUG-EVAL "input/day7-test.txt" "input/day7.txt"))
 
-(defn parse [file]
-    (let* (input (lines (slurp file)))
-        input
+(defn move-beam [matrix position]
+    (let* (value (get matrix (to-key (up position))))
+        (cond
+            (nil? value) ; out of map
+                (list 
+                    (list (to-key position) ".")
+                )
+            (= value "^") ; splitter
+                (list 
+                    (list (to-key position) ".")
+                    (list (to-key (up position)) "T")
+                    (list (to-key (left-up position)) "|")
+                    (list (to-key (right-up position)) "|")
+                )
+            true ; free fall
+                (list 
+                    (list (to-key position) ".")
+                    (list (to-key (up position)) "|")
+                )
+        )
+    )
+)
+
+(defn step1 [matrix]
+    (let* (next (flatten (map (fn* [b] (move-beam matrix b)) (map to-pair (keys-by-value matrix "|")))))
+        (if (empty? next)
+            matrix
+            (step1 (assoc-many matrix next))
+        )
+    )
+)
+
+(println 
+    (timed!
+        (let* (matrix (parse-matrix input) start (first (keys-by-value matrix "S")))
+            (count (keys-by-value (step1 (assoc matrix start "|")) "T"))
+        )
     )
 )
