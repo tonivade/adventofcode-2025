@@ -20,10 +20,10 @@ object Day8:
   def makeConnections(points: Array[Point3D]): Array[(Point3D, Point3D)] = 
     points.combinations(2)
       .toArray
-      .sortBy:
-        case Array(p, q) => p `distance` q
       .map:
         case Array(p, q) => (p, q)
+      .sortBy:
+        case (p, q) => p `distance` q
 
   def merge(circuits: Array[Set[Point3D]], p: Point3D, q: Point3D): Array[Set[Point3D]] =
     val indexP = circuits.indexWhere(_.contains(p))
