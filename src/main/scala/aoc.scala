@@ -33,3 +33,10 @@ def parseMatrix[I](input: String)(converter: Char => I): Map[Position, I] =
       case (line, y) => line.zipWithIndex.map:
         case (ch, x) => Position(x, y) -> converter(ch)
     .toMap
+
+def parsePoints(input: String): List[Position] =
+  input.linesIterator
+    .map(_.split(","))
+    .map:
+      case Array(x, y) => Position(x.toInt, y.toInt)
+    .toList

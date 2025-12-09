@@ -1,0 +1,13 @@
+; https://adventofcode.com/2025/day/9
+
+(import java.lang.String lines)
+
+(load-file "mal/aoc.mal")
+
+(def! input (if-defined DEBUG-EVAL "input/day9-test.txt" "input/day9.txt"))
+
+(defn parse [file]
+    (let* (input (lines (slurp file)))
+        input
+    )
+)
