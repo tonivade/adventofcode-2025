@@ -12,14 +12,19 @@ object Day9:
     val l1 = math.abs(p.x - q.x).toLong
     val l2 = math.abs(p.y - q.y).toLong
     (l1 + 1) * (l2 + 1)
-  
-  def shape(p: Position, q: Position): Set[Position] =
-    val points = for {
-      x <- math.min(p.x, q.x) to math.max(p.x, q.x)
-      y <- math.min(p.y, q.y) to math.max(p.y, q.y)
-    } yield Position(x, y)
-    points.toSet
 
+  def bounds(p: Position, q: Position): List[Position] = 
+    val minX = math.min(p.x, q.x)
+    val maxX = math.max(p.x, q.x)
+    val minY = math.min(p.y, q.y)
+    val maxY = math.max(p.y, q.y)
+    List(Position(minX, minY), Position(minX, maxY), Position(maxX, minY), Position(maxX, maxY))
+
+  def contains(rows: Map[Int, (Int, Int)], columns: Map[Int, (Int, Int)])(p: Position): Boolean =
+    val row = rows(p.y)
+    val col = columns(p.x)
+    row._1 <= p.x && row._2 >= p.x && col._1 <= p.y && col._2 >= p.y
+  
   def part1(input: String): Long = 
     parsePoints(input)
       .combinations(2)
@@ -27,34 +32,31 @@ object Day9:
         case List(p, q) => area(p, q)
       .max
 
-  def part2(input: String): Int =
+  def part2(input: String): Long =
     val points = parsePoints(input)
 
-    val minX = points.map(_.x).min
-    val maxX = points.map(_.x).max
-    val minY = points.map(_.y).min
-    val maxY = points.map(_.y).max
+    val perimeter = (points :+ points.head).sliding(2).foldLeft(List.empty[Position]):
+      case (current, List(p, q)) if (p.x == q.x) => 
+        val y0 = math.min(p.y, q.y)
+        val yN = math.max(p.y, q.y)
+        val line = (y0 to yN).map(Position(p.x, _))
+        current ++ line
+      case (current, List(p, q)) if (p.y == q.y) => 
+        val x0 = math.min(p.x, q.x)
+        val xN = math.max(p.x, q.x)
+        val line = (x0 to xN).map(Position(_, p.y))
+        current ++ line
 
-    val fillY = (for {
-        x <- minX to maxX
-      } yield (x, points.filter(_.x == x).map(_.y).minOption, points.filter(_.x == x).map(_.y).maxOption))
-      .flatMap:
-        case (x, Some(y0), Some(yN)) => (y0 to yN).map(Position(x, _))
-        case (x, _, _) => Nil
+    val columns = perimeter.groupBy(_.x).map:
+      case (x, ys) => x -> (ys.map(_.y).min, ys.map(_.y).max)
+    val rows = perimeter.groupBy(_.y).map:
+      case (y, xs) => y -> (xs.map(_.x).min, xs.map(_.x).max)
 
-    val allPoints = (for {
-        y <- minY to maxY
-      } yield (y, fillY.filter(_.y == y).map(_.x).min, fillY.filter(_.y == y).map(_.x).max))
-      .flatMap:
-        case (y, x0, xN) => (x0 to xN).map(Position(_, y))
-      .toSet
-
-    points
-      .combinations(2)
+    points.combinations(2)
+      .filter:
+        case List(p, q) => bounds(p, q).forall(contains(rows, columns))
       .map:
-        case List(p, q) => shape(p, q)
-      .filter(_.subsetOf(allPoints))
-      .map(_.size)
+        case List(p, q) => area(p, q)
       .max
 
 @main def main: Unit =

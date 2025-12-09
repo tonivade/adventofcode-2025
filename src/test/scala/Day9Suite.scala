@@ -18,5 +18,5 @@ class Day9Suite extends munit.FunSuite:
     assertEquals(part1(input), 50L)
 
   test("Day9 part2"):
-    assertEquals(part2(input), 24)
+    assertEquals(part2(input), 24L)
 
