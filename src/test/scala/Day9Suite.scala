@@ -1,6 +1,7 @@
 package day9
 
 import Day9._
+import aoc.Position
 
 class Day9Suite extends munit.FunSuite:
 
@@ -16,6 +17,6 @@ class Day9Suite extends munit.FunSuite:
   test("Day9 part1"):
     assertEquals(part1(input), 50L)
 
-  test("Day9 part2".ignore):
-    assertEquals(part2(input), 1)
+  test("Day9 part2"):
+    assertEquals(part2(input), 24)
 
