@@ -9,18 +9,21 @@ object Day10:
   case class Machine(
     currentLights: List[Boolean], 
     lightsPattern: List[Boolean], 
-    buttons: List[List[Int]]):
+    buttons: List[List[Int]],
+    iterations: Int = 0):
       def isOn: Boolean = currentLights == lightsPattern
       def turnOn: Machine =
-        buttons.zipWithIndex.map(_._2).permutations.foldLeft(this):
-          case (current, bs) => bs.foldLeft(current):
-            case (m, b) if !m.isOn => m.click(b)
-            case (m, _) => m
+        buttons.zipWithIndex.map(_._2).permutations.map:
+            case bs => bs.foldLeft(this):
+              case (m, b) if !m.isOn => m.click(b)
+              case (m, _) => m
+          .filter(_.isOn)
+          .minBy(_.iterations)
 
       def click(button: Int): Machine =
         val nextLights = buttons(button).foldLeft(currentLights):
           case (current, b) => current.updated(b, !current(b))
-        Machine(nextLights, lightsPattern, buttons)
+        Machine(nextLights, lightsPattern, buttons, iterations + 1)
 
   def part1(input: String): Int = 
     val regex = """^\[([.#]+)\]\s+((?:\([\d,]+\)\s*)+)\{([\d,]+)\}$""".r
@@ -33,9 +36,9 @@ object Day10:
             lights.trim.map(x => x == '#').toList, 
             buttons.trim.split(" ").map(_.drop(1).dropRight(1).split(",").map(_.toInt).toList).toList)
       .map(_.turnOn)
-      .foreach(println)
+      .map(_.iterations)
+      .sum
 
-    0
   def part2(input: String): Int = ???
 
 @main def main: Unit =

@@ -9,7 +9,7 @@ class Day10Suite extends munit.FunSuite:
                 |[.###.#] (0,1,2,3,4) (0,3,4) (0,1,2,4,5) (1,2) {10,11,11,5,10,5}""".stripMargin
 
   test("Day10 part1"):
-    assertEquals(part1(input), 1)
+    assertEquals(part1(input), 7)
 
   test("Day10 part2".ignore):
     assertEquals(part2(input), 1)
