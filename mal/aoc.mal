@@ -244,9 +244,16 @@
 (defn assoc-many [m pairs]
     (if (empty? pairs)
         m
-        (let* (p (first pairs) k (first p) v (first (rest p)))
+        (let* (p (first pairs) k (first p) v (second p))
             (assoc-many (assoc m k v) (rest pairs))
         )
+    )
+)
+
+(defn dissoc-many [m to-remove]
+    (if (empty? to-remove)
+        m
+        (dissoc-many (dissoc m (first to-remove)) (rest to-remove))
     )
 )
 

@@ -9,8 +9,8 @@ import aoc.Position
 object Day9:
 
   def area(p: Position, q: Position): Long = 
-    val l1 = math.max(p.x, q.x).toLong - math.min(p.x, q.x).toLong
-    val l2 = math.max(p.y, q.y).toLong - math.min(p.y, q.y).toLong
+    val l1 = math.abs(p.x - q.x).toLong
+    val l2 = math.abs(p.y - q.y).toLong
     (l1 + 1) * (l2 + 1)
   
   def shape(p: Position, q: Position): Set[Position] =
