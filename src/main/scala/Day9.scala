@@ -20,7 +20,7 @@ object Day9:
     val maxY = math.max(p.y, q.y)
     List(Position(minX, minY), Position(minX, maxY), Position(maxX, minY), Position(maxX, maxY))
 
-  def contains(rows: Map[Int, (Int, Int)], columns: Map[Int, (Int, Int)])(p: Position): Boolean =
+  def containsPoint(rows: Map[Int, (Int, Int)], columns: Map[Int, (Int, Int)])(p: Position): Boolean =
     val row = rows(p.y)
     val col = columns(p.x)
     row._1 <= p.x && row._2 >= p.x && col._1 <= p.y && col._2 >= p.y
@@ -32,10 +32,8 @@ object Day9:
         case List(p, q) => area(p, q)
       .max
 
-  def part2(input: String): Long =
-    val points = parsePoints(input)
-
-    val perimeter = (points :+ points.head).sliding(2).foldLeft(List.empty[Position]):
+  def drawPerimeter(points: List[Position]): List[Position] =
+    (points :+ points.head).sliding(2).foldLeft(List.empty[Position]):
       case (current, List(p, q)) if (p.x == q.x) => 
         val y0 = math.min(p.y, q.y)
         val yN = math.max(p.y, q.y)
@@ -47,6 +45,10 @@ object Day9:
         val line = (x0 to xN).map(Position(_, p.y))
         current ++ line
 
+  def part2(input: String): Long =
+    val points = parsePoints(input)
+    val perimeter = drawPerimeter(points)
+    
     val columns = perimeter.groupBy(_.x).map:
       case (x, ys) => x -> (ys.map(_.y).min, ys.map(_.y).max)
     val rows = perimeter.groupBy(_.y).map:
@@ -54,7 +56,7 @@ object Day9:
 
     points.combinations(2)
       .filter:
-        case List(p, q) => bounds(p, q).forall(contains(rows, columns))
+        case List(p, q) => bounds(p, q).forall(containsPoint(rows, columns))
       .map:
         case List(p, q) => area(p, q)
       .max
