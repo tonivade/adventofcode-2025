@@ -7,23 +7,21 @@ import aoc.timed
 object Day10:
 
   case class Machine(
-    currentLights: List[Boolean], 
     lightsPattern: List[Boolean], 
-    buttons: List[List[Int]],
-    iterations: Int = 0):
-      def isOn: Boolean = currentLights == lightsPattern
-      def turnOn: Machine =
+    buttons: List[List[Int]]):
+      def turnOn: Int =
         buttons.zipWithIndex.map(_._2).permutations.map:
-            case bs => bs.foldLeft(this):
-              case (m, b) if !m.isOn => m.click(b)
-              case (m, _) => m
-          .filter(_.isOn)
-          .minBy(_.iterations)
+            bs => 
+              bs.foldLeft((List.fill(lightsPattern.size)(false), 0)):
+                case ((lights, count), b) if lightsPattern != lights => (click(lights, b), count + 1)
+                case (state, _) => state
+          .filter(_._1 == lightsPattern)
+          .map(_._2)
+          .min
 
-      def click(button: Int): Machine =
-        val nextLights = buttons(button).foldLeft(currentLights):
+      def click(lights: List[Boolean], button: Int): List[Boolean] =
+        buttons(button).foldLeft(lights):
           case (current, b) => current.updated(b, !current(b))
-        Machine(nextLights, lightsPattern, buttons, iterations + 1)
 
   def part1(input: String): Int = 
     val regex = """^\[([.#]+)\]\s+((?:\([\d,]+\)\s*)+)\{([\d,]+)\}$""".r
@@ -32,11 +30,9 @@ object Day10:
       .map:
         case regex(lights, buttons, _) => 
           Machine(
-            lights.trim.map(_ => false).toList,
             lights.trim.map(x => x == '#').toList, 
             buttons.trim.split(" ").map(_.drop(1).dropRight(1).split(",").map(_.toInt).toList).toList)
       .map(_.turnOn)
-      .map(_.iterations)
       .sum
 
   def part2(input: String): Int = ???
