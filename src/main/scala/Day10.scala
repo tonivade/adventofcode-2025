@@ -2,15 +2,16 @@ package day10
 
 import scala.io.Source
 import aoc.timed
+import scala.collection.parallel.immutable.ParVector
+
+import scala.collection.parallel.CollectionConverters._
 
 // https://adventofcode.com/2025/day/10
 object Day10:
 
-  case class Machine(
-    lightsPattern: List[Boolean], 
-    buttons: List[List[Int]]):
+  case class Machine(lightsPattern: List[Boolean], buttons: List[List[Int]]):
       def turnOn: Int =
-        buttons.zipWithIndex.map(_._2).permutations.map:
+        val result = buttons.zipWithIndex.map(_._2).permutations.map:
             bs => 
               bs.foldLeft((List.fill(lightsPattern.size)(false), 0)):
                 case ((lights, count), b) if lightsPattern != lights => (click(lights, b), count + 1)
@@ -18,6 +19,8 @@ object Day10:
           .filter(_._1 == lightsPattern)
           .map(_._2)
           .min
+        println(s"done: $lightsPattern -> $result")
+        result
 
       def click(lights: List[Boolean], button: Int): List[Boolean] =
         buttons(button).foldLeft(lights):
@@ -32,6 +35,8 @@ object Day10:
           Machine(
             lights.trim.map(x => x == '#').toList, 
             buttons.trim.split(" ").map(_.drop(1).dropRight(1).split(",").map(_.toInt).toList).toList)
+      .toList
+      .par
       .map(_.turnOn)
       .sum
 
