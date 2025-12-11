@@ -2,19 +2,28 @@ package day11
 
 import scala.io.Source
 import aoc.timed
+import scala.collection.mutable.HashMap
 
 // https://adventofcode.com/2025/day/11
 object Day11:
 
+  val cache = HashMap.empty[String, List[List[String]]]
+
   def findAllPaths(graph: Map[String, List[String]], start: String, end: String): List[List[String]] =
     def dfs(current: String, visited: Set[String], path: List[String]): List[List[String]] =
-      if (current == end) 
+      if (cache.contains(current))
+        cache.get(current).get
+      else if (current == end) 
+        cache.put(current, path :: Nil)
         List(path)
       else
         graph.getOrElse(current, Nil).flatMap: neighbor =>
           if (!visited.contains(neighbor))
-            dfs(neighbor, visited + neighbor, path :+ neighbor)
+            val result = dfs(neighbor, visited + neighbor, path :+ neighbor)
+            cache.put(current, result)
+            result
           else
+            cache.put(current, Nil)
             Nil
 
     dfs(start, Set(start), List(start))
@@ -31,14 +40,14 @@ object Day11:
 
     findAllPaths(servers, "you", "out").size
 
-  def part2(input: String): Int = 
+  def part2(input: String): Long = 
     val servers = parse(input) + ("out" -> Nil)
 
     val pathFromSVRToFFT = findAllPaths(servers, "svr", "fft")
     val pathFromFFTtoDAC = findAllPaths(servers, "fft", "dac")
     val pathFromDACtoOUT = findAllPaths(servers, "dac", "out")
 
-    pathFromSVRToFFT.size * pathFromFFTtoDAC.size * pathFromDACtoOUT.size
+    pathFromSVRToFFT.size.toLong * pathFromFFTtoDAC.size.toLong * pathFromDACtoOUT.size.toLong
 
 @main def main: Unit =
   val input = Source.fromFile("input/day11.txt").getLines().mkString("\n")
