@@ -7,26 +7,24 @@ import scala.collection.mutable.HashMap
 // https://adventofcode.com/2025/day/11
 object Day11:
 
-  val cache = HashMap.empty[String, List[List[String]]]
+  def memoize[I, O](f: I => O): I => O =
+    val cache = HashMap.empty[I, O]
+    (i: I) => cache.getOrElseUpdate(i, f(i))
 
-  def findAllPaths(graph: Map[String, List[String]], start: String, end: String): List[List[String]] =
-    def dfs(current: String, visited: Set[String], path: List[String]): List[List[String]] =
-      if (cache.contains(current))
-        cache.get(current).get
-      else if (current == end) 
-        cache.put(current, path :: Nil)
-        List(path)
-      else
-        graph.getOrElse(current, Nil).flatMap: neighbor =>
-          if (!visited.contains(neighbor))
-            val result = dfs(neighbor, visited + neighbor, path :+ neighbor)
-            cache.put(current, result)
-            result
-          else
-            cache.put(current, Nil)
-            Nil
+  def findAllPaths(graph: Map[String, List[String]], start: String, end: String): Int =
+    lazy val dfs: String => Int =
+      memoize:
+        current => 
+          var paths = 0
+          graph(current).foreach:
+            case output =>
+              if (output == end)
+                paths += 1
+              else if (graph.contains(output))
+                paths += dfs(output)
+          paths
 
-    dfs(start, Set(start), List(start))
+    dfs(start)
 
   def parse(input: String): Map[String, List[String]] =
     input
@@ -38,16 +36,16 @@ object Day11:
   def part1(input: String): Int = 
     val servers = parse(input) + ("out" -> Nil)
 
-    findAllPaths(servers, "you", "out").size
+    findAllPaths(servers, "you", "out")
 
   def part2(input: String): Long = 
     val servers = parse(input) + ("out" -> Nil)
 
-    val pathFromSVRToFFT = findAllPaths(servers, "svr", "fft")
-    val pathFromFFTtoDAC = findAllPaths(servers, "fft", "dac")
-    val pathFromDACtoOUT = findAllPaths(servers, "dac", "out")
+    val svrToFft = findAllPaths(servers, "svr", "fft")
+    val fftToDac = findAllPaths(servers, "fft", "dac")
+    val dacToOut = findAllPaths(servers, "dac", "out")
 
-    pathFromSVRToFFT.size.toLong * pathFromFFTtoDAC.size.toLong * pathFromDACtoOUT.size.toLong
+    svrToFft.toLong * fftToDac.toLong * dacToOut.toLong
 
 @main def main: Unit =
   val input = Source.fromFile("input/day11.txt").getLines().mkString("\n")
