@@ -14,7 +14,7 @@ object Day10:
         list.combinations(k)
           .flatMap(_.permutations)
 
-  case class Machine(lightsPattern: List[Boolean], buttons: List[List[Int]]):
+  case class Machine(lightsPattern: List[Boolean], buttons: List[List[Int]], joltagesPattern: List[Int]):
     def turnOn: Int =
       @tailrec
       def go(lights: List[Boolean], bs: List[Int]): List[Boolean] =
@@ -32,15 +32,20 @@ object Day10:
       buttons(button).foldLeft(lights):
         case (current, b) => current.updated(b, !current(b))
 
+    def push(joltages: List[Int], button: Int): List[Int] =
+      buttons(button).foldLeft(joltages):
+        case (current, b) => current.updated(b, current(b) + 1)
+
   def parse(input: String): Iterator[Machine] =
     val regex = """^\[([.#]+)\]\s+((?:\([\d,]+\)\s*)+)\{([\d,]+)\}$""".r
 
     input.linesIterator
       .map:
-        case regex(lights, buttons, _) => 
+        case regex(lights, buttons, joltages) => 
           Machine(
             lights.trim.map(x => x == '#').toList, 
-            buttons.trim.split(" ").map(_.drop(1).dropRight(1).split(",").map(_.toInt).toList).toList)
+            buttons.trim.split(" ").map(_.drop(1).dropRight(1).split(",").map(_.toInt).toList).toList,
+            joltages.trim.map(_.toInt).toList) 
 
   def part1(input: String): Int = 
     parse(input)
