@@ -2,26 +2,19 @@ package day10
 
 import scala.io.Source
 import aoc.timed
-import scala.collection.parallel.CollectionConverters._
 import scala.annotation.tailrec
 
 // https://adventofcode.com/2025/day/10
 object Day10:
 
-  @tailrec
-  def factorial(n: Int, acc: BigInt = 1): BigInt =
-    if (n <= 1) acc else factorial(n - 1, acc * n)
-
-  def generateAllPermutations(size: Int): Iterable[List[Int]] =
+  def generateAllPermutations(size: Int): Iterator[List[Int]] =
     val list = (0 until size).toList
-    Iterable.range(1, size)
-      .view
+    Iterator.range(1, size)
       .flatMap: k =>
         list.combinations(k)
           .flatMap(_.permutations)
 
   case class Machine(id: Int, lightsPattern: List[Boolean], buttons: List[List[Int]]):
-    def permutations: BigInt = factorial(buttons.size)
     def turnOn: Int =
       @tailrec
       def go(lights: List[Boolean], bs: List[Int]): List[Boolean] =
@@ -33,14 +26,13 @@ object Day10:
       val result = generateAllPermutations(buttons.size).find: bs =>
         go(List.fill(lightsPattern.size)(false), bs) == lightsPattern
 
-      println(s"done: $id -> ${result.get.size}")
       result.get.size
 
     def click(lights: List[Boolean], button: Int): List[Boolean] =
       buttons(button).foldLeft(lights):
         case (current, b) => current.updated(b, !current(b))
 
-  def parse(input: String): List[Machine] =
+  def parse(input: String): Iterator[Machine] =
     val regex = """^\[([.#]+)\]\s+((?:\([\d,]+\)\s*)+)\{([\d,]+)\}$""".r
 
     input.linesIterator
@@ -51,14 +43,9 @@ object Day10:
             pos,
             lights.trim.map(x => x == '#').toList, 
             buttons.trim.split(" ").map(_.drop(1).dropRight(1).split(",").map(_.toInt).toList).toList)
-      .toList
 
   def part1(input: String): Int = 
-    var machines = parse(input)
-
-    machines
-      .sortBy(_.permutations)
-      .par
+    parse(input)
       .map(_.turnOn)
       .sum
 
