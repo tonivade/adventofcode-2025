@@ -17,7 +17,7 @@ object Day11:
         current => 
           var paths = 0
           graph(current).foreach:
-            case output =>
+            output =>
               if (output == end)
                 paths += 1
               else if (graph.contains(output))
