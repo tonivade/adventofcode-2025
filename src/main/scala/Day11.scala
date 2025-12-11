@@ -8,15 +8,14 @@ object Day11:
 
   def findAllPaths(graph: Map[String, List[String]], start: String): List[Set[String]] =
     def dfs(current: String, visited: Set[String], path: Set[String]): List[Set[String]] =
-      // If we reach the end, return the completed path
-      if (current == "out") return List(path)
-      // Otherwise explore neighbors
-      graph.getOrElse(current, Nil).flatMap: neighbor =>
-        // Avoid revisiting nodes to prevent cycles
-        if (!visited.contains(neighbor))
-          dfs(neighbor, visited + neighbor, path + neighbor)
-        else
-          Nil
+      if (current == "out") 
+        List(path)
+      else
+        graph.getOrElse(current, Nil).flatMap: neighbor =>
+          if (!visited.contains(neighbor))
+            dfs(neighbor, visited + neighbor, path + neighbor)
+          else
+            Nil
 
     dfs(start, Set(start), Set(start))
 
