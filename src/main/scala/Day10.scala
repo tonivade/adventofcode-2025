@@ -18,7 +18,7 @@ object Day10:
     def permutations: BigInt = factorial(buttons.size)
     def turnOn: Int =
       @tailrec
-      def go(lights: List[Boolean], bs: List[Int], steps: Int, maxSteps: Int): Int =
+      def go(lights: List[Boolean], bs: Seq[Int], steps: Int, maxSteps: Int): Int =
         if (bs.isEmpty)
           steps
         else if (steps >= maxSteps)
@@ -28,7 +28,7 @@ object Day10:
         else
           go(click(lights, bs.head), bs.tail, steps + 1, maxSteps)
 
-      val result = buttons.zipWithIndex.map(_._2).permutations.foldLeft(Int.MaxValue):
+      val result = buttons.indices.permutations.foldLeft(Int.MaxValue):
         (steps, bs) => 
           val newSteps = go(List.fill(lightsPattern.size)(false), bs, 0, steps)
           math.min(steps, newSteps)
