@@ -15,14 +15,15 @@ object Day11:
     lazy val dfs: String => Int =
       memoize:
         current => 
-          var paths = 0
-          graph(current).foreach:
-            output =>
-              if (output == end)
-                paths += 1
-              else if (graph.contains(output))
-                paths += dfs(output)
-          paths
+          graph(current).map:
+              output =>
+                if (output == end)
+                  1
+                else if (graph.contains(output))
+                  dfs(output)
+                else
+                  0
+            .sum
 
     dfs(start)
 
