@@ -2,8 +2,6 @@ package day10
 
 import scala.io.Source
 import aoc.timed
-import scala.collection.parallel.immutable.ParVector
-
 import scala.collection.parallel.CollectionConverters._
 import scala.annotation.tailrec
 
@@ -14,26 +12,29 @@ object Day10:
   def factorial(n: Int, acc: BigInt = 1): BigInt =
     if (n <= 1) acc else factorial(n - 1, acc * n)
 
-  case class Machine(lightsPattern: List[Boolean], buttons: List[List[Int]]):
+  def generateAllPermutations(size: Int): Iterable[List[Int]] =
+    val list = (0 until size).toList
+    Iterable.range(1, size)
+      .view
+      .flatMap: k =>
+        list.combinations(k)
+          .flatMap(_.permutations)
+
+  case class Machine(id: Int, lightsPattern: List[Boolean], buttons: List[List[Int]]):
     def permutations: BigInt = factorial(buttons.size)
     def turnOn: Int =
       @tailrec
-      def go(lights: List[Boolean], bs: Seq[Int], steps: Int, maxSteps: Int): Int =
+      def go(lights: List[Boolean], bs: List[Int]): List[Boolean] =
         if (bs.isEmpty)
-          steps
-        else if (steps >= maxSteps)
-          steps
-        else if (lights == lightsPattern)
-          steps
+          lights
         else
-          go(click(lights, bs.head), bs.tail, steps + 1, maxSteps)
+          go(click(lights, bs.head), bs.tail)
 
-      val result = buttons.indices.permutations.foldLeft(Int.MaxValue):
-        (steps, bs) => 
-          val newSteps = go(List.fill(lightsPattern.size)(false), bs, 0, steps)
-          math.min(steps, newSteps)
-      println(s"done: $lightsPattern -> $result")
-      result
+      val result = generateAllPermutations(buttons.size).find: bs =>
+        go(List.fill(lightsPattern.size)(false), bs) == lightsPattern
+
+      println(s"done: $id -> ${result.get.size}")
+      result.get.size
 
     def click(lights: List[Boolean], button: Int): List[Boolean] =
       buttons(button).foldLeft(lights):
@@ -43,9 +44,11 @@ object Day10:
     val regex = """^\[([.#]+)\]\s+((?:\([\d,]+\)\s*)+)\{([\d,]+)\}$""".r
 
     input.linesIterator
+      .zipWithIndex
       .map:
-        case regex(lights, buttons, _) => 
+        case (regex(lights, buttons, _), pos) => 
           Machine(
+            pos,
             lights.trim.map(x => x == '#').toList, 
             buttons.trim.split(" ").map(_.drop(1).dropRight(1).split(",").map(_.toInt).toList).toList)
       .toList
