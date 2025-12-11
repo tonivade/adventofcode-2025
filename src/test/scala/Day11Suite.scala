@@ -15,7 +15,7 @@ class Day11Suite extends munit.FunSuite:
                 |hhh: ccc fff iii
                 |iii: out""".stripMargin
 
-  test("Day11 part1".ignore):
+  test("Day11 part1"):
     assertEquals(part1(input), 1)
 
   test("Day11 part2".ignore):

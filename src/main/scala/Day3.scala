@@ -8,7 +8,7 @@ import aoc.timed
 object Day3:
   // brute force solution
   def active(bank: Seq[Int]): Int =
-    var all = for {
+    val all = for {
       i <- 0 until bank.length
       j <- (i + 1) until bank.length
     } yield (bank(i), bank(j))

@@ -47,7 +47,7 @@ object Day8:
     val points = parse(input)
     val connections = makeConnections(points).take(maxConnections)
 
-    var groups = connections.foldLeft(points.map(p => Set(p))):
+    val groups = connections.foldLeft(points.map(p => Set(p))):
         case (circuits, (p, q)) => merge(circuits, p, q)
     
     groups.map(_.size).sorted.reverse.take(3).foldLeft(1)(_ * _)
