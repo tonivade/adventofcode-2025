@@ -14,7 +14,7 @@ object Day10:
         list.combinations(k)
           .flatMap(_.permutations)
 
-  case class Machine(id: Int, lightsPattern: List[Boolean], buttons: List[List[Int]]):
+  case class Machine(lightsPattern: List[Boolean], buttons: List[List[Int]]):
     def turnOn: Int =
       @tailrec
       def go(lights: List[Boolean], bs: List[Int]): List[Boolean] =
@@ -36,11 +36,9 @@ object Day10:
     val regex = """^\[([.#]+)\]\s+((?:\([\d,]+\)\s*)+)\{([\d,]+)\}$""".r
 
     input.linesIterator
-      .zipWithIndex
       .map:
-        case (regex(lights, buttons, _), pos) => 
+        case regex(lights, buttons, _) => 
           Machine(
-            pos,
             lights.trim.map(x => x == '#').toList, 
             buttons.trim.split(" ").map(_.drop(1).dropRight(1).split(",").map(_.toInt).toList).toList)
 
