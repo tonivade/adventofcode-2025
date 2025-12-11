@@ -11,14 +11,14 @@ object Day10:
 
   case class Machine(lightsPattern: List[Boolean], buttons: List[List[Int]]):
       def turnOn: Int =
-        val result = buttons.zipWithIndex.map(_._2).permutations.map:
-            bs => 
-              bs.foldLeft((List.fill(lightsPattern.size)(false), 0)):
-                case ((lights, count), b) if lightsPattern != lights => (click(lights, b), count + 1)
-                case (state, _) => state
-          .filter(_._1 == lightsPattern)
-          .map(_._2)
-          .min
+        val result = buttons.zipWithIndex.map(_._2).permutations.foldLeft(Int.MaxValue):
+            (steps, bs) => 
+              val newSteps = bs.foldLeft((List.fill(lightsPattern.size)(false), 0)):
+                  case ((lights, count), b) if count < steps && lightsPattern != lights => 
+                    (click(lights, b), count + 1)
+                  case (state, _) => state
+                ._2
+              math.min(steps, newSteps)
         println(s"done: $lightsPattern -> $result")
         result
 
