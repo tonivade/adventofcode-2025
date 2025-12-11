@@ -5,20 +5,28 @@ import aoc.timed
 import scala.collection.parallel.immutable.ParVector
 
 import scala.collection.parallel.CollectionConverters._
+import scala.annotation.tailrec
 
 // https://adventofcode.com/2025/day/10
 object Day10:
 
   case class Machine(lightsPattern: List[Boolean], buttons: List[List[Int]]):
       def turnOn: Int =
+        @tailrec
+        def go(lights: List[Boolean], bs: List[Int], steps: Int, maxSteps: Int): Int =
+          if (bs.isEmpty)
+            steps
+          else if (steps >= maxSteps)
+            steps
+          else if (lights == lightsPattern)
+            steps
+          else
+            go(click(lights, bs.head), bs.tail, steps + 1, maxSteps)
+
         val result = buttons.zipWithIndex.map(_._2).permutations.foldLeft(Int.MaxValue):
-            (steps, bs) => 
-              val newSteps = bs.foldLeft((List.fill(lightsPattern.size)(false), 0)):
-                  case ((lights, count), b) if count < steps && lightsPattern != lights => 
-                    (click(lights, b), count + 1)
-                  case (state, _) => state
-                ._2
-              math.min(steps, newSteps)
+          (steps, bs) => 
+            val newSteps = go(List.fill(lightsPattern.size)(false), bs, 0, steps)
+            math.min(steps, newSteps)
         println(s"done: $lightsPattern -> $result")
         result
 
