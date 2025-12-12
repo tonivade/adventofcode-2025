@@ -9,8 +9,8 @@ object Day12:
   case class Tree(width: Int, height: Int, presents: List[Int]):
     def totalArea: Int = width * height
     def requiredArea(allPresents: Array[Present]): Int = 
-      presents.zipWithIndex.map:
-        (times, position) => allPresents(position).area * times
+      presents.zip(allPresents).map:
+        case (times, present) => present.area * times
       .sum
 
   case class Present(number: Int, shape: List[List[Int]]):

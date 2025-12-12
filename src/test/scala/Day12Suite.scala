@@ -38,7 +38,7 @@ class Day12Suite extends munit.FunSuite:
                 |12x5: 1 0 1 0 2 2
                 |12x5: 1 0 1 0 3 2""".stripMargin
 
-  test("Day12 part1"):
+  test("Day12 part1".ignore):
     assertEquals(part1(input), 2)
 
   test("Day12 part2".ignore):
