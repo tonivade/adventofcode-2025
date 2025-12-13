@@ -18,13 +18,47 @@ object Day9:
     val maxX = math.max(p.x, q.x)
     val minY = math.min(p.y, q.y)
     val maxY = math.max(p.y, q.y)
-    List(Position(minX, minY), Position(minX, maxY), Position(maxX, minY), Position(maxX, maxY))
+    List(Position(minX, minY), Position(minX, maxY), Position(maxX, maxY), Position(maxX, minY))
 
-  def containsPoint(rows: Map[Int, (Int, Int)], columns: Map[Int, (Int, Int)])(p: Position): Boolean =
-    val row = rows(p.y)
-    val col = columns(p.x)
-    row._1 <= p.x && row._2 >= p.x && col._1 <= p.y && col._2 >= p.y
-  
+  def contains(polygon: List[Position], rectangle: List[Position]): Boolean =
+    val edges = polygon.zip(polygon.tail :+ polygon.head)
+    val bounds = rectangle.zip(rectangle.tail :+ rectangle.head)
+
+    def cross(a: Position, b: Position, c: Position): Long =
+      (b.x - a.x).toLong * (c.y - a.y) - (b.y - a.y).toLong * (c.x - a.x)
+
+    def onSegment(a: Position, b: Position, c: Position): Boolean =
+      math.min(a.x, c.x) <= b.x && b.x <= math.max(a.x, c.x) &&
+      math.min(a.y, c.y) <= b.y && b.y <= math.max(a.y, c.y)
+
+    def onEdge(p: Position): Boolean = 
+      edges.exists:
+        case (a, b) => cross(a, p, b) == 0 && onSegment(a, p, b)
+
+    def isInside(p: Position): Boolean =
+      edges.foldLeft(false):
+        case (inside, (a, b)) =>
+          val intersects = (a.y > p.y) != (b.y > p.y) && (cross(a, b, p) < 0) == (b.y > a.y)
+          intersects ^ inside
+
+    def isInPolygon(p: Position): Boolean = onEdge(p) || isInside(p)
+
+    def intersection(p1: Position, q1: Position, p2: Position, q2: Position): Boolean =
+      val d1 = cross(p1, q1, p2)
+      val d2 = cross(p1, q1, q2)
+      val d3 = cross(p2, q2, p1)
+      val d4 = cross(p2, q2, q1)
+      (d1 > 0 && d2 < 0 || d1 < 0 && d2 > 0) && (d3 > 0 && d4 < 0 || d3 < 0 && d4 > 0)
+
+    def inPolygon: Boolean = rectangle.forall(isInPolygon)
+    def intersects: Boolean = 
+      bounds.exists:
+        case (r1, r2) =>
+          edges.exists:
+            case (p1, p2) => intersection(r1, r2, p1, p2)
+
+    inPolygon && !intersects
+
   def part1(input: String): Long = 
     parsePoints(input)
       .combinations(2)
@@ -32,31 +66,13 @@ object Day9:
         case List(p, q) => area(p, q)
       .max
 
-  def drawPerimeter(points: List[Position]): List[Position] =
-    (points :+ points.head).sliding(2).foldLeft(List.empty[Position]):
-      case (current, List(p, q)) if (p.x == q.x) => 
-        val y0 = math.min(p.y, q.y)
-        val yN = math.max(p.y, q.y)
-        val line = (y0 to yN).map(Position(p.x, _))
-        current ++ line
-      case (current, List(p, q)) if (p.y == q.y) => 
-        val x0 = math.min(p.x, q.x)
-        val xN = math.max(p.x, q.x)
-        val line = (x0 to xN).map(Position(_, p.y))
-        current ++ line
-
   def part2(input: String): Long =
     val points = parsePoints(input)
-    val perimeter = drawPerimeter(points)
-    
-    val columns = perimeter.groupBy(_.x).map:
-      case (x, ys) => x -> (ys.map(_.y).min, ys.map(_.y).max)
-    val rows = perimeter.groupBy(_.y).map:
-      case (y, xs) => y -> (xs.map(_.x).min, xs.map(_.x).max)
 
     points.combinations(2)
       .filter:
-        case List(p, q) => bounds(p, q).forall(containsPoint(rows, columns))
+        case List(p, q) => 
+          contains(points, bounds(p, q))
       .map:
         case List(p, q) => area(p, q)
       .max
