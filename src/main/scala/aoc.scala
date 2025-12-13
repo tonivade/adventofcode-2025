@@ -1,5 +1,7 @@
 package aoc
 
+import scala.collection.mutable.HashMap
+
 def timed[R](label: String = "")(block: => R): R =
   val start = System.nanoTime()
   val result = block
@@ -40,3 +42,7 @@ def parsePoints(input: String): List[Position] =
     .map:
       case Array(x, y) => Position(x.toInt, y.toInt)
     .toList
+
+def memoize[I, O](f: I => O): I => O =
+  val cache = HashMap.empty[I, O]
+  (i: I) => cache.getOrElseUpdate(i, f(i))

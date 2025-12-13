@@ -2,14 +2,10 @@ package day11
 
 import scala.io.Source
 import aoc.timed
-import scala.collection.mutable.HashMap
+import aoc.memoize
 
 // https://adventofcode.com/2025/day/11
 object Day11:
-
-  def memoize[I, O](f: I => O): I => O =
-    val cache = HashMap.empty[I, O]
-    (i: I) => cache.getOrElseUpdate(i, f(i))
 
   def findAllPaths(graph: Map[String, List[String]], start: String, end: String): Int =
     lazy val dfs: String => Int =

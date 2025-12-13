@@ -1,9 +1,9 @@
 package day10
 
+import scala.annotation.tailrec
 import scala.io.Source
 import aoc.timed
-import scala.annotation.tailrec
-import scala.collection.mutable
+import aoc.memoize
 
 // https://adventofcode.com/2025/day/10
 object Day10:
@@ -44,57 +44,48 @@ object Day10:
         }
         .groupMap(_._1)(_._2)
 
-
     def lightsOn: Int = validMoves(toSet(lightsPattern)).map(_.size).min
 
     def joltsOn: Int = 
-      val cache = mutable.Map[List[Int], Option[Int]]()
       val patterns = validMoves
 
-      def getMinPresses(target: List[Int]): Option[Int] = {
-        if (target.forall(_ == 0)) 
-          return Some(0)
+      lazy val getMinPresses: List[Int] => Option[Int] =
+        memoize:
+          target =>
+            if (target.forall(_ == 0)) 
+              Some(0)
+            else
+              // Identify indicators with odd joltage levels
+              val indicators: Set[Int] = target.zipWithIndex.collect {
+                case (joltage, i) if joltage % 2 == 1 => i
+              }.toSet
 
-        // Check cache
-        cache.get(target) match {
-          case Some(result) => 
-            return result
-          case None =>
-        }
+              var result: Option[Int] = None
 
-        // Identify indicators with odd joltage levels
-        val indicators: Set[Int] = target.zipWithIndex.collect {
-          case (joltage, i) if joltage % 2 == 1 => i
-        }.toSet
+              for (presses <- patterns.getOrElse(indicators, List.empty)) {
+                // Simulate button presses
+                val targetAfter = target.toArray
+                for (button <- presses; index <- buttons(button)) {
+                  targetAfter(index) -= 1
+                }
 
-        var result: Option[Int] = None
-
-        for (presses <- patterns.getOrElse(indicators, List.empty)) {
-          // Simulate button presses
-          val targetAfter = target.toArray
-          for (button <- presses; index <- buttons(button)) {
-            targetAfter(index) -= 1
-          }
-
-          if (!targetAfter.exists(_ < 0)) {
-            // All new target levels are even; compute half-target
-            val halfTarget = targetAfter.map(_ / 2).toList
-            val halfTargetPresses = getMinPresses(halfTarget)
-            halfTargetPresses.foreach { nh =>
-              val numPresses = (2 * nh) + presses.size
-              result = result match {
-                case None => Some(numPresses)
-                case Some(prev) => 
-                  val next = math.min(prev, numPresses)
-                  Some(next)
+                if (!targetAfter.exists(_ < 0)) {
+                  // All new target levels are even; compute half-target
+                  val halfTarget = targetAfter.map(_ / 2).toList
+                  val halfTargetPresses = getMinPresses(halfTarget)
+                  halfTargetPresses.foreach { nh =>
+                    val numPresses = (2 * nh) + presses.size
+                    result = result match {
+                      case None => Some(numPresses)
+                      case Some(prev) => 
+                        val next = math.min(prev, numPresses)
+                        Some(next)
+                    }
+                  }
+                }
               }
-            }
-          }
-        }
 
-        cache(target) = result
-        result
-      }
+              result
 
       getMinPresses(joltsPattern).get
 
