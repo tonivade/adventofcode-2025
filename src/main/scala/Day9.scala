@@ -24,26 +24,26 @@ object Day9:
     val edges = polygon.zip(polygon.tail :+ polygon.head)
     val bounds = rectangle.zip(rectangle.tail :+ rectangle.head)
 
-    def cross(a: Position, b: Position, c: Position): Long =
+    inline def cross(a: Position, b: Position, c: Position): Long =
       (b.x - a.x).toLong * (c.y - a.y) - (b.y - a.y).toLong * (c.x - a.x)
 
-    def onSegment(a: Position, b: Position, c: Position): Boolean =
+    inline def onSegment(a: Position, b: Position, c: Position): Boolean =
       math.min(a.x, c.x) <= b.x && b.x <= math.max(a.x, c.x) &&
       math.min(a.y, c.y) <= b.y && b.y <= math.max(a.y, c.y)
 
-    def onEdge(p: Position): Boolean = 
+    inline def isOnEdge(p: Position): Boolean = 
       edges.exists:
         case (a, b) => cross(a, p, b) == 0 && onSegment(a, p, b)
 
-    def isInside(p: Position): Boolean =
+    inline def isInside(p: Position): Boolean =
       edges.foldLeft(false):
         case (inside, (a, b)) =>
           val intersects = (a.y > p.y) != (b.y > p.y) && (cross(a, b, p) < 0) == (b.y > a.y)
           intersects ^ inside
 
-    def isInPolygon(p: Position): Boolean = onEdge(p) || isInside(p)
+    inline def isInPolygon(p: Position): Boolean = isOnEdge(p) || isInside(p)
 
-    def intersection(p1: Position, q1: Position, p2: Position, q2: Position): Boolean =
+    inline def intersectsEdge(p1: Position, q1: Position, p2: Position, q2: Position): Boolean =
       val d1 = cross(p1, q1, p2)
       val d2 = cross(p1, q1, q2)
       val d3 = cross(p2, q2, p1)
@@ -55,7 +55,7 @@ object Day9:
       bounds.exists:
         case (r1, r2) =>
           edges.exists:
-            case (p1, p2) => intersection(r1, r2, p1, p2)
+            case (p1, p2) => intersectsEdge(r1, r2, p1, p2)
 
     inPolygon && !intersects
 
