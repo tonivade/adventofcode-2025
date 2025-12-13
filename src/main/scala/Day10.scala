@@ -8,7 +8,7 @@ import aoc.memoize
 // https://adventofcode.com/2025/day/10
 object Day10:
 
-  def generateAllPermutations(size: Int): Iterator[List[Int]] =
+  def nonEmptySubsets(size: Int): Iterator[List[Int]] =
     val list = (0 until size).toList
     Iterator.range(1, size)
       .flatMap: k =>
@@ -16,76 +16,65 @@ object Day10:
 
   case class Machine(lightsPattern: List[Boolean], buttons: List[List[Int]], joltsPattern: List[Int]):
 
-    def toSet(ls: List[Boolean]) = 
-        ls.zipWithIndex.collect:
-              case (on, i) if on => i
-            .toSet
+    lazy val buttonEffects: Vector[Vector[Int]] =
+      buttons.map(_.toVector).toVector
 
-    def validMoves: Map[Set[Int], List[List[Int]]] =
+    lazy val patterns: Map[Set[Int], List[List[Int]]] =
       @tailrec
       def go(lights: List[Boolean], bs: List[Int]): Set[Int] =
         if (bs.isEmpty) 
-          toSet(lights)
+          oddIndices(lights)
         else 
           go(clickLights(lights, bs.head), bs.tail)
 
       val n = buttons.size
-      val base = generateAllPermutations(n).toList
+      val base = nonEmptySubsets(n).toList
 
       val all =
-        base ++
-          base.flatMap { bs =>
-            (0 until n).map(b => bs :+ b)
-          }
+        base ++ base.flatMap: 
+            bs => (0 until n).map(b => bs :+ b)
 
       all
-        .map { bs =>
-          go(List.fill(lightsPattern.size)(false), bs) -> bs
-        }
+        .map: 
+          bs => go(List.fill(lightsPattern.size)(false), bs) -> bs
         .groupMap(_._1)(_._2)
 
-    def lightsOn: Int = validMoves(toSet(lightsPattern)).map(_.size).min
+    def oddIndices(ls: List[Boolean]) = 
+        ls.zipWithIndex.collect:
+              case (on, i) if on => i
+            .toSet
 
-    def joltsOn: Int = 
-      val patterns = validMoves
+    def lightsOn: Int = patterns(oddIndices(lightsPattern)).map(_.size).min
+
+    // here I'm applying this algorithm https://aoc.winslowjosiah.com/solutions/2025/day/10/
+    def joltsOn: Int =
+
+      inline def simulate(target: List[Int], presses: List[Int]): List[Int] =
+        val targetAfter = target.toArray 
+        presses.iterator.flatMap(buttonEffects).foreach:
+          index => targetAfter(index) -= 1
+        targetAfter.toList
 
       lazy val getMinPresses: List[Int] => Option[Int] =
-        memoize:
-          target =>
-            if (target.forall(_ == 0)) 
-              Some(0)
-            else
-              // Identify indicators with odd joltage levels
-              val indicators: Set[Int] = target.zipWithIndex.collect {
-                case (joltage, i) if joltage % 2 == 1 => i
-              }.toSet
+        memoize: target =>
+          if (target.forall(_ == 0))
+            Some(0)
+          else
+            val indicators = oddIndices(target.map(_ % 2 == 1))
 
-              var result: Option[Int] = None
-
-              for (presses <- patterns.getOrElse(indicators, List.empty)) {
-                // Simulate button presses
-                val targetAfter = target.toArray
-                for (button <- presses; index <- buttons(button)) {
-                  targetAfter(index) -= 1
-                }
-
-                if (!targetAfter.exists(_ < 0)) {
-                  // All new target levels are even; compute half-target
-                  val halfTarget = targetAfter.map(_ / 2).toList
-                  val halfTargetPresses = getMinPresses(halfTarget)
-                  halfTargetPresses.foreach { nh =>
-                    val numPresses = (2 * nh) + presses.size
-                    result = result match {
-                      case None => Some(numPresses)
-                      case Some(prev) => 
-                        val next = math.min(prev, numPresses)
-                        Some(next)
-                    }
-                  }
-                }
-              }
-
-              result
+            patterns
+              .getOrElse(indicators, Nil)
+              .iterator
+              .flatMap:
+                presses =>
+                  val targetAfter = simulate(target, presses)
+                  if (targetAfter.exists(_ < 0))
+                    None
+                  else
+                    val halfTarget = targetAfter.map(_ / 2)
+                    getMinPresses(halfTarget).map: 
+                      nh => (2 * nh) + presses.size
+              .minOption
 
       getMinPresses(joltsPattern).get
 
