@@ -21,18 +21,27 @@ object Day10:
               case (on, i) if on => i
             .toSet
 
-    def validMoves: Map[Set[Int], List[List[Int]]] = 
+    def validMoves: Map[Set[Int], List[List[Int]]] =
       @tailrec
       def go(lights: List[Boolean], bs: List[Int]): Set[Int] =
-        if (bs.isEmpty)
-          toSet(lights)
-        else
-          go(clickLights(lights, bs.head), bs.tail)
+        if (bs.isEmpty) toSet(lights)
+        else go(clickLights(lights, bs.head), bs.tail)
 
-      generateAllPermutations(buttons.size).map: 
-          bs => go(List.fill(lightsPattern.size)(false), bs) -> bs
-        .toList
+      val n = buttons.size
+      val base = generateAllPermutations(n).toList
+
+      val all =
+        base ++
+          base.flatMap { bs =>
+            (0 until n).map(b => bs :+ b)
+          }
+
+      all
+        .map { bs =>
+          go(List.fill(lightsPattern.size)(false), bs) -> bs
+        }
         .groupMap(_._1)(_._2)
+
 
     def lightsOn: Int = validMoves(toSet(lightsPattern)).map(_.size).min
 
@@ -41,15 +50,15 @@ object Day10:
       val patterns = validMoves
 
       def getMinPresses(target: List[Int]): Option[Int] = {
-        println(s"target=${target}")
+        //println(s"target=${target}")
         if (target.forall(_ == 0)) 
-          println("no more button pressed is needed")
+          //println("no more button pressed is needed")
           return Some(0)
 
         // Check cache
         cache.get(target) match {
           case Some(result) => 
-            println("in cache")
+            //println("in cache")
             return result
           case None =>
         }
@@ -59,39 +68,39 @@ object Day10:
           case (joltage, i) if joltage % 2 == 1 => i
         }.toSet
 
-        println(s"indicators=${indicators}")
+        //println(s"indicators=${indicators}")
 
         var result: Option[Int] = None
 
         for (presses <- patterns.getOrElse(indicators, List.empty)) {
           // Simulate button presses
-          println(s"presses=${presses}")
+          //println(s"presses=${presses}")
           val targetAfter = target.toArray
           for (button <- presses; index <- buttons(button)) {
             targetAfter(index) -= 1
           }
-          println(s"targetAfter=${targetAfter.toList}")
+          //println(s"targetAfter=${targetAfter.toList}")
 
           if (!targetAfter.exists(_ < 0)) {
             // All new target levels are even; compute half-target
             val halfTarget = targetAfter.map(_ / 2).toList
-            println(s"halfTarget=${halfTarget}")
+            //println(s"halfTarget=${halfTarget}")
             val halfTargetPresses = getMinPresses(halfTarget)
-            println(s"halfTargetPresses=${halfTargetPresses}")
+            //println(s"halfTargetPresses=${halfTargetPresses}")
             halfTargetPresses.foreach { nh =>
               val numPresses = (2 * nh) + presses.size
               result = result match {
                 case None => Some(numPresses)
                 case Some(prev) => 
                   val next = math.min(prev, numPresses)
-                  println(s"next=${next}")
+                  //println(s"next=${next}")
                   Some(next)
               }
             }
           }
         }
 
-        println(s"result:${result}")
+        //println(s"result:${result}")
 
         cache(target) = result
         result
@@ -126,7 +135,6 @@ object Day10:
   def part2(input: String): Int =
     parse(input)
       .map(_.joltsOn)
-      .map(aoc.peek)
       .sum
 
 @main def main: Unit =

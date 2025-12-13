@@ -8,11 +8,9 @@ class Day10Suite extends munit.FunSuite:
                 |[...#.] (0,2,3,4) (2,3) (0,4) (0,1,2) (1,2,3,4) {7,5,12,7,2}
                 |[.###.#] (0,1,2,3,4) (0,3,4) (0,1,2,4,5) (1,2) {10,11,11,5,10,5}""".stripMargin
   
-  val input2 = input.split("\n").last
-
   test("Day10 part1"):
     assertEquals(part1(input), 7)
 
   test("Day10 part2"):
-    assertEquals(part2(input2), 33)
+    assertEquals(part2(input), 33)
 
