@@ -19,10 +19,8 @@ object Day11:
               output =>
                 if (output == end)
                   1
-                else if (graph.contains(output))
+                else 
                   dfs(output)
-                else
-                  0
             .sum
 
     dfs(start)
