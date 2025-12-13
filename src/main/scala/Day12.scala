@@ -40,12 +40,8 @@ object Day12:
           println(s"${tree.totalArea} vs ${tree.requiredArea(presents)}")
           tree.totalArea >= tree.requiredArea(presents);
 
-  def part2(input: String): Int = ???
-
 @main def main: Unit =
   val input = Source.fromFile("input/day12.txt").getLines().mkString("\n")
   timed():
     println(s"Part 1: ${Day12.part1(input)}")
-  timed():
-    println(s"Part 2: ${Day12.part2(input)}")
 
