@@ -257,3 +257,51 @@
     )
 )
 
+(defn combinations2 [lst]
+    (if (empty? lst)
+        ()
+        (let* 
+            (
+                x (first lst) 
+                xs (rest lst)
+                with-x (map (fn* (y) (list x y)) xs)
+            )
+            (concat with-x (combinations2 xs))
+        )
+    )
+)
+
+(defn set-from-list [xs]
+  (if (empty? xs)
+      {}
+      (assoc (set-from-list (rest xs))
+             (first xs)
+             true)))
+
+(defn set-contains? [s x] (not (= (get s x) nil)))
+(defn set-add [s x] (assoc s x true))
+(defn set-remove [s x] (dissoc s x))
+(defn set-to-list [s] (keys s))
+
+(defn set-union [a b]
+  (let* (ks (keys b))
+    (let* (go
+           (fn* (ks acc)
+             (if (empty? ks)
+                 acc
+                 (go (rest ks)
+                     (assoc acc (first ks) true)))))
+      (go ks a))))
+
+(defn set-difference [a b]
+  (let* (ks (keys a))
+    (let* (go
+           (fn* (ks acc)
+             (if (empty? ks)
+                 acc
+                 (let* (k (first ks))
+                   (if (set-contains? b k)
+                       (go (rest ks) acc)
+                       (go (rest ks) (assoc acc k true))))))))
+      (go ks {})))
+

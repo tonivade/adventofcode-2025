@@ -1,13 +1,81 @@
 ; https://adventofcode.com/2025/day/8
 
 (import java.lang.String lines)
+(import java.lang.String split 1)
+(import java.lang.Integer parseInt 1)
+(import java.lang.Math pow 2)
+(import java.lang.Math sqrt 1)
 
 (load-file "mal/aoc.mal")
 
 (def! input (if-defined DEBUG-EVAL "input/day8-test.txt" "input/day8.txt"))
+(def! max-connections (if-defined DEBUG-EVAL 10 1000))
+
+(defn distance3d [this other]
+    (let* 
+        (
+            a (pow (- (first this) (first other)) 2)
+            b (pow (- (second this) (second other)) 2)
+            c (pow (- (last this) (last other)) 2)
+            s (+ a (+ b c))
+        )
+        (sqrt s)
+    )
+)
 
 (defn parse [file]
     (let* (input (lines (slurp file)))
-        input
+        (map (fn* [line] (map parseInt (split line ","))) input)
+    )
+)
+
+(defn make-connections [points]
+    (take 
+        (sort-list-by 
+            (fn* [a b] (< (distance3d (first a) (second a)) (distance3d (first b) (second b))))
+            (combinations2 points)
+        )
+        max-connections
+    )
+)
+
+(defn to-key [p] (str (first p) "," (second p) "," (last p)))
+
+(defn merge [circuits p q]
+    (let*
+        (
+            indexP (index-where circuits (fn* [group] (set-contains? group (to-key p))))
+            indexQ (index-where circuits (fn* [group] (set-contains? group (to-key q))))
+            union (set-union (nth circuits indexP) (nth circuits indexQ))
+            new-circuits 
+                (map first 
+                    (filter 
+                        (fn* [item] (and (not (= (second item) indexP)) (not (= (second item) indexQ)))) 
+                        (zip-with-index circuits)
+                    )
+                )
+        )
+        (append new-circuits union)
+    )
+)
+
+(defn connect [points connections]
+    (reduce
+        (map (fn* [p] (set-from-list (list (to-key p)))) points)
+        (fn* [pair circuits] (merge circuits (first pair) (second pair)))
+        connections
+    )
+)
+
+(println
+    (timed!
+        (let* 
+            (
+                points (parse input)
+                connections (make-connections points)
+                groups (map set-to-list (connect points connections))
+            )
+            (mul (take (reverse (sort-list (map count groups))) 3))
+        )
     )
 )

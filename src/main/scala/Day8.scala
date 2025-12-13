@@ -2,14 +2,15 @@ package day8
 
 import scala.io.Source
 import aoc.timed
-import scala.math.*
+import scala.math.pow
+import scala.math.sqrt
 import scala.annotation.tailrec
 
 // https://adventofcode.com/2025/day/8
 object Day8:
   case class Point3D(x: Int, y: Int, z: Int):
-    def distance(other: Point3D): Double =
-      sqrt(pow(this.x - other.x, 2) + pow(this.y - other.y, 2) + pow(this.z - other.z, 2))
+    def distance(other: Point3D): Long =
+      sqrt(pow(this.x - other.x, 2) + pow(this.y - other.y, 2) + pow(this.z - other.z, 2)).toLong
 
   def parse(input: String): Array[Point3D] =
     input.linesIterator
