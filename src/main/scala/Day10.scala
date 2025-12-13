@@ -25,7 +25,7 @@ object Day10:
         if (bs.isEmpty) 
           oddIndices(lights)
         else 
-          go(clickLights(lights, bs.head), bs.tail)
+          go(click(lights, bs.head), bs.tail)
 
       val n = buttons.size
       val base = nonEmptySubsets(n).toList
@@ -49,7 +49,7 @@ object Day10:
     // here I'm applying this algorithm https://aoc.winslowjosiah.com/solutions/2025/day/10/
     def joltsOn: Int =
 
-      inline def simulate(target: List[Int], presses: List[Int]): List[Int] =
+      inline def simulateClick(target: List[Int], presses: List[Int]): List[Int] =
         val targetAfter = target.toArray 
         presses.iterator.flatMap(buttonEffects).foreach:
           index => targetAfter(index) -= 1
@@ -67,7 +67,7 @@ object Day10:
               .iterator
               .flatMap:
                 presses =>
-                  val targetAfter = simulate(target, presses)
+                  val targetAfter = simulateClick(target, presses)
                   if (targetAfter.exists(_ < 0))
                     None
                   else
@@ -78,7 +78,7 @@ object Day10:
 
       getMinPresses(joltsPattern).get
 
-    def clickLights(lights: List[Boolean], button: Int): List[Boolean] =
+    def click(lights: List[Boolean], button: Int): List[Boolean] =
       buttons(button).foldLeft(lights):
         case (current, b) => current.updated(b, !current(b))
 
