@@ -82,10 +82,6 @@ object Day10:
       buttons(button).foldLeft(lights):
         case (current, b) => current.updated(b, !current(b))
 
-    def clickJolts(jolts: List[Int], button: Int): List[Int] =
-      buttons(button).foldLeft(jolts):
-        case (current, b) => current.updated(b, current(b) + 1)
-
   def parse(input: String): Iterator[Machine] =
     val regex = """^\[([.#]+)\]\s+((?:\([\d,]+\)\s*)+)\{([\d,]+)\}$""".r
 
