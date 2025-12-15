@@ -7,9 +7,6 @@
 
 (def! file (if-defined DEBUG-EVAL "input/day9-test.txt" "input/day9.txt"))
 
-(defn min-val [p q] (if (< p q) p q))
-(defn max-val [p q] (if (> p q) p q))
-
 (defn area [p q]
     (let* 
         (
@@ -107,24 +104,12 @@
         )
         (and
             (or
-                (and 
-                    (> d1 0)
-                    (< d2 0)
-                )
-                (and 
-                    (< d1 0)
-                    (> d2 0)
-                )
+                (and (> d1 0) (< d2 0))
+                (and (< d1 0) (> d2 0))
             )
             (or
-                (and 
-                    (> d3 0)
-                    (< d4 0)
-                )
-                (and 
-                    (< d3 0)
-                    (> d4 0)
-                )
+                (and (> d3 0) (< d4 0))
+                (and (< d3 0) (> d4 0))
             )
         )
     )
