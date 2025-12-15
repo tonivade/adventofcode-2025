@@ -8,6 +8,9 @@
 (defn decr [n] (- n 1))
 (defn peek [i] (do (println i) i))
 (defn or-default [v default] (if (nil? v) default v))
+(defn xor [a b] (if a (not b) b))
+(defn min-val [p q] (if (< p q) p q))
+(defn max-val [p q] (if (> p q) p q))
 
 (defn join [xs]
     (if (empty? xs)
