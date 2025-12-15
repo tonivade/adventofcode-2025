@@ -30,12 +30,9 @@
 )
 
 (defn make-connections [points]
-    (take 
-        (sort-list-by 
-            (fn* [a b] (< (distance3d (first a) (second a)) (distance3d (first b) (second b))))
-            (combinations2 points)
-        )
-        max-connections
+    (sort-list-by 
+        (fn* [a b] (< (distance3d (first a) (second a)) (distance3d (first b) (second b))))
+        (combinations2 points)
     )
 )
 
@@ -67,15 +64,45 @@
     )
 )
 
+(defn connect2 [points connections]
+    (first 
+        (reduce
+            (list () (map (fn* [p] (set-from-list (list (to-key p)))) points))
+            (fn* [pair acc] 
+                (list 
+                    (if (= (count (second acc)) 1) 
+                        (first acc) 
+                        pair
+                    ) 
+                    (merge (second acc) (first pair) (second pair)))
+            )
+            connections
+        )
+    )
+)
+
+(println
+    (timed!
+        (let* 
+            (
+                points (parse input)
+                connections (take (make-connections points) max-connections)
+                groups (map set-to-list (connect points connections))
+            )
+            (mul (take (reverse (sort-list (map count groups))) 3))
+        )
+    )
+)
+
 (println
     (timed!
         (let* 
             (
                 points (parse input)
                 connections (make-connections points)
-                groups (map set-to-list (connect points connections))
+                last-point (peek (connect2 points connections))
             )
-            (mul (take (reverse (sort-list (map count groups))) 3))
+            (* (first (first last-point)) (first (second last-point)))
         )
     )
 )
