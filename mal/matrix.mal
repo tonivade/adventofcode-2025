@@ -1,3 +1,4 @@
+(import java.lang.String lines)
 (import java.lang.String split 1)
 (import java.lang.Integer parseInt 1)
 
@@ -45,5 +46,11 @@
                 )
             )
         )
+    )
+)
+
+(defn parse-points [file]
+    (let* (input (slurp file))
+        (map (fn* [line] (map parseInt (split line ","))) (lines input))
     )
 )

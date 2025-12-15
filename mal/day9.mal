@@ -1,13 +1,26 @@
 ; https://adventofcode.com/2025/day/9
 
-(import java.lang.String lines)
+(import java.lang.Math abs 1)
 
 (load-file "mal/aoc.mal")
+(load-file "mal/matrix.mal")
 
-(def! input (if-defined DEBUG-EVAL "input/day9-test.txt" "input/day9.txt"))
+(def! file (if-defined DEBUG-EVAL "input/day9-test.txt" "input/day9.txt"))
 
-(defn parse [file]
-    (let* (input (lines (slurp file)))
-        input
+(defn area [p q]
+    (let* 
+        (
+            l1 (abs (- (first p) (first q)))
+            l2 (abs (- (second p) (second q)))
+        )
+        (* (incr l1) (incr l2))
+    )
+)
+
+(println
+    (timed!
+        (let* (input (parse-points file))
+            (max (map (fn* [pair] (area (first pair) (second pair))) (combinations2 input)))
+        )
     )
 )
