@@ -87,7 +87,7 @@
     )
 )
 
-(defn flatten [xs] (reduce (list) concat xs))
+(defn flatten [xs] (reduce (list) (fn* (x acc) (concat acc x)) xs))
 (defn sum [xs] (reduce 0 + xs))
 (defn mul [xs] (reduce 1 * xs))
 (defn max [xs] (reduce 0 (fn* [i j] (if (> i j) i j)) xs))
@@ -242,19 +242,23 @@
     )
 )
 
-(defn combinations2 [lst]
-    (if (empty? lst)
-        ()
-        (let* 
-            (
-                x (first lst) 
-                xs (rest lst)
-                with-x (map (fn* (y) (list x y)) xs)
+
+(defn combinations [k xs]
+    (cond
+        (= k 0) (list ())
+        (empty? xs) ()
+        true
+            (concat
+                ;; include first element
+                (map (fn* (c) (cons (first xs) c))
+                    (combinations (- k 1) (rest xs)))
+                ;; exclude first element
+                (combinations k (rest xs))
             )
-            (concat with-x (combinations2 xs))
-        )
     )
 )
+
+(defn combinations2 [lst] (combinations 2 lst))
 
 (defn set-from-list [xs]
   (if (empty? xs)

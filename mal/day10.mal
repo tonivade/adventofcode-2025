@@ -1,13 +1,81 @@
 ; https://adventofcode.com/2025/day/10
 
 (import java.lang.String lines)
+(import java.lang.String trim)
+(import java.lang.String length)
+(import java.lang.String split 1)
+(import java.lang.String substring 2)
+(import java.lang.Integer parseInt 1)
 
 (load-file "mal/aoc.mal")
 
 (def! input (if-defined DEBUG-EVAL "input/day10-test.txt" "input/day10.txt"))
 
+(defn all-combinations [size]
+    (let*
+        (xs (generate 0 (decr size)))
+        (flatten (map (fn* [k] (combinations k xs)) (generate 1 size)))
+    )
+)
+
+(defn parse-machine [line]
+    (let* 
+        (
+            splitted (split line " ")
+            ls (first splitted)
+            bs (drop-last (rest splitted)) 
+            js (last splitted)
+            lights (map (fn* [l] (= l "#")) (seq (substring ls 1 (- (length ls) 1))))
+            jolts (map parseInt (split (substring js 1 (- (length js) 1)) ","))
+            buttons (map (fn* [b] (map parseInt (split (substring b 1 (- (length b) 1)) ","))) bs)
+        )
+        (list lights buttons jolts)
+    )
+)
+
+(defn click [pattern lights]
+    (reduce 
+        lights 
+        (fn* [p acc] (replace-nth acc p (not (nth acc p)))) 
+        (flatten pattern)
+    )
+)
+
+(defn turn-on [machine]
+    (let*
+        (
+            lights (first machine)
+            buttons (second machine)
+            patterns 
+                (map 
+                    (fn* [bs] 
+                        (map (fn* [i] (nth buttons i)) bs)
+                    ) 
+                    (all-combinations (count buttons))
+                )
+        )
+        (count 
+            (nth
+                patterns
+                (index-where 
+                    patterns 
+                    (fn* [p] 
+                        (= lights (click p (map (fn* [i] false) (generate 1 (count lights)))))
+                    )
+                )
+            )
+        )
+    )
+)
+
 (defn parse [file]
     (let* (input (lines (slurp file)))
-        input
+        (map parse-machine input)
+    )
+)
+
+(println
+    (timed!
+        (sum (map turn-on (parse input)))
     )
 )
