@@ -71,9 +71,11 @@
 )
 
 (defn transform [col]
-    (let* (op (trim (last col)) numbers (drop-last col))
-        (append
-            (map trim
+    (let* (op (trim (first col)) numbers (rest col))
+        (cons
+            op
+            (map 
+                trim
                 (map 
                     join
                     (vals
@@ -84,13 +86,12 @@
                     )
                 )
             )
-            op
         )
     )
 )
 
 (defn solve (input)
-    (let* (lst (reverse input) op (first lst) values (map parseLong (rest lst)))
+    (let* (op (first input) values (map parseLong (rest input)))
         (cond 
             (= op "+") (sum values)
             (= op "*") (mul values)
