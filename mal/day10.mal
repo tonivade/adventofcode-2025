@@ -36,7 +36,7 @@
 (defn click [pattern lights]
     (reduce 
         lights 
-        (fn* [p acc] (replace-nth acc p (not (nth acc p)))) 
+        (fn* [acc p] (replace-nth acc p (not (nth acc p)))) 
         (flatten pattern)
     )
 )

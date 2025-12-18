@@ -42,7 +42,7 @@
 (defn calculate-timelines [matrix beams timelines]
     (reduce
         {}
-        (fn* [p acc] 
+        (fn* [acc p] 
             (let* 
                 (
                     fall-down 

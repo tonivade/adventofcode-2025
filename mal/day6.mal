@@ -45,7 +45,7 @@
     (sliding2
         (reduce
             (list 0)
-            (fn* [item acc] (append acc (+ (last acc) item)))
+            (fn* [acc item] (append acc (+ (last acc) item)))
             (map incr (map length (rest (split (str row " ") "[\\*\\+]"))))
         )
     )

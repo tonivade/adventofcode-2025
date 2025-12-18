@@ -62,7 +62,7 @@
 (defn merge-ranges [ranges]
     (reduce 
         ()
-        (fn* [range acc] 
+        (fn* [acc range] 
             (let* 
                 (i (index-where acc (fn* [r] (overlaps range r))))
                 (if (nil? i)

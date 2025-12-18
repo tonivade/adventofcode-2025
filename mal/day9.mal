@@ -76,7 +76,7 @@
 (defn inside? [p edges]
     (reduce
         false
-        (fn* [edge acc] 
+        (fn* [acc edge] 
             (let* 
                 (
                     a (first edge)

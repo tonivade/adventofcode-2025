@@ -59,7 +59,7 @@
 (defn connect [points connections]
     (reduce
         (map (fn* [p] (set-from-list (list (to-key p)))) points)
-        (fn* [pair circuits] (merge circuits (first pair) (second pair)))
+        (fn* [circuits pair] (merge circuits (first pair) (second pair)))
         connections
     )
 )
@@ -68,7 +68,7 @@
     (first 
         (reduce
             (list () (map (fn* [p] (set-from-list (list (to-key p)))) points))
-            (fn* [pair acc] 
+            (fn* [acc pair] 
                 (list 
                     (if (= (count (second acc)) 1) 
                         (first acc) 

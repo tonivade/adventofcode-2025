@@ -55,14 +55,3 @@
     )
   )
 )
-
-(defmacro! |>
-  (fn* (x & forms)
-    (let* 
-      (expand 
-        (fn* (form acc)
-          (cons (first form) (cons acc (rest form)))))
-      (reduce x expand forms)
-    )
-  )
-)
