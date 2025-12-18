@@ -33,9 +33,9 @@
     )
 )
 
-(defn click [pattern lights]
+(defn click [pattern light-count]
     (reduce 
-        lights 
+        (map (fn* [i] false) (generate 1 light-count)) 
         (fn* [acc p] (replace-nth acc p (not (nth acc p)))) 
         (flatten pattern)
     )
@@ -57,12 +57,7 @@
         (count 
             (nth
                 patterns
-                (index-where 
-                    patterns 
-                    (fn* [p] 
-                        (= lights (click p (map (fn* [i] false) (generate 1 (count lights)))))
-                    )
-                )
+                (index-where patterns (fn* [p] (= lights (click p (count lights)))))
             )
         )
     )
