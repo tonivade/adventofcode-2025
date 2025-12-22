@@ -77,7 +77,7 @@
 )
 
 (defn odd-indices [lights]
-    (map second (filter (fn* [item] (first item) )(zip-with-index lights)))
+    (map second (filter first (zip-with-index lights)))
 )
 
 (defn calculate-patterns [buttons light-count]
@@ -109,40 +109,50 @@
 )
 
 (defn get-min-presses [patterns target]
-    (if (for-all? (fn* [item] (= item 0)) target)
-        0
-        (let* 
-            (
-                indicators (odd-indices (map (fn* [i] (= 1 (% i 2))) target))
-                all-presses (get patterns (str indicators))
-            )
-            (min
-                (filter
-                    (fn* [i] (not (nil? i)))
-                    (map 
-                        (fn* [presses] 
-                            (let* (target-after (simulate-click target presses))
-                                (if (exists? (fn* [i] (< i 0)) target-after)
-                                    nil
-                                    (let* 
-                                        (
-                                            half-target (map (fn* [i] (/ i 2)) target-after)
-                                            next-min-presses (get-min-presses patterns half-target)
-                                        )
-                                        (if (nil? next-min-presses)
-                                            nil
-                                            (+ (* next-min-presses 2) (count presses))
-                                        )
+    (let*
+        (min-presses 
+            (memoize1 
+                (fn* [current] 
+                    (if (for-all? (fn* [item] (= item 0)) current)
+                        0
+                        (let* 
+                            (
+                                indicators (odd-indices (map (fn* [i] (= 1 (% i 2))) current))
+                                all-presses (get patterns (str indicators))
+                            )
+                            (min
+                                (filter
+                                    (fn* [i] (not (nil? i)))
+                                    (map 
+                                        (fn* [presses] 
+                                            (let* (target-after (simulate-click current presses))
+                                                (if (exists? (fn* [i] (< i 0)) target-after)
+                                                    nil
+                                                    (let* 
+                                                        (
+                                                            half-target (map (fn* [i] (/ i 2)) target-after)
+                                                            next-min-presses (min-presses half-target)
+                                                        )
+                                                        (if (nil? next-min-presses)
+                                                            nil
+                                                            (+ (* next-min-presses 2) (count presses))
+                                                        )
+                                                    )
+                                                )
+                                            )
+                                        ) 
+                                        all-presses
                                     )
                                 )
                             )
-                        ) 
-                        all-presses
+                        )
                     )
                 )
             )
         )
+        (min-presses target)
     )
+    
 )
 
 (defn jolt-on [machine]
