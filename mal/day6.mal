@@ -14,8 +14,9 @@
 (defn parse1 [file]
     (let* (input (lines (slurp file)))
         (vals
-            (group-by 
+            (group-by-map 
                 second
+                first
                 (flatten 
                     (map
                         zip-with-index
@@ -54,8 +55,9 @@
 (defn parse2 [file]
     (let* (input (lines (slurp file)) cols (columns (last input)))
         (vals
-            (group-by 
+            (group-by-map
                 second
+                first
                 (flatten 
                     (map
                         zip-with-index
@@ -79,8 +81,9 @@
                 (map 
                     join
                     (vals
-                        (group-by 
+                        (group-by-map
                             second
+                            first
                             (flatten (map zip-with-index (map seq numbers)))
                         )
                     )

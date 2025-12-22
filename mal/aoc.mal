@@ -91,6 +91,7 @@
 (defn sum [xs] (reduce 0 + xs))
 (defn mul [xs] (reduce 1 * xs))
 (defn max [xs] (reduce 0 (fn* [i j] (if (> i j) i j)) xs))
+(defn min [xs] (reduce 1000000000 (fn* [i j] (if (< i j) i j)) xs))
 
 (defn chunks [xs size]
     (if (or (= size 0) (empty? xs))
@@ -178,19 +179,23 @@
     )
 )
 
-(defn group-by [func xs]
+(defn group-by-map [func mapper xs]
     (reduce
         {}
         (fn* [acc item]
             (let* (k (str (func item)))
                 (if (contains? acc k)
-                    (assoc acc k (cons (first item) (get acc k)))
-                    (assoc acc k (list (first item)))
+                    (assoc acc k (cons (mapper item) (get acc k)))
+                    (assoc acc k (list (mapper item)))
                 )
             )
         )
         xs
     )
+)
+
+(defn group-by [func xs]
+    (group-by-map func (fn* [i] i) xs)
 )
 
 (defn sliding2 [xs]

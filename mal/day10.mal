@@ -46,11 +46,11 @@
     )
 )
 
-(defn click [pattern light-count]
+(defn click [presses light-count]
     (reduce 
         (map (fn* [i] false) (generate 1 light-count)) 
         (fn* [acc p] (replace-nth acc p (not (nth acc p)))) 
-        (flatten pattern)
+        (flatten presses)
     )
 )
 
@@ -81,10 +81,13 @@
 )
 
 (defn calculate-patterns [buttons light-count]
-    (group-by 
+    (group-by-map 
         (fn* [pair] (odd-indices (first pair)))
+        second
         (map 
-            (fn* [p] (list (click p light-count) p)) 
+            (fn* [bs] 
+                (list (click bs light-count) bs)
+            ) 
             (map 
                 (fn* [bs] 
                     (map (fn* [i] (nth buttons i)) bs)
@@ -95,28 +98,49 @@
     )
 )
 
-(defn simulate-click [target buttons presses]
+(defn simulate-click [target presses]
     (reduce
         target
-        (fn* [current p] 
-            (reduce 
-                current
-                (fn* [xs b] (replace-nth xs b (decr (nth xs b))))
-                (peek (nth buttons p)))
+        (fn* [current b] 
+            (replace-nth current b (decr (nth current b)))
         )
-        presses
+        (flatten presses)
     )
 )
 
-(defn get-min-presses [patterns buttons target]
+(defn get-min-presses [patterns target]
     (if (for-all? (fn* [item] (= item 0)) target)
         0
         (let* 
             (
                 indicators (odd-indices (map (fn* [i] (= 1 (% i 2))) target))
-                presses (get patterns (str indicators))
+                all-presses (get patterns (str indicators))
             )
-            (map (fn* [p] (simulate-click (peek target) (peek buttons) (peek p))) presses)
+            (min
+                (filter
+                    (fn* [i] (not (nil? i)))
+                    (map 
+                        (fn* [presses] 
+                            (let* (target-after (simulate-click target presses))
+                                (if (exists? (fn* [i] (< i 0)) target-after)
+                                    nil
+                                    (let* 
+                                        (
+                                            half-target (map (fn* [i] (/ i 2)) target-after)
+                                            next-min-presses (get-min-presses patterns half-target)
+                                        )
+                                        (if (nil? next-min-presses)
+                                            nil
+                                            (+ (* next-min-presses 2) (count presses))
+                                        )
+                                    )
+                                )
+                            )
+                        ) 
+                        all-presses
+                    )
+                )
+            )
         )
     )
 )
@@ -127,9 +151,9 @@
             lights (first machine)
             buttons (second machine)
             jolts (last machine)
-            patterns (peek (calculate-patterns buttons (count lights)))
+            patterns (calculate-patterns buttons (count lights))
         )
-        (get-min-presses patterns buttons jolts)
+        (get-min-presses patterns jolts)
     )
 )
 
@@ -147,6 +171,6 @@
 
 (println
     (timed!
-        (map jolt-on (parse input))
+        (sum (map jolt-on (parse input)))
     )
 )
