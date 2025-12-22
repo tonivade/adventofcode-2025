@@ -18,6 +18,19 @@
     )
 )
 
+(defn all-patterns [size]
+    (let* (base (all-combinations size))
+        (concat base
+            (flatten
+                (map
+                    (fn* [bs] (map (fn* [b] (append bs b)) (generate 0 (decr size))))
+                    base
+                )
+            )
+        )
+    )
+)
+
 (defn parse-machine [line]
     (let* 
         (
@@ -63,6 +76,63 @@
     )
 )
 
+(defn odd-indices [lights]
+    (map second (filter (fn* [item] (first item) )(zip-with-index lights)))
+)
+
+(defn calculate-patterns [buttons light-count]
+    (group-by 
+        (fn* [pair] (odd-indices (first pair)))
+        (map 
+            (fn* [p] (list (click p light-count) p)) 
+            (map 
+                (fn* [bs] 
+                    (map (fn* [i] (nth buttons i)) bs)
+                ) 
+                (all-patterns (count buttons))
+            )
+        )
+    )
+)
+
+(defn simulate-click [target buttons presses]
+    (reduce
+        target
+        (fn* [current p] 
+            (reduce 
+                current
+                (fn* [xs b] (replace-nth xs b (decr (nth xs b))))
+                (peek (nth buttons p)))
+        )
+        presses
+    )
+)
+
+(defn get-min-presses [patterns buttons target]
+    (if (for-all? (fn* [item] (= item 0)) target)
+        0
+        (let* 
+            (
+                indicators (odd-indices (map (fn* [i] (= 1 (% i 2))) target))
+                presses (get patterns (str indicators))
+            )
+            (map (fn* [p] (simulate-click (peek target) (peek buttons) (peek p))) presses)
+        )
+    )
+)
+
+(defn jolt-on [machine]
+    (let*
+        (
+            lights (first machine)
+            buttons (second machine)
+            jolts (last machine)
+            patterns (peek (calculate-patterns buttons (count lights)))
+        )
+        (get-min-presses patterns buttons jolts)
+    )
+)
+
 (defn parse [file]
     (let* (input (lines (slurp file)))
         (map parse-machine input)
@@ -72,5 +142,11 @@
 (println
     (timed!
         (sum (map turn-on (parse input)))
+    )
+)
+
+(println
+    (timed!
+        (map jolt-on (parse input))
     )
 )

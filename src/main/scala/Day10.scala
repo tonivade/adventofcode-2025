@@ -39,7 +39,7 @@ object Day10:
           bs => go(List.fill(lightsPattern.size)(false), bs) -> bs
         .groupMap(_._1)(_._2)
 
-    def oddIndices(ls: List[Boolean]) = 
+    def oddIndices(ls: List[Boolean]): Set[Int] = 
         ls.zipWithIndex.collect:
               case (on, i) if on => i
             .toSet
