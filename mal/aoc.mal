@@ -11,6 +11,7 @@
 (defn xor [a b] (if a (not b) b))
 (defn min-val [p q] (if (< p q) p q))
 (defn max-val [p q] (if (> p q) p q))
+(defn identity [x] x)
 
 (defn join [xs]
     (if (empty? xs)
@@ -169,12 +170,12 @@
     )
 )
 
-(defn foreach [xs func]
+(defn for-each [xs func]
     (if (empty? xs)
         nil
         (do
             (func (first xs))
-            (foreach (rest xs) func)
+            (for-each (rest xs) func)
         )
     )
 )
@@ -195,7 +196,7 @@
 )
 
 (defn group-by [func xs]
-    (group-by-map func (fn* [i] i) xs)
+    (group-by-map func identity xs)
 )
 
 (defn sliding2 [xs]
@@ -246,7 +247,6 @@
         (dissoc-many (dissoc m (first to-remove)) (rest to-remove))
     )
 )
-
 
 (defn combinations [k xs]
     (cond
