@@ -6,7 +6,8 @@
 
 (load-file "mal/aoc.mal")
 
-(def! input (if-defined DEBUG-EVAL "input/day11-test.txt" "input/day11.txt"))
+(def! input1 (if-defined DEBUG-EVAL "input/day11-test1.txt" "input/day11.txt"))
+(def! input2 (if-defined DEBUG-EVAL "input/day11-test2.txt" "input/day11.txt"))
 
 (defn parse-line [line]
     (let* 
@@ -30,15 +31,21 @@
         (dfs 
             (memoize1
                 (fn* [current]
-                    (sum 
-                        (map
-                            (fn* [output] 
-                                (if (= output end)
-                                    1
-                                    (dfs output)
+                    (let*
+                        (connections (get graph current))
+                        (if (nil? connections)
+                            0
+                            (sum 
+                                (map
+                                    (fn* [output] 
+                                        (if (= output end)
+                                            1
+                                            (dfs output)
+                                        )
+                                    )
+                                    connections
                                 )
                             )
-                            (get graph current)
                         )
                     )
                 )
@@ -50,6 +57,20 @@
 
 (println
     (timed!
-        (find-all-paths (parse input) "you" "out")
+        (find-all-paths (parse input1) "you" "out")
+    )
+)
+
+(println
+    (timed!
+        (let* 
+            (
+                servers (parse input2)
+                svr-to-fft (find-all-paths servers "svr" "fft")
+                fft-to-dac (find-all-paths servers "fft" "dac")
+                dac-to-out (find-all-paths servers "dac" "out")
+            )
+            (* svr-to-fft (* fft-to-dac dac-to-out))
+        )
     )
 )
