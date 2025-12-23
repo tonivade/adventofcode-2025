@@ -1,13 +1,55 @@
 ; https://adventofcode.com/2025/day/11
 
 (import java.lang.String lines)
+(import java.lang.String trim)
+(import java.lang.String split 1)
 
 (load-file "mal/aoc.mal")
 
 (def! input (if-defined DEBUG-EVAL "input/day11-test.txt" "input/day11.txt"))
 
+(defn parse-line [line]
+    (let* 
+        (
+            splitted (map trim (split line ":"))
+            node (first splitted)
+            connections (split (second splitted) " ")
+        )
+        (list node connections)
+    )
+)
+
 (defn parse [file]
     (let* (input (lines (slurp file)))
-        input
+        (assoc (list-to-map (map parse-line input)) "out" ())
+    )
+)
+
+(defn find-all-paths [graph start end]
+    (let* 
+        (dfs 
+            (memoize1
+                (fn* [current]
+                    (sum 
+                        (map
+                            (fn* [output] 
+                                (if (= output end)
+                                    1
+                                    (dfs output)
+                                )
+                            )
+                            (get graph current)
+                        )
+                    )
+                )
+            )
+        )
+        (dfs start)
+    )
+)
+
+(println
+    (timed!
+        (find-all-paths (parse input) "you" "out")
     )
 )
