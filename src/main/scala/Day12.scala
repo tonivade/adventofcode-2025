@@ -32,13 +32,8 @@ object Day12:
           Tree(width.toInt, height.toInt, presents.trim.split(" ").map(_.toInt).toList)
       .toList
 
-    presents.foreach(println)
-    trees.foreach(println)
-
     trees.count:
-        tree => 
-          println(s"${tree.totalArea} vs ${tree.requiredArea(presents)}")
-          tree.totalArea >= tree.requiredArea(presents);
+        tree => tree.totalArea >= tree.requiredArea(presents);
 
 @main def main: Unit =
   val input = Source.fromFile("input/day12.txt").getLines().mkString("\n")
