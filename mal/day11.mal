@@ -22,7 +22,7 @@
 
 (defn parse [file]
     (let* (input (lines (slurp file)))
-        (assoc (list-to-map (map parse-line input)) "out" ())
+        (list-to-map (map parse-line input))
     )
 )
 
