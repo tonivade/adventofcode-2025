@@ -100,7 +100,7 @@
             (
                 points (parse input)
                 connections (make-connections points)
-                last-point (peek (connect2 points connections))
+                last-point (connect2 points connections)
             )
             (* (first (first last-point)) (first (second last-point)))
         )

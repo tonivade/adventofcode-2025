@@ -113,7 +113,7 @@
         (min-presses 
             (memoize1 
                 (fn* [current] 
-                    (if (for-all? (fn* [item] (= item 0)) (peek current))
+                    (if (for-all? (fn* [item] (= item 0)) current)
                         0
                         (let* 
                             (
