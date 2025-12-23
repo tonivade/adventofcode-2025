@@ -70,7 +70,7 @@
                 fft-to-dac (find-all-paths servers "fft" "dac")
                 dac-to-out (find-all-paths servers "dac" "out")
             )
-            (* svr-to-fft (* fft-to-dac dac-to-out))
+            (mul (list svr-to-fft fft-to-dac dac-to-out))
         )
     )
 )
