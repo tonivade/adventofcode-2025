@@ -28,11 +28,11 @@
 )
 
 (defn zip-with-index [xs]
-    (let* (go (fn* [xs i]
+    (let* [go (fn* [xs i]
               (if (empty? xs)
                   ()
                   (cons (list (first xs) i)
-                        (go (rest xs) (incr i))))))
+                        (go (rest xs) (incr i)))))]
         (go xs 0)
     )
 )
@@ -97,14 +97,14 @@
 (defn chunks [xs size]
     (if (or (= size 0) (empty? xs))
         (list)
-        (let* (group (take xs size) rst (drop xs size))
+        (let* [group (take xs size) rst (drop xs size)]
             (cons group (chunks rst size))
         )
     )
 )
 
 (defn timed [func]
-    (let* (start (time-ms) result (func) end (time-ms))
+    (let* [start (time-ms) result (func) end (time-ms)]
         (do
             (println "Elapsed time:" (- end start) "ms")
             result
@@ -126,7 +126,7 @@
 )
 
 (defn last [xs] 
-    (let* (pos (decr (count xs)))
+    (let* [pos (decr (count xs))]
         (nth xs pos)
     )
 )
@@ -160,12 +160,12 @@
 )
 
 (defn index-where [xs cmp]
-    (let* (go (fn* (xs cmp i)
+    (let* [go (fn* [xs cmp i]
               (if (empty? xs)
                   nil
                   (if (cmp (first xs))
                       i
-                      (go (rest xs) cmp (incr i))))))
+                      (go (rest xs) cmp (incr i)))))]
         (go xs cmp 0)
     )
 )
@@ -184,7 +184,7 @@
     (reduce
         {}
         (fn* [acc item]
-            (let* (k (str (func item)))
+            (let* [k (str (func item))]
                 (if (contains? acc k)
                     (assoc acc k (cons (mapper item) (get acc k)))
                     (assoc acc k (list (mapper item)))
@@ -210,23 +210,23 @@
 )
 
 (defn reverse [xs]
-    (let* (go (fn* (l acc)
+    (let* [go (fn* (l acc)
               (if (empty? l)
                   acc
-                  (go (rest l) (cons (first l) acc)))))
+                  (go (rest l) (cons (first l) acc))))]
         (go xs ())
     )
 )
 
 (defn keys-by-value [m target]
-    (let* (ks (keys m))
-        (let* (go (fn* (ks acc)
+    (let* [ks (keys m)]
+        (let* [go (fn* (ks acc)
                 (if (empty? ks)
                     acc
                     (let* (k (first ks))
                         (if (= (get m k) target)
                             (go (rest ks) (cons k acc))
-                            (go (rest ks) acc))))))
+                            (go (rest ks) acc)))))]
             (go ks ())
         )
     )
@@ -235,7 +235,7 @@
 (defn assoc-many [m pairs]
     (if (empty? pairs)
         m
-        (let* (p (first pairs) k (first p) v (second p))
+        (let* [p (first pairs) k (first p) v (second p)]
             (assoc-many (assoc m k v) (rest pairs))
         )
     )
@@ -278,36 +278,36 @@
 (defn set-to-list [s] (keys s))
 
 (defn set-union [a b]
-    (let* (ks (keys b))
+    (let* [ks (keys b)]
         (let* 
-            (go
-                (fn* (ks acc)
+            [go
+                (fn* [ks acc]
                     (if (empty? ks)
                         acc
                         (go (rest ks) (assoc acc (first ks) true))
                     )
                 )
-            )
+            ]
             (go ks a)
         )
     )
 )
 
 (defn set-difference [a b]
-    (let* (ks (keys a))
+    (let* [ks (keys a)]
         (let* 
-            (go
+            [go
                 (fn* (ks acc)
                     (if (empty? ks)
                         acc
-                        (let* (k (first ks))
+                        (let* [k (first ks)]
                         (if (set-contains? b k)
                             (go (rest ks) acc)
                             (go (rest ks) (assoc acc k true)))
                         )
                     )
                 )
-            )
+            ]
         )
         (go ks {})
     )
@@ -328,12 +328,12 @@
     (if (or (empty? xs) (empty? (rest xs)))
         xs
         (let* 
-            (
+            [
                 n (count xs)
                 mid (/ n 2)
                 left (take xs mid)
                 right (drop xs mid)
-            )
+            ]
             (merge-list cmp (sort-list-by cmp left) (sort-list-by cmp right))
         )
     )
@@ -342,12 +342,12 @@
 (defn sort-list [xs] (sort-list-by <= xs))
 
 (defn memoize1 [f]
-    (let* (cache (atom {}))
+    (let* [cache (atom {})]
         (fn* (x)
-            (let* (k (str x) v (get @cache k))
+            (let* [k (str x) v (get @cache k)]
                 (if (not (= v nil))
                     v
-                    (let* (res (f x))
+                    (let* [res (f x)]
                         (do (swap! cache assoc k res) res)
                     )
                 )

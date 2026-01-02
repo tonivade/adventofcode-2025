@@ -14,19 +14,19 @@
 )
 
 (defn parse [file]
-    (let* (input (slurp file)) 
+    (let* [input (slurp file)]
         (map split-pair (split input ","))
     )
 )
 
 (defn is-repeated? [s]
-    (let* (i (/ (length s) 2)) 
+    (let* [i (/ (length s) 2)]
         (= (substring s 0 i) (substring s i (length s)))
     )
 )
 
 (defn is-invalid? [number]
-    (let* (s (toString number)) 
+    (let* [s (toString number)]
         (and (= (% (length s) 2) 0) (is-repeated? s))
     )
 )
@@ -40,7 +40,7 @@
 (defn all-the-same? [xs]
     (if (empty? xs)
         true
-        (let* (frst (first xs)) 
+        (let* [frst (first xs)]
             (for-all? (fn* [item] (= item frst)) xs)
         )
     )
@@ -48,7 +48,7 @@
 
 (defn expand [input]
     (if (> (count input) 1)
-        (let* (end (/ (count input) 2))
+        (let* [end (/ (count input) 2)]
             (map (fn* [s] (map join (chunks input s))) (generate 1 end))
         )
         ()
@@ -64,7 +64,7 @@
 )
 
 (defn is-invalid2? [number]
-    (let* (s (toString number)) (is-repeated2? s))
+    (let* [s (toString number)] (is-repeated2? s))
 )
 
 (defn unfold2 [range]

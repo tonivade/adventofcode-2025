@@ -30,7 +30,7 @@
 (defn to-key [p] (str (first p) "," (second p)))
 
 (defn parse-matrix [file]
-    (let* (input (slurp file))
+    (let* [input (slurp file)]
         (list-to-map 
             (flatten
                 (map
@@ -50,7 +50,7 @@
 )
 
 (defn parse-points [file]
-    (let* (input (slurp file))
+    (let* [input (slurp file)]
         (map (fn* [line] (map parseInt (split line ","))) (lines input))
     )
 )

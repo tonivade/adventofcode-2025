@@ -11,28 +11,28 @@
 
 (defn parse-present [input]
     (let* 
-        (
+        [
             all-lines (lines input)
             id (first (split (first all-lines) ":"))
             area (count (filter (fn* [item] (= item "#")) (flatten (map seq (rest all-lines)))))
-        )
+        ]
         (list id area)
     )
 )
 
 (defn parse-tree [line]
     (let* 
-        (
+        [
             parsed (map trim (split line ":"))
             dimensions (map parseInt (split (first parsed) "x"))
             presents (map parseInt (split (second parsed) " "))
-        )
+        ]
         (list dimensions presents)
     )
 )
 
 (defn total-area [tree]
-    (let* (dimensions (first tree))
+    (let* [dimensions (first tree)]
         (* (first dimensions) (second dimensions))
     )
 )
@@ -50,11 +50,11 @@
 (println
     (timed!
         (let* 
-            (
+            [
                 input (split (slurp file) "\n\n")
                 presents (list-to-map (map parse-present (drop-last input)))
                 trees (map parse-tree (lines (last input)))
-            )
+            ]
             (count (filter (fn* [tree] (>= (total-area tree) (required-area tree presents))) trees))
         )
     )

@@ -12,7 +12,7 @@
 (def! input (if-defined DEBUG-EVAL "input/day6-test.txt" "input/day6.txt"))
 
 (defn parse1 [file]
-    (let* (input (lines (slurp file)))
+    (let* [input (lines (slurp file))]
         (vals
             (group-by-map 
                 second
@@ -34,7 +34,7 @@
 (defn parse-line [line cols]
     (map 
         (fn* [window] 
-            (let* (start (first window) end (decr (second window)))
+            (let* [start (first window) end (decr (second window))]
                 (substring line start end)
             )
         ) 
@@ -53,7 +53,7 @@
 )
 
 (defn parse2 [file]
-    (let* (input (lines (slurp file)) cols (columns (last input)))
+    (let* [input (lines (slurp file)) cols (columns (last input))]
         (vals
             (group-by-map
                 second
@@ -73,7 +73,7 @@
 )
 
 (defn transform [col]
-    (let* (op (trim (first col)) numbers (rest col))
+    (let* [op (trim (first col)) numbers (rest col)]
         (cons
             op
             (map 
@@ -94,7 +94,7 @@
 )
 
 (defn solve (input)
-    (let* (op (first input) values (map parseLong (rest input)))
+    (let* [op (first input) values (map parseLong (rest input))]
         (cond 
             (= op "+") (sum values)
             (= op "*") (mul values)

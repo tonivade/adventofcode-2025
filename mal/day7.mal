@@ -8,7 +8,7 @@
 (def! input (if-defined DEBUG-EVAL "input/day7-test.txt" "input/day7.txt"))
 
 (defn move-beam [matrix position]
-    (let* (value (get matrix (to-key (up position))))
+    (let* [value (get matrix (to-key (up position)))]
         (cond
             (nil? value) ; out of map
                 (list 
@@ -31,7 +31,7 @@
 )
 
 (defn step1 [matrix]
-    (let* (next (flatten (map (fn* [b] (move-beam matrix b)) (map to-pair (keys-by-value matrix "|")))))
+    (let* [next (flatten (map (fn* [b] (move-beam matrix b)) (map to-pair (keys-by-value matrix "|"))))]
         (if (empty? next)
             matrix
             (step1 (assoc-many matrix next))
@@ -44,7 +44,7 @@
         {}
         (fn* [acc p] 
             (let* 
-                (
+                [
                     fall-down 
                         (if (= (get matrix (to-key (down p))) "|") 
                             (or-default (get timelines (str (first (down p)))) 0)
@@ -60,7 +60,7 @@
                             (or-default (get timelines (str (first (right-down p)))) 0)
                             0
                         )
-                )
+                ]
                 (assoc acc (str (first p)) (+ fall-down (+ fall-left fall-right)))
             )
         )
@@ -69,14 +69,14 @@
 )
 
 (defn step2 [matrix timelines]
-    (let* (next (flatten (map (fn* [b] (move-beam matrix b)) (map to-pair (keys-by-value matrix "|")))))
+    (let* [next (flatten (map (fn* [b] (move-beam matrix b)) (map to-pair (keys-by-value matrix "|"))))]
         (if (empty? next)
             (list matrix timelines)
             (let* 
-                (
+                [
                     beams (map to-pair (keys-by-value (list-to-map next) "|")) 
                     next-timelines (if (empty? beams) timelines (calculate-timelines matrix beams timelines))
-                )
+                ]
                 (step2 (assoc-many matrix next) next-timelines)
             )
         )
@@ -85,7 +85,7 @@
 
 (println 
     (timed!
-        (let* (matrix (parse-matrix input) start (first (keys-by-value matrix "S")))
+        (let* [matrix (parse-matrix input) start (first (keys-by-value matrix "S"))]
             (count (keys-by-value (step1 (assoc matrix start "|")) "T"))
         )
     )
@@ -93,7 +93,7 @@
 
 (println 
     (timed!
-        (let* (matrix (parse-matrix input) start (first (keys-by-value matrix "S")))
+        (let* [matrix (parse-matrix input) start (first (keys-by-value matrix "S"))]
             (sum (vals (second (step2 (assoc matrix start "|") (hash-map (str (first (to-pair start))) 1)))))
         )
     )

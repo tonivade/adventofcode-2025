@@ -11,28 +11,28 @@
 
 (defn parse-line [line]
     (let* 
-        (
+        [
             splitted (map trim (split line ":"))
             node (first splitted)
             connections (split (second splitted) " ")
-        )
+        ]
         (list node connections)
     )
 )
 
 (defn parse [file]
-    (let* (input (lines (slurp file)))
+    (let* [input (lines (slurp file))]
         (list-to-map (map parse-line input))
     )
 )
 
 (defn find-all-paths [graph start end]
     (let* 
-        (dfs 
+        [dfs 
             (memoize1
                 (fn* [current]
                     (let*
-                        (connections (get graph current))
+                        [connections (get graph current)]
                         (if (nil? connections)
                             0
                             (sum 
@@ -50,7 +50,7 @@
                     )
                 )
             )
-        )
+        ]
         (dfs start)
     )
 )
@@ -64,12 +64,12 @@
 (println
     (timed!
         (let* 
-            (
+            [
                 servers (parse input2)
                 svr-to-fft (find-all-paths servers "svr" "fft")
                 fft-to-dac (find-all-paths servers "fft" "dac")
                 dac-to-out (find-all-paths servers "dac" "out")
-            )
+            ]
             (mul (list svr-to-fft fft-to-dac dac-to-out))
         )
     )

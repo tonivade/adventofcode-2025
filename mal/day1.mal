@@ -12,7 +12,7 @@
 )
 
 (defn parse [file]
-    (let* (input (slurp file)) (map split-pair (lines input)))
+    (let* [input (slurp file)] (map split-pair (lines input)))
 )
 
 (defn next [move position]

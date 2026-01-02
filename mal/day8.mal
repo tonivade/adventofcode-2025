@@ -13,18 +13,18 @@
 
 (defn distance3d [this other]
     (let* 
-        (
+        [
             a (pow (- (first this) (first other)) 2)
             b (pow (- (second this) (second other)) 2)
             c (pow (- (last this) (last other)) 2)
             s (+ a (+ b c))
-        )
+        ]
         (sqrt s)
     )
 )
 
 (defn parse [file]
-    (let* (input (lines (slurp file)))
+    (let* [input (lines (slurp file))]
         (map (fn* [line] (map parseInt (split line ","))) input)
     )
 )
@@ -40,7 +40,7 @@
 
 (defn merge [circuits p q]
     (let*
-        (
+        [
             indexP (index-where circuits (fn* [group] (set-contains? group (to-key p))))
             indexQ (index-where circuits (fn* [group] (set-contains? group (to-key q))))
             union (set-union (nth circuits indexP) (nth circuits indexQ))
@@ -51,7 +51,7 @@
                         (zip-with-index circuits)
                     )
                 )
-        )
+        ]
         (append new-circuits union)
     )
 )
@@ -84,11 +84,11 @@
 (println
     (timed!
         (let* 
-            (
+            [
                 points (parse input)
                 connections (take (make-connections points) max-connections)
                 groups (map set-to-list (connect points connections))
-            )
+            ]
             (mul (take (reverse (sort-list (map count groups))) 3))
         )
     )
@@ -97,11 +97,11 @@
 (println
     (timed!
         (let* 
-            (
+            [
                 points (parse input)
                 connections (make-connections points)
                 last-point (connect2 points connections)
-            )
+            ]
             (* (first (first last-point)) (first (second last-point)))
         )
     )

@@ -7,13 +7,13 @@
 (load-file "mal/aoc.mal")
 
 (defn parse [file]
-    (let* (input (slurp file)) 
+    (let* [input (slurp file)]
         (map seq (lines input))
     )
 )
 
 (defn combinations [xs]
-    (let* (len (decr (count xs)))
+    (let* [len (decr (count xs))]
         (flatten 
             (map 
                 (fn* [x] 
@@ -41,7 +41,7 @@
 (defn process [remaining stack dropped maxDrop]
     (if (empty? remaining)
         stack
-        (let* (head (first remaining) tail (rest remaining))
+        (let* [head (first remaining) tail (rest remaining)]
             (if (and (not (empty? stack)) (< dropped maxDrop) (< (first stack) head))
                 (process remaining (rest stack) (incr dropped) maxDrop)
                 (process tail (cons head stack) dropped maxDrop)

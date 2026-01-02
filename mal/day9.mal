@@ -9,22 +9,22 @@
 
 (defn area [p q]
     (let* 
-        (
+        [
             l1 (abs (- (first p) (first q)))
             l2 (abs (- (second p) (second q)))
-        )
+        ]
         (* (incr l1) (incr l2))
     )
 )
 
 (defn bounds [p q]
     (let* 
-        (
+        [
             minX (min-val (first p) (first q))
             maxX (max-val (first p) (first q))
             minY (min-val (second p) (second q))
             maxY (max-val (second p) (second q))
-        )
+        ]
         (list
             (list minX minY)
             (list minX maxY)
@@ -36,24 +36,24 @@
 
 (defn cross [a b c]
     (let*
-        (
+        [
             x (- (first b) (first a))
             y (- (second c) (second a))
             z (- (second b) (second a))
             w (- (first c) (first a))
-        )
+        ]
         (- (* x y) (* z w))
     )
 )
 
 (defn on-segment? [a b c]
     (let*
-        (
+        [
             x (<= (min-val (first a) (first c)) (first b))
             y (<= (first b) (max-val (first a) (first c)))
             z (<= (min-val (second a) (second c)) (second b))
             w (<= (second b) (max-val (second a) (second c)))
-        )
+        ]
         (and x y z w)
     )
 )
@@ -62,10 +62,10 @@
     (exists? 
         (fn* [edge]
             (let*
-                (
+                [
                     a (first edge)
                     b (second edge)
-                )
+                ]
                 (and (= (cross a p b) 0) (on-segment? a p b))
             )
         )
@@ -78,13 +78,13 @@
         false
         (fn* [acc edge] 
             (let* 
-                (
+                [
                     a (first edge)
                     b (second edge)
                     x (not (= (> (second a) (second p)) (> (second b) (second p))))
                     y (= (< (cross a b p) 0) (> (second b) (second a)))
                     intersects (and x y)
-                )
+                ]
                 (xor intersects acc)
             )
         )
@@ -96,12 +96,12 @@
 
 (defn intersects-edge? [p1 q1 p2 q2]
     (let* 
-        (
+        [
             d1 (cross p1 q1 p2)
             d2 (cross p1 q1 q2)
             d3 (cross p2 q2 p1)
             d4 (cross p2 q2 q1)
-        )
+        ]
         (and
             (or
                 (and (> d1 0) (< d2 0))
@@ -119,11 +119,11 @@
     (exists?
         (fn* [r] 
             (let* 
-                (r1 (first r) r2 (second r)) 
+                [r1 (first r) r2 (second r)]
                 (exists?
                     (fn* [p]
                         (let*
-                            (p1 (first p) p2 (second p))
+                            [p1 (first p) p2 (second p)]
                             (intersects-edge? r1 r2 p1 p2) 
                         )
                     )
@@ -137,18 +137,18 @@
 
 (defn contains-rectangle? [polygon rectangle]
     (let*
-        (
+        [
             edges (zip-list polygon (append (rest polygon) (first polygon))) 
             bounds (zip-list rectangle (append (rest rectangle) (first rectangle)))
             in-polygon? (for-all? (fn* [p] (in-polygon? p edges)) rectangle)
-        )
+        ]
         (and in-polygon? (not (intersects? bounds edges)))
     )
 )
 
 (println
     (timed!
-        (let* (points (parse-points file))
+        (let* [points (parse-points file)]
             (max 
                 (map 
                     (fn* [pair] (area (first pair) (second pair))) 
@@ -161,14 +161,14 @@
 
 (println
     (timed!
-        (let* (points (parse-points file))
+        (let* [points (parse-points file)]
             (max 
                 (map 
                     (fn* [pair] (area (first pair) (second pair))) 
                     (filter 
                         (fn* [pair]
                             (let*
-                                (p (first pair) q (second pair))
+                                [p (first pair) q (second pair)]
                                 (contains-rectangle? points (bounds p q))
                             )
                         )

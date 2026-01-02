@@ -8,7 +8,7 @@
 (load-file "mal/matrix.mal")
 
 (defn count-paper [point matrix]
-    (let* (points (adjacent point))
+    (let* [points (adjacent point)]
         (count
             (filter
                 (fn* [k]
@@ -28,7 +28,7 @@
 )
 
 (defn step [matrix acc]
-    (let* (to-remove (removable matrix))
+    (let* [to-remove (removable matrix)]
         (if (empty? to-remove)
             acc
             (step (dissoc-many matrix to-remove) (+ acc (count to-remove)))

@@ -13,8 +13,8 @@
 )
 
 (defn parse [file]
-    (let* (input (split (slurp file) "\n\n"))
-        (let* (ranges (first input) products (second input))
+    (let* [input (split (slurp file) "\n\n")]
+        (let* [ranges (first input) products (second input)]
             (list (map to-range (lines ranges)) (map parseLong (lines products)))
         )
     )
@@ -64,7 +64,7 @@
         ()
         (fn* [acc range] 
             (let* 
-                (i (index-where acc (fn* [r] (overlaps range r))))
+                [i (index-where acc (fn* [r] (overlaps range r)))]
                 (if (nil? i)
                     (sort-ranges (cons range acc))
                     (replace-nth acc i (merge (nth acc i) range))
@@ -77,7 +77,7 @@
 
 (println 
     (timed! 
-        (let* (parsed (parse input))
+        (let* [parsed (parse input)]
             (count-fresh (first parsed) (second parsed))
         )
     )
@@ -86,7 +86,7 @@
 (println 
     (timed! 
         ; for some reason, the merge algorithm is not merging some ranges and I have to apply twice
-        (let* (ranges (merge-ranges (merge-ranges (first (parse input)))))
+        (let* [ranges (merge-ranges (merge-ranges (first (parse input))))]
             (sum (map range-size ranges))
         )
     )

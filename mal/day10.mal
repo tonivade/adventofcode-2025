@@ -13,13 +13,13 @@
 
 (defn all-combinations [size]
     (let*
-        (xs (generate 0 (decr size)))
+        [xs (generate 0 (decr size))]
         (flatten (map (fn* [k] (combinations k xs)) (generate 1 size)))
     )
 )
 
 (defn all-patterns [size]
-    (let* (base (all-combinations size))
+    (let* [base (all-combinations size)]
         (concat base
             (flatten
                 (map
@@ -33,7 +33,7 @@
 
 (defn parse-machine [line]
     (let* 
-        (
+        [
             splitted (split line " ")
             ls (first splitted)
             bs (drop-last (rest splitted)) 
@@ -41,7 +41,7 @@
             lights (map (fn* [l] (= l "#")) (seq (substring ls 1 (- (length ls) 1))))
             jolts (map parseInt (split (substring js 1 (- (length js) 1)) ","))
             buttons (map (fn* [b] (map parseInt (split (substring b 1 (- (length b) 1)) ","))) bs)
-        )
+        ]
         (list lights buttons jolts)
     )
 )
@@ -56,7 +56,7 @@
 
 (defn turn-on [machine]
     (let*
-        (
+        [
             lights (first machine)
             buttons (second machine)
             patterns 
@@ -66,7 +66,7 @@
                     ) 
                     (all-combinations (count buttons))
                 )
-        )
+        ]
         (count 
             (nth
                 patterns
@@ -110,16 +110,16 @@
 
 (defn get-min-presses [patterns target]
     (let*
-        (min-presses 
+        [min-presses 
             (memoize1 
                 (fn* [current] 
                     (if (for-all? (fn* [item] (= item 0)) current)
                         0
                         (let* 
-                            (
+                            [
                                 indicators (odd-indices (map (fn* [i] (= 1 (% i 2))) current))
                                 all-presses (get patterns (str indicators))
-                            )
+                            ]
                             (if (nil? all-presses)
                                 nil
                                 (min
@@ -127,14 +127,14 @@
                                         (fn* [i] (not (nil? i)))
                                         (map 
                                             (fn* [presses] 
-                                                (let* (target-after (simulate-click current presses))
+                                                (let* [target-after (simulate-click current presses)]
                                                     (if (exists? (fn* [i] (< i 0)) target-after)
                                                         nil
                                                         (let* 
-                                                            (
+                                                            [
                                                                 half-target (map (fn* [i] (/ i 2)) target-after)
                                                                 next-min-presses (min-presses half-target)
-                                                            )
+                                                            ]
                                                             (if (nil? next-min-presses)
                                                                 nil
                                                                 (+ (* next-min-presses 2) (count presses))
@@ -152,7 +152,7 @@
                     )
                 )
             )
-        )
+        ]
         (min-presses target)
     )
     
@@ -160,18 +160,18 @@
 
 (defn jolt-on [machine]
     (let*
-        (
+        [
             lights (first machine)
             buttons (second machine)
             jolts (last machine)
             patterns (calculate-patterns buttons (count lights))
-        )
+        ]
         (get-min-presses patterns jolts)
     )
 )
 
 (defn parse [file]
-    (let* (input (lines (slurp file)))
+    (let* [input (lines (slurp file))]
         (map parse-machine input)
     )
 )
