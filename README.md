@@ -54,7 +54,7 @@ I completed the exercices using MAL (Make a Lisp) language as described in the [
     - part2: 2126ms
 - Day 02:
     - part1: 280751ms
-    - part2: XXXms
+    - part2: 6184654ms
 - Day 03:
     - part1: 53039ms
     - part2: 14787ms
@@ -74,7 +74,7 @@ I completed the exercices using MAL (Make a Lisp) language as described in the [
     - part1: XXXms
     - part2: XXXms
 - Day 09:
-    - part1: 37762ms
+    - part1: 46988ms
     - part2: XXXms
 - Day 10:
     - part1: 138376ms
