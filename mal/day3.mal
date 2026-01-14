@@ -54,10 +54,10 @@
     (parseLong 
         (join 
             (take 
+                12
                 (reverse 
                     (process (map parseLong bank) (list) 0 (- (count bank) 12))
                 ) 
-                12
             )
         )
     )

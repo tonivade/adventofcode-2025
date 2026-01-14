@@ -86,10 +86,10 @@
         (let* 
             [
                 points (parse input)
-                connections (take (make-connections points) max-connections)
+                connections (take max-connections (make-connections points))
                 groups (map set-to-list (connect points connections))
             ]
-            (mul (take (reverse (sort-list (map count groups))) 3))
+            (mul (take 3 (reverse (sort-list (map count groups)))))
         )
     )
 )
