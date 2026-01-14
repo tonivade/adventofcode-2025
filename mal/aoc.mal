@@ -97,7 +97,7 @@
 (defn chunks [xs size]
     (if (or (= size 0) (empty? xs))
         (list)
-        (let* [group (take xs size) rst (drop xs size)]
+        (let* [group (take size xs) rst (drop size xs)]
             (cons group (chunks rst size))
         )
     )
@@ -331,8 +331,8 @@
             [
                 n (count xs)
                 mid (/ n 2)
-                left (take xs mid)
-                right (drop xs mid)
+                left (take mid xs)
+                right (drop mid xs)
             ]
             (merge-list cmp (sort-list-by cmp left) (sort-list-by cmp right))
         )
