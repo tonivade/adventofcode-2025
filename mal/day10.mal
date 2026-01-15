@@ -13,8 +13,8 @@
 
 (defn all-combinations [size]
     (let*
-        [xs (generate 0 (decr size))]
-        (flatten (map (fn* [k] (combinations k xs)) (generate 1 size)))
+        [xs (range 0 (decr size))]
+        (flatten (map (fn* [k] (combinations k xs)) (range 1 size)))
     )
 )
 
@@ -23,7 +23,7 @@
         (concat base
             (flatten
                 (map
-                    (fn* [bs] (map (fn* [b] (append bs b)) (generate 0 (decr size))))
+                    (fn* [bs] (map (fn* [b] (append bs b)) (range 0 (decr size))))
                     base
                 )
             )
@@ -48,8 +48,8 @@
 
 (defn click [presses light-count]
     (reduce 
-        (map (fn* [i] false) (generate 1 light-count)) 
         (fn* [acc p] (replace-nth acc p (not (nth acc p)))) 
+        (map (fn* [i] false) (range 1 light-count)) 
         (flatten presses)
     )
 )
@@ -100,10 +100,10 @@
 
 (defn simulate-click [target presses]
     (reduce
-        target
         (fn* [current b] 
             (replace-nth current b (decr (nth current b)))
         )
+        target
         (flatten presses)
     )
 )

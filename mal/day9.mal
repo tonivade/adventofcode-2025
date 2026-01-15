@@ -75,7 +75,6 @@
 
 (defn inside? [p edges]
     (reduce
-        false
         (fn* [acc edge] 
             (let* 
                 [
@@ -88,6 +87,7 @@
                 (xor intersects acc)
             )
         )
+        false
         edges
     )
 )

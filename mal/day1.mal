@@ -35,8 +35,9 @@
 (defn part1 []
     (count 
         (filter (fn* [a] (= a 0)) 
-            (reduce (list 50) 
+            (reduce  
                 (fn* [state move] (cons (next move (first state)) state)) 
+                (list 50)
                 (parse input)
             )
         )
@@ -45,9 +46,10 @@
 
 (defn part2 []
     (second
-        (reduce (list 50 0) 
+        (reduce  
             (fn* [state move] 
                 (list (next move (first state)) (+ (second state) (zeros move (first state)))))
+            (list 50 0)
             (parse input)
         )
     )

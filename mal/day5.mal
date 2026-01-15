@@ -61,7 +61,6 @@
 
 (defn merge-ranges [ranges]
     (reduce 
-        ()
         (fn* [acc range] 
             (let* 
                 [i (index-where acc (fn* [r] (overlaps range r)))]
@@ -71,6 +70,7 @@
                 )
             )
         )
+        ()
         (sort-ranges ranges)
     )
 )

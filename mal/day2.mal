@@ -32,7 +32,7 @@
 )
 
 (defn unfold1 [range]
-    (filter is-invalid? (generate (first range) (second range)))
+    (filter is-invalid? (range (first range) (second range)))
 )
 
 (defn unfold1-sum [range] (sum (unfold1 range)))
@@ -49,7 +49,7 @@
 (defn expand [input]
     (if (> (count input) 1)
         (let* [end (/ (count input) 2)]
-            (map (fn* [s] (map join (chunks input s))) (generate 1 end))
+            (map (fn* [s] (map join (chunks input s))) (range 1 end))
         )
         ()
     )
@@ -68,7 +68,7 @@
 )
 
 (defn unfold2 [range]
-    (filter is-invalid2? (generate (first range) (second range)))
+    (filter is-invalid2? (range (first range) (second range)))
 )
 
 (defn unfold2-sum [range] (sum (unfold2 range)))

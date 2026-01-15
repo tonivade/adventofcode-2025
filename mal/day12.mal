@@ -39,10 +39,10 @@
 
 (defn required-area [tree presents]
     (reduce 
-        0
         (fn* [acc pair]
             (+ acc (* (first pair) (get presents (str (second pair)))))
         )
+        0
         (zip-with-index (second tree))
     )
 )

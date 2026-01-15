@@ -41,7 +41,6 @@
 
 (defn calculate-timelines [matrix beams timelines]
     (reduce
-        {}
         (fn* [acc p] 
             (let* 
                 [
@@ -64,6 +63,7 @@
                 (assoc acc (str (first p)) (+ fall-down (+ fall-left fall-right)))
             )
         )
+        {}
         beams
     )
 )

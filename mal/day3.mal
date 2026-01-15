@@ -21,10 +21,10 @@
                         (fn* [y] 
                             (list (nth xs x) (nth xs y))
                         ) 
-                        (generate (incr x) len)
+                        (range (incr x) len)
                     )
                 ) 
-                (generate 0 (decr len))
+                (range 0 (decr len))
             )
         )
     )

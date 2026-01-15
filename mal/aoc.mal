@@ -81,18 +81,11 @@
     )
 )
 
-(defn reduce [initial func xs] 
-    (if (empty? xs) 
-        initial 
-        (reduce (func initial (first xs)) func (rest xs))
-    )
-)
-
-(defn flatten [xs] (reduce () concat xs))
-(defn sum [xs] (reduce 0 + xs))
-(defn mul [xs] (reduce 1 * xs))
-(defn max [xs] (reduce 0 (fn* [i j] (if (> i j) i j)) xs))
-(defn min [xs] (reduce 1000000000 (fn* [i j] (if (< i j) i j)) xs))
+(defn flatten [xs] (reduce concat () xs))
+(defn sum [xs] (reduce + 0 xs))
+(defn mul [xs] (reduce * 1 xs))
+(defn max [xs] (reduce (fn* [i j] (if (> i j) i j)) 0 xs))
+(defn min [xs] (reduce (fn* [i j] (if (< i j) i j)) 1000000000 xs))
 
 (defn chunks [xs size]
     (if (or (= size 0) (empty? xs))
@@ -118,10 +111,10 @@
     )
 )
 
-(defn generate [start end]
+(defn range [start end]
     (if (> start end)
         (list)
-        (cons start (generate (incr start) end))
+        (cons start (range (incr start) end))
     )
 )
 
@@ -142,8 +135,8 @@
 
 (defn list-to-map [xs]
     (reduce 
-        {}
         (fn* [m pair] (assoc m (first pair) (second pair)))
+        {}
         xs
     )
 )
@@ -182,7 +175,6 @@
 
 (defn group-by-map [func mapper xs]
     (reduce
-        {}
         (fn* [acc item]
             (let* [k (str (func item))]
                 (if (contains? acc k)
@@ -191,6 +183,7 @@
                 )
             )
         )
+        {}
         xs
     )
 )
