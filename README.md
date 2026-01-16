@@ -74,11 +74,11 @@ I completed the exercises using MAL (Make a Lisp) language as described in the [
     - part1: 3656740ms
     - part2: XXXms
 - Day 09:
-    - part1: 46988ms
+    - part1: 21660ms
     - part2: XXXms
 - Day 10:
     - part1: 120549ms
-    - part2: XXXms
+    - part2: 18291698ms
 - Day 11:
     - part1: 64ms
     - part2: 154ms
