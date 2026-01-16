@@ -12,6 +12,7 @@
 (defn min-val [p q] (if (< p q) p q))
 (defn max-val [p q] (if (> p q) p q))
 (defn identity [x] x)
+(defn mapcat [f xs] (apply concat (map f xs)))
 
 (defn join [xs]
     (if (empty? xs)

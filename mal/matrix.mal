@@ -32,19 +32,16 @@
 (defn parse-matrix [file]
     (let* [input (slurp file)]
         (list-to-map 
-            (apply
-                concat
-                (map
-                    (fn* [row]
-                        (map
-                            (fn* [cell]
-                                (list (to-key (list (second cell) (second row))) (first cell))
-                            )
-                            (first row)
+            (mapcat
+                (fn* [row]
+                    (map
+                        (fn* [cell]
+                            (list (to-key (list (second cell) (second row))) (first cell))
                         )
+                        (first row)
                     )
-                    (zip-with-index (map zip-with-index (map seq (lines input))))
                 )
+                (zip-with-index (map zip-with-index (map seq (lines input))))
             )
         )
     )

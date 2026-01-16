@@ -47,7 +47,7 @@ For more information on the sbt-dotty plugin, see the
 
 ### Mal solutions
 
-I completed the exercices using MAL (Make a Lisp) language as described in the [mal project](https://github.com/kanaka/mal), using my own [implementation](https://github.com/tonivade/mal/tree/impl/java25/impls/java25)
+I completed the exercises using MAL (Make a Lisp) language as described in the [mal project](https://github.com/kanaka/mal), using my own [implementation](https://github.com/tonivade/mal/tree/impl/java25/impls/java25)
 
 - Day 01:
     - part1: 394ms
@@ -69,7 +69,7 @@ I completed the exercices using MAL (Make a Lisp) language as described in the [
     - part2: 1223ms
 - Day 07:
     - part1: 71621ms
-    - part2: 78603ms
+    - part2: 74900ms
 - Day 08:
     - part1: 3656740ms
     - part2: XXXms

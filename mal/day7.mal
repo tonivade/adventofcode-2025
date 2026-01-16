@@ -31,7 +31,7 @@
 )
 
 (defn step1 [matrix]
-    (let* [next (apply concat (map (fn* [b] (move-beam matrix b)) (map to-pair (keys-by-value matrix "|"))))]
+    (let* [next (mapcat (fn* [b] (move-beam matrix b)) (map to-pair (keys-by-value matrix "|")))]
         (if (empty? next)
             matrix
             (step1 (assoc-many matrix next))
@@ -69,7 +69,7 @@
 )
 
 (defn step2 [matrix timelines]
-    (let* [next (apply concat (map (fn* [b] (move-beam matrix b)) (map to-pair (keys-by-value matrix "|"))))]
+    (let* [next (mapcat (fn* [b] (move-beam matrix b)) (map to-pair (keys-by-value matrix "|")))]
         (if (empty? next)
             (list matrix timelines)
             (let* 

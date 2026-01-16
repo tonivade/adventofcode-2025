@@ -17,14 +17,11 @@
             (group-by-map 
                 second
                 first
-                (apply
-                    concat 
-                    (map
-                        zip-with-index
-                        (map 
-                            (fn* [line] (split line "\\s+"))
-                            (map trim input)
-                        )
+                (mapcat 
+                    zip-with-index
+                    (map 
+                        (fn* [line] (split line "\\s+"))
+                        (map trim input)
                     )
                 )
             )
@@ -59,14 +56,11 @@
             (group-by-map
                 second
                 first
-                (apply 
-                    concat
-                    (map
-                        zip-with-index
-                        (map 
-                            (fn* [line] (parse-line line cols))
-                            input
-                        )
+                (mapcat
+                    zip-with-index
+                    (map 
+                        (fn* [line] (parse-line line cols))
+                        input
                     )
                 )
             )
@@ -86,7 +80,7 @@
                         (group-by-map
                             second
                             first
-                            (apply concat (map zip-with-index (map seq numbers)))
+                            (mapcat zip-with-index (map seq numbers))
                         )
                     )
                 )

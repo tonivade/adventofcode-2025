@@ -14,19 +14,16 @@
 (defn all-combinations [size]
     (let*
         [xs (range 0 (decr size))]
-        (apply concat (map (fn* [k] (combinations k xs)) (range 1 size)))
+        (mapcat (fn* [k] (combinations k xs)) (range 1 size))
     )
 )
 
 (defn all-patterns [size]
     (let* [base (all-combinations size)]
         (concat base
-            (apply
-                concat
-                (map
-                    (fn* [bs] (map (fn* [b] (append bs b)) (range 0 (decr size))))
-                    base
-                )
+            (mapcat
+                (fn* [bs] (map (fn* [b] (append bs b)) (range 0 (decr size))))
+                base
             )
         )
     )
