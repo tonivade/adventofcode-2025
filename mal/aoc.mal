@@ -81,7 +81,6 @@
     )
 )
 
-(defn flatten [xs] (reduce concat () xs))
 (defn sum [xs] (reduce + 0 xs))
 (defn mul [xs] (reduce * 1 xs))
 (defn max [xs] (reduce (fn* [i j] (if (> i j) i j)) 0 xs))

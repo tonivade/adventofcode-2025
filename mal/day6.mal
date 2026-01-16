@@ -17,7 +17,8 @@
             (group-by-map 
                 second
                 first
-                (flatten 
+                (apply
+                    concat 
                     (map
                         zip-with-index
                         (map 
@@ -58,7 +59,8 @@
             (group-by-map
                 second
                 first
-                (flatten 
+                (apply 
+                    concat
                     (map
                         zip-with-index
                         (map 
@@ -84,7 +86,7 @@
                         (group-by-map
                             second
                             first
-                            (flatten (map zip-with-index (map seq numbers)))
+                            (apply concat (map zip-with-index (map seq numbers)))
                         )
                     )
                 )

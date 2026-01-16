@@ -14,7 +14,8 @@
 
 (defn combinations [xs]
     (let* [len (decr (count xs))]
-        (flatten 
+        (apply
+            concat
             (map 
                 (fn* [x] 
                     (map 

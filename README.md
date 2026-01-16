@@ -56,8 +56,8 @@ I completed the exercices using MAL (Make a Lisp) language as described in the [
     - part1: 280751ms
     - part2: 6184654ms
 - Day 03:
-    - part1: 41795ms
-    - part2: 12280ms
+    - part1: 37286ms
+    - part2: 11333ms
 - Day 04:
     - part1: 37251ms
     - part2: 627687ms

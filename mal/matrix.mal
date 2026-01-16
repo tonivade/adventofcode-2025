@@ -32,7 +32,8 @@
 (defn parse-matrix [file]
     (let* [input (slurp file)]
         (list-to-map 
-            (flatten
+            (apply
+                concat
                 (map
                     (fn* [row]
                         (map

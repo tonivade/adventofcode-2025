@@ -14,7 +14,7 @@
         [
             all-lines (lines input)
             id (first (split (first all-lines) ":"))
-            area (count (filter (fn* [item] (= item "#")) (flatten (map seq (rest all-lines)))))
+            area (count (filter (fn* [item] (= item "#")) (apply concat (map seq (rest all-lines)))))
         ]
         (list id area)
     )
