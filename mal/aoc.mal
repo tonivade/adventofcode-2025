@@ -2,6 +2,22 @@
 
 (load-file "mal/basic.mal")
 
+;; shortcut for (def! (fn* ...))
+(defmacro! defn
+  (fn* (name params & body)
+    `(def! ~name (fn* ~params ~@body))
+  )
+)
+
+(defmacro! if-defined
+  (fn* (sym then else)
+    `(try*
+      (do ~sym ~then)
+      (catch* e ~else)
+    )
+  )
+)
+
 (defn second [xs] (nth xs 1))
 (defn abs [n] (if (>= n 0) n (* n -1)))
 (defn incr [n] (+ n 1))

@@ -136,19 +136,3 @@
               (do
                 (swap! mem assoc key ret)
                 ret))))))))
-
-;; shortcut for (def! (fn* ...))
-(defmacro! defn
-  (fn* (name params & body)
-    `(def! ~name (fn* ~params ~@body))
-  )
-)
-
-(defmacro! if-defined
-  (fn* (sym then else)
-    `(try*
-      (do ~sym ~then)
-      (catch* e ~else)
-    )
-  )
-)
