@@ -349,18 +349,3 @@
 )
 
 (defn sort-list [xs] (sort-list-by <= xs))
-
-(defn memoize1 [f]
-    (let* [cache (atom {})]
-        (fn* (x)
-            (let* [k (str x) v (get @cache k)]
-                (if (not (= v nil))
-                    v
-                    (let* [res (f x)]
-                        (do (swap! cache assoc k res) res)
-                    )
-                )
-            )
-        )
-    )
-)

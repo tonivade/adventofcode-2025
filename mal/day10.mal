@@ -109,7 +109,7 @@
 (defn get-min-presses [patterns target]
     (let*
         [min-presses 
-            (memoize1 
+            (memoize 
                 (fn* [current] 
                     (if (for-all? (fn* [item] (= item 0)) current)
                         0

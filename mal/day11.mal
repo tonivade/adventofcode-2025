@@ -29,7 +29,7 @@
 (defn find-all-paths [graph start end]
     (let* 
         [dfs 
-            (memoize1
+            (memoize
                 (fn* [current]
                     (let*
                         [connections (get graph current)]
