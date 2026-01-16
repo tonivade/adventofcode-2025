@@ -13,8 +13,8 @@
 
 (defn all-combinations [size]
     (let*
-        [xs (range 0 (decr size))]
-        (mapcat (fn* [k] (combinations k xs)) (range 1 size))
+        [xs (range 0 size)]
+        (mapcat (fn* [k] (combinations k xs)) (range 1 (incr size)))
     )
 )
 
@@ -22,7 +22,7 @@
     (let* [base (all-combinations size)]
         (concat base
             (mapcat
-                (fn* [bs] (map (fn* [b] (append bs b)) (range 0 (decr size))))
+                (fn* [bs] (map (fn* [b] (append bs b)) (range 0 size)))
                 base
             )
         )
@@ -47,7 +47,7 @@
 (defn click [presses light-count]
     (reduce 
         (fn* [acc p] (replace-nth acc p (not (nth acc p)))) 
-        (map (fn* [i] false) (range 1 light-count)) 
+        (map (fn* [i] false) (range 1 (incr light-count))) 
         (apply concat presses)
     )
 )

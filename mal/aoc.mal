@@ -111,8 +111,24 @@
     )
 )
 
+(defn range-step [start end step]
+    (lazy-seq
+        (if 
+            (and 
+                end
+                (if (> step 0)
+                    (>= start end)
+                    (<= start end)
+                )
+            )
+            ()
+            (cons start (range-step (+ start step) end step))
+        )
+    )
+)
+
 (defn range [start end]
-    (if (> start end)
+    (if (>= start end)
         (list)
         (cons start (range (incr start) end))
     )

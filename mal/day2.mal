@@ -31,11 +31,11 @@
     )
 )
 
-(defn unfold1 [range]
-    (filter is-invalid? (range (first range) (second range)))
+(defn unfold1 [r]
+    (filter is-invalid? (range (first r) (incr (second r))))
 )
 
-(defn unfold1-sum [range] (sum (unfold1 range)))
+(defn unfold1-sum [r] (sum (unfold1 r)))
 
 (defn all-the-same? [xs]
     (if (empty? xs)
@@ -49,7 +49,7 @@
 (defn expand [input]
     (if (> (count input) 1)
         (let* [end (/ (count input) 2)]
-            (map (fn* [s] (map join (chunks input s))) (range 1 end))
+            (map (fn* [s] (map join (chunks input s))) (range 1 (incr end)))
         )
         ()
     )
@@ -67,11 +67,11 @@
     (let* [s (toString number)] (is-repeated2? s))
 )
 
-(defn unfold2 [range]
-    (filter is-invalid2? (range (first range) (second range)))
+(defn unfold2 [r]
+    (filter is-invalid2? (range (first r) (incr (second r))))
 )
 
-(defn unfold2-sum [range] (sum (unfold2 range)))
+(defn unfold2-sum [r] (sum (unfold2 r)))
 
 (def! input (if-defined DEBUG-EVAL "input/day2-test.txt" "input/day2.txt"))
 

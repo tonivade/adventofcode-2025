@@ -22,10 +22,10 @@
                         (fn* [y] 
                             (list (nth xs x) (nth xs y))
                         ) 
-                        (range (incr x) len)
+                        (range (incr x) (incr len))
                     )
                 ) 
-                (range 0 (decr len))
+                (range 0 len)
             )
         )
     )
