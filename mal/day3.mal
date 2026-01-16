@@ -14,19 +14,16 @@
 
 (defn combinations [xs]
     (let* [len (decr (count xs))]
-        (apply
-            concat
-            (map 
-                (fn* [x] 
-                    (map 
-                        (fn* [y] 
-                            (list (nth xs x) (nth xs y))
-                        ) 
-                        (range (incr x) (incr len))
-                    )
-                ) 
-                (range 0 len)
-            )
+        (mapcat
+            (fn* [x] 
+                (map 
+                    (fn* [y] 
+                        (list (nth xs x) (nth xs y))
+                    ) 
+                    (range (incr x) (incr len))
+                )
+            ) 
+            (range 0 len)
         )
     )
 )
