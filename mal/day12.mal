@@ -55,7 +55,11 @@
                 presents (list-to-map (map parse-present (drop-last input)))
                 trees (map parse-tree (lines (last input)))
             ]
-            (count (filter (fn* [tree] (>= (total-area tree) (required-area tree presents))) trees))
+            (->>
+                trees
+                (filter (fn* [tree] (>= (total-area tree) (required-area tree presents))))
+                (count)
+            )
         )
     )
 )

@@ -35,7 +35,8 @@
                         [connections (get graph current)]
                         (if (nil? connections)
                             0
-                            (sum 
+                            (->>
+                                connections
                                 (map
                                     (fn* [output] 
                                         (if (= output end)
@@ -43,8 +44,8 @@
                                             (dfs output)
                                         )
                                     )
-                                    connections
                                 )
+                                (sum)
                             )
                         )
                     )
