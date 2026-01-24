@@ -50,37 +50,37 @@ For more information on the sbt-dotty plugin, see the
 I completed the exercises using MAL (Make a Lisp) language as described in the [mal project](https://github.com/kanaka/mal), using my own [implementation](https://github.com/tonivade/mal/tree/impl/java25/impls/java25)
 
 - Day 01:
-    - part1: 559ms
-    - part2: 1184ms
+    - part1: 326ms
+    - part2: 747ms
 - Day 02:
-    - part1: 121789ms
-    - part2: 2422408ms
+    - part1: 99613ms
+    - part2: 1596614ms
 - Day 03:
-    - part1: 18937ms
-    - part2: 5188ms
+    - part1: 14345ms
+    - part2: 3841ms
 - Day 04:
-    - part1: 18133ms
-    - part2: 282750ms
+    - part1: 7564ms
+    - part2: 216552ms
 - Day 05:
-    - part1: 12508ms
-    - part2: 3526ms
+    - part1: 9445ms
+    - part2: 2856ms
 - Day 06:
-    - part1: 760ms
-    - part2: 891ms
+    - part1: 379ms
+    - part2: 691ms
 - Day 07:
-    - part1: 42902ms
-    - part2: 43094ms
+    - part1: 15241ms
+    - part2: 18536ms
 - Day 08:
-    - part1: 1198686ms
-    - part2: XXXms
+    - part1: 925983ms
+    - part2: 3294636ms
 - Day 09:
-    - part1: 12831ms
+    - part1: 19811ms
     - part2: XXXms
 - Day 10:
-    - part1: 64588ms
+    - part1: 41506ms
     - part2: 18291698ms
 - Day 11:
-    - part1: 201ms
-    - part2: 318ms
+    - part1: 171ms
+    - part2: 289ms
 - Day 12:
-    - part1: 533ms
+    - part1: 395ms
