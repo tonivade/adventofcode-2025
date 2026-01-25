@@ -149,11 +149,9 @@
 (println
     (timed!
         (let* [points (parse-points file)]
-            (max 
-                (map 
-                    (fn* [pair] (area (first pair) (second pair))) 
-                    (combinations2 points)
-                )
+            (max-by 
+                (fn* [pair] (area (first pair) (second pair))) 
+                (combinations2 points)
             )
         )
     )
@@ -162,18 +160,16 @@
 (println
     (timed!
         (let* [points (parse-points file)]
-            (max 
-                (map 
-                    (fn* [pair] (area (first pair) (second pair))) 
-                    (filter 
-                        (fn* [pair]
-                            (let*
-                                [p (first pair) q (second pair)]
-                                (contains-rectangle? points (bounds p q))
-                            )
+            (max-by 
+                (fn* [pair] (area (first pair) (second pair))) 
+                (filter 
+                    (fn* [pair]
+                        (let*
+                            [p (first pair) q (second pair)]
+                            (contains-rectangle? points (bounds p q))
                         )
-                        (combinations2 points)
                     )
+                    (combinations2 points)
                 )
             )
         )

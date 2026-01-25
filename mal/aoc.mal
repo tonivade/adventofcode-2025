@@ -38,38 +38,46 @@
 )
 
 (defn zip-list [l r]
-    (if (or (empty? l) (empty? r))
-        (list)
-        (cons (list (first l) (first r)) (zip-list (rest l) (rest r)))
+    (lazy-seq
+        (if (or (empty? l) (empty? r))
+            (list)
+            (cons (list (first l) (first r)) (zip-list (rest l) (rest r)))
+        )
     )
 )
 
 (defn zip-with-index [xs]
-    (let* [go (fn* [xs i]
-              (if (empty? xs)
-                  ()
-                  (cons (list (first xs) i)
-                        (go (rest xs) (incr i)))))]
-        (go xs 0)
+    (lazy-seq
+        (let* [go (fn* [xs i]
+                (if (empty? xs)
+                    ()
+                    (cons (list (first xs) i)
+                            (go (rest xs) (incr i)))))]
+            (go xs 0)
+        )
     )
 )
 
 (defn take [i xs]
-    (if (empty? xs)
-        xs
-        (if (> i 0)
-            (cons (first xs) (take (decr i) (rest xs)))
-            (list)
+    (lazy-seq
+        (if (empty? xs)
+            xs
+            (if (> i 0)
+                (cons (first xs) (take (decr i) (rest xs)))
+                (list)
+            )
         )
     )
 )
 
 (defn drop [i xs]
-    (if (empty? xs)
-        xs
-        (if (> i 0)
-            (drop (decr i) (rest xs))
+    (lazy-seq
+        (if (empty? xs)
             xs
+            (if (> i 0)
+                (drop (decr i) (rest xs))
+                xs
+            )
         )
     )
 )
@@ -89,11 +97,13 @@
 )
 
 (defn filter [cmp xs]
-    (if (empty? xs)
-        xs
-        (if (cmp (first xs))
-            (cons (first xs) (filter cmp (rest xs)))
-            (filter cmp (rest xs))
+    (lazy-seq
+        (if (empty? xs)
+            xs
+            (if (cmp (first xs))
+                (cons (first xs) (filter cmp (rest xs)))
+                (filter cmp (rest xs))
+            )
         )
     )
 )
@@ -103,11 +113,29 @@
 (defn max [xs] (reduce (fn* [i j] (if (> i j) i j)) 0 xs))
 (defn min [xs] (reduce (fn* [i j] (if (< i j) i j)) 1000000000 xs))
 
+(defn max-by [f xs]
+    (reduce
+        (fn* [best x] (let* [v (f x)] (if (> v best) v best)))
+        (f (first xs))
+        (rest xs)
+    )
+)
+
+(defn min-by [f xs]
+    (reduce
+        (fn* [best x] (let* [v (f x)] (if (< v best) v best)))
+        (f (first xs))
+        (rest xs)
+    )
+)
+
 (defn chunks [xs size]
-    (if (or (= size 0) (empty? xs))
-        (list)
-        (let* [group (take size xs) rst (drop size xs)]
-            (cons group (chunks rst size))
+    (lazy-seq
+        (if (or (= size 0) (empty? xs))
+            (list)
+            (let* [group (take size xs) rst (drop size xs)]
+                (cons group (chunks rst size))
+            )
         )
     )
 )
@@ -144,10 +172,7 @@
 )
 
 (defn range [start end]
-    (if (>= start end)
-        (list)
-        (cons start (range (incr start) end))
-    )
+    (range-step start end 1)
 )
 
 (defn last [xs] 
@@ -225,11 +250,13 @@
 )
 
 (defn sliding2 [xs]
-    (if (or (empty? xs) (empty? (rest xs)))
-        ()
-        (cons 
-            (list (first xs) (first (rest xs))) 
-            (sliding2 (rest xs))
+    (lazy-seq
+        (if (or (empty? xs) (empty? (rest xs)))
+            ()
+            (cons 
+                (list (first xs) (first (rest xs))) 
+                (sliding2 (rest xs))
+            )
         )
     )
 )
@@ -274,17 +301,16 @@
 )
 
 (defn combinations [k xs]
-    (cond
-        (= k 0) (list ())
-        (empty? xs) ()
-        true
-            (concat
-                ;; include first element
-                (map (fn* (c) (cons (first xs) c))
-                    (combinations (- k 1) (rest xs)))
-                ;; exclude first element
-                (combinations k (rest xs))
-            )
+    (lazy-seq
+        (cond
+            (= k 0) (list ())
+            (empty? xs) ()
+            true
+                (concat
+                    (map (fn* (c) (cons (first xs) c)) (combinations (decr k) (rest xs)))
+                    (combinations k (rest xs))
+                )
+        )
     )
 )
 
@@ -339,13 +365,15 @@
 )
 
 (defn merge-list [cmp a b]
-    (cond
-        (empty? a) b
-        (empty? b) a
-        (cmp (first a) (first b))
-            (cons (first a) (merge-list cmp (rest a) b))
-        true
-            (cons (first b) (merge-list cmp a (rest b)))
+    (lazy-seq
+        (cond
+            (empty? a) b
+            (empty? b) a
+            (cmp (first a) (first b))
+                (cons (first a) (merge-list cmp (rest a) b))
+            true
+                (cons (first b) (merge-list cmp a (rest b)))
+        )
     )
 )
 

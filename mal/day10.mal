@@ -12,20 +12,20 @@
 (def! input (if-defined DEBUG-EVAL "input/day10-test.txt" "input/day10.txt"))
 
 (defn all-combinations [size]
-    (let*
-        [xs (range 0 size)]
-        (mapcat (fn* [k] (combinations k xs)) (range 1 (incr size)))
+    (let* [xs (range 0 size)]
+        (lazy-seq
+            (mapcat (fn* [k] (combinations k xs)) (range 1 (incr size)))
+        )
     )
 )
 
 (defn all-patterns [size]
-    (let* [base (all-combinations size)]
-        (concat base
-            (mapcat
-                (fn* [bs] (map (fn* [b] (append bs b)) (range 0 size)))
-                base
-            )
-        )
+    (mapcat
+        (fn* [bs]
+            (cons bs
+                (map (fn* [b] (append bs b))
+                    (range 0 size))))
+        (all-combinations size)
     )
 )
 

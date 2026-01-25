@@ -13,17 +13,12 @@
 )
 
 (defn combinations [xs]
-    (let* [len (decr (count xs))]
-        (mapcat
-            (fn* [x] 
-                (map 
-                    (fn* [y] 
-                        (list (nth xs x) (nth xs y))
-                    ) 
-                    (range (incr x) (incr len))
-                )
-            ) 
-            (range 0 len)
+    (lazy-seq
+        (if (empty? xs)
+        ()
+        (concat
+            (map (fn* [y] (list (first xs) y)) (rest xs))
+            (combinations (rest xs)))
         )
     )
 )
@@ -31,9 +26,7 @@
 (defn jolts [item] (+ (* 10 (parseInt (first item))) (parseInt (second item))))
 
 (defn maximize [bank]
-    (max
-        (map jolts (combinations bank))
-    )
+    (max-by jolts (combinations bank))
 )
 
 (defn process [remaining stack dropped maxDrop]
