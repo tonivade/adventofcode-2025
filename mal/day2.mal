@@ -27,7 +27,7 @@
 
 (defn is-invalid? [number]
     (let* [s (toString number)]
-        (and (= (% (length s) 2) 0) (is-repeated? s))
+        (and (zero? (% (length s) 2)) (is-repeated? s))
     )
 )
 

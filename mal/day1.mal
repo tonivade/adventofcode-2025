@@ -39,7 +39,7 @@
             (fn* [state move] (cons (next move (first state)) state)) 
             (list 50)
         )
-        (filter (fn* [a] (= a 0)))
+        (filter zero?)
         (count)
     )
 )

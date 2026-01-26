@@ -104,12 +104,12 @@
         ]
         (and
             (or
-                (and (> d1 0) (< d2 0))
-                (and (< d1 0) (> d2 0))
+                (and (pos? d1) (neg? d2))
+                (and (neg? d1) (pos? d2))
             )
             (or
-                (and (> d3 0) (< d4 0))
-                (and (< d3 0) (> d4 0))
+                (and (pos? d3) (neg? d4))
+                (and (neg? d3) (pos? d4))
             )
         )
     )
