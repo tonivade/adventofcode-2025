@@ -135,10 +135,9 @@
     )
 )
 
-(defn contains-rectangle? [polygon rectangle]
+(defn contains-rectangle? [edges rectangle]
     (let*
         [
-            edges (zip-list polygon (append (rest polygon) (first polygon))) 
             bounds (zip-list rectangle (append (rest rectangle) (first rectangle)))
             in-polygon? (for-all? (fn* [p] (in-polygon? p edges)) rectangle)
         ]
@@ -146,6 +145,7 @@
     )
 )
 
+; part1
 (println
     (timed!
         (let* [points (parse-points file)]
@@ -157,16 +157,21 @@
     )
 )
 
+; part2
 (println
     (timed!
-        (let* [points (parse-points file)]
+        (let* 
+            [
+                points (parse-points file)
+                edges (zip-list points (append (rest points) (first points))) 
+            ]
             (max-by 
                 (fn* [pair] (area (first pair) (second pair))) 
                 (filter 
                     (fn* [pair]
                         (let*
-                            [p (first pair) q (second pair)]
-                            (contains-rectangle? points (bounds p q))
+                            [p (first (peek pair)) q (second pair)]
+                            (contains-rectangle? edges (bounds p q))
                         )
                     )
                     (combinations2 points)
