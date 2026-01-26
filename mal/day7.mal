@@ -60,7 +60,7 @@
                             0
                         )
                 ]
-                (assoc acc (str (first p)) (+ fall-down (+ fall-left fall-right)))
+                (assoc acc (str (first p)) (sum (list fall-down fall-left fall-right)))
             )
         )
         {}
