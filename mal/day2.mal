@@ -71,7 +71,7 @@
     (filter is-invalid2? (range (first r) (incr (second r))))
 )
 
-(defn unfold2-sum [r] (sum (unfold2 (peek r))))
+(defn unfold2-sum [r] (sum (unfold2 r)))
 
 (def! input (if-defined DEBUG-EVAL "input/day2-test.txt" "input/day2.txt"))
 

@@ -36,9 +36,9 @@
             ls (first splitted)
             bs (drop-last (rest splitted)) 
             js (last splitted)
-            lights (map (fn* [l] (= l "#")) (seq (substring ls 1 (- (length ls) 1))))
-            jolts (map parseInt (split (substring js 1 (- (length js) 1)) ","))
-            buttons (map (fn* [b] (map parseInt (split (substring b 1 (- (length b) 1)) ","))) bs)
+            lights (map (fn* [l] (= l "#")) (seq (substring ls 1 (decr (length ls)))))
+            jolts (map parseInt (split (substring js 1 (decr (length js))) ","))
+            buttons (map (fn* [b] (map parseInt (split (substring b 1 (decr (length b))) ","))) bs)
         ]
         (list lights buttons jolts)
     )
@@ -59,9 +59,7 @@
             buttons (second machine)
             patterns 
                 (map 
-                    (fn* [bs] 
-                        (map (fn* [i] (nth buttons i)) bs)
-                    ) 
+                    (fn* [bs] (map (fn* [i] (nth buttons i)) bs)) 
                     (all-combinations (count buttons))
                 )
         ]
@@ -111,11 +109,11 @@
         [min-presses 
             (memoize 
                 (fn* [current] 
-                    (if (for-all? (fn* [item] (= item 0)) current)
+                    (if (for-all? zero? current)
                         0
                         (let* 
                             [
-                                indicators (odd-indices (map (fn* [i] (= 1 (% i 2))) current))
+                                indicators (odd-indices (map odd? current))
                                 all-presses (get patterns (str indicators))
                             ]
                             (if (nil? all-presses)
@@ -126,11 +124,12 @@
                                         (map 
                                             (fn* [presses] 
                                                 (let* [target-after (simulate-click current presses)]
-                                                    (if (exists? (fn* [i] (< i 0)) target-after)
+                                                    (if (exists? neg? target-after)
                                                         nil
                                                         (let* 
                                                             [
-                                                                half-target (map (fn* [i] (/ i 2)) target-after)
+                                                                half (fn* [i] (/ i 2))
+                                                                half-target (map half target-after)
                                                                 next-min-presses (min-presses half-target)
                                                             ]
                                                             (if (nil? next-min-presses)

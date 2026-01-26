@@ -29,6 +29,11 @@
 (defn max-val [p q] (if (> p q) p q))
 (defn identity [x] x)
 (defn mapcat [f xs] (apply concat (map f xs)))
+(defn zero? [x] (= x 0))
+(defn pos? [x] (> x 0))
+(defn neg? [x] (< x 0))
+(defn even? [x] (= (% x 2) 0))
+(defn odd? [x] (= (% x 2) 1))
 
 (defn join [xs]
     (if (empty? xs)
