@@ -8,14 +8,20 @@
 (load-file "mal/matrix.mal")
 
 (defn count-paper [point matrix]
-    (let* [points (adjacent point)]
-        (count
-            (filter
+    (let* 
+        [
+            points (adjacent point)
+            has-paper?
                 (fn* [k]
                     (and (contains? matrix k) (= (get matrix k) "@"))
                 )
-                points
+        ]
+        (reduce
+            (fn* [acc k]
+                (if (has-paper? k) (incr acc) acc)
             )
+            0
+            points
         )
     )
 )

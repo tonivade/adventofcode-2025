@@ -7,18 +7,20 @@
 (load-file "mal/aoc.mal")
 
 (defn parse [file]
-    (let* [input (slurp file)]
-        (map seq (lines input))
+    (->>
+        (slurp file)
+        (lines)
+        (map seq)
     )
 )
 
 (defn combinations [xs]
     (lazy-seq
         (if (empty? xs)
-        ()
-        (concat
-            (map (fn* [y] (list (first xs) y)) (rest xs))
-            (combinations (rest xs)))
+            ()
+            (concat
+                (map (fn* [y] (list (first xs) y)) (rest xs))
+                (combinations (rest xs)))
         )
     )
 )

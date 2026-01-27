@@ -22,9 +22,7 @@
 (defn all-patterns [size]
     (mapcat
         (fn* [bs]
-            (cons bs
-                (map (fn* [b] (append bs b))
-                    (range 0 size))))
+            (cons bs (map (fn* [b] (append bs b)) (range 0 size))))
         (all-combinations size)
     )
 )
@@ -175,19 +173,29 @@
 )
 
 (defn parse [file]
-    (let* [input (lines (slurp file))]
-        (map parse-machine input)
+    (->> 
+        (slurp file)
+        (lines)
+        (map parse-machine)
     )
 )
 
 (println
     (timed!
-        (sum (map turn-on (parse input)))
+        (->>
+            (parse input)
+            (map turn-on)
+            (sum)
+        )
     )
 )
 
 (println
     (timed!
-        (sum (map jolt-on (parse input)))
+        (->>
+            (parse input)
+            (map jolt-on)
+            (sum)
+        )
     )
 )

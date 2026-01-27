@@ -21,8 +21,11 @@
 )
 
 (defn parse [file]
-    (let* [input (lines (slurp file))]
-        (list-to-map (map parse-line input))
+    (->>
+        (slurp file)
+        (lines)
+        (map parse-line)
+        (list-to-map)
     )
 )
 
@@ -35,17 +38,13 @@
                         [connections (get graph current)]
                         (if (nil? connections)
                             0
-                            (->>
-                                connections
-                                (map
-                                    (fn* [output] 
-                                        (if (= output end)
-                                            1
-                                            (dfs output)
-                                        )
-                                    )
+                            (let* 
+                                [paths (fn* [output] (if (= output end) 1 (dfs output)))]
+                                (reduce
+                                    (fn* [acc output] (+ acc (paths output)))
+                                    0
+                                    connections
                                 )
-                                (sum)
                             )
                         )
                     )

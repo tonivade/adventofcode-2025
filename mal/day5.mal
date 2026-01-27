@@ -13,10 +13,13 @@
 )
 
 (defn parse [file]
-    (let* [input (split (slurp file) "\n\n")]
-        (let* [ranges (first input) products (second input)]
-            (list (map to-range (lines ranges)) (map parseLong (lines products)))
-        )
+    (let* 
+        [
+            input (split (slurp file) "\n\n")
+            ranges (first input) 
+            products (second input)
+        ]
+        (list (map to-range (lines ranges)) (map parseLong (lines products)))
     )
 )
 
@@ -47,11 +50,13 @@
 )
 
 (defn count-fresh [ranges products]
-    (count
-        (filter
-            (fn* [p] (is-fresh ranges p))
-            products
+    (reduce
+        (fn* 
+            [acc p] 
+            (if (is-fresh ranges p) (incr acc) acc)
         )
+        0
+        products
     )
 )
 
@@ -87,7 +92,11 @@
     (timed! 
         ; for some reason, the merge algorithm is not merging some ranges and I have to apply twice
         (let* [ranges (merge-ranges (merge-ranges (first (parse input))))]
-            (sum (map range-size ranges))
+            (reduce
+                (fn* [acc r] (+ acc (range-size r)))
+                0
+                ranges
+            )
         )
     )
 )
