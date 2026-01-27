@@ -4,18 +4,18 @@
 
 ;; shortcut for (def! (fn* ...))
 (defmacro! defn
-  (fn* (name params & body)
-    `(def! ~name (fn* ~params ~@body))
-  )
+    (fn* (name params & body)
+        `(def! ~name (fn* ~params ~@body))
+    )
 )
 
 (defmacro! if-defined
-  (fn* (sym then else)
-    `(try*
-      (do ~sym ~then)
-      (catch* e ~else)
+    (fn* (sym then else)
+        `(try*
+            (do ~sym ~then)
+            (catch* e ~else)
+        )
     )
-  )
 )
 
 (defn second [xs] (nth xs 1))
@@ -28,6 +28,7 @@
 (defn min-val [p q] (if (< p q) p q))
 (defn max-val [p q] (if (> p q) p q))
 (defn identity [x] x)
+(defn pipe [f g] (fn* [x] (g (f x))))
 (defn mapcat [f xs] (apply concat (map f xs)))
 (defn zero? [x] (= x 0))
 (defn pos? [x] (> x 0))

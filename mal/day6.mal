@@ -46,7 +46,7 @@
         (reduce
             (fn* [acc item] (append acc (+ (last acc) item)))
             (list 0)
-            (map (fn* [x] (incr (length x))) (rest (split (str row " ") "[\\*\\+]")))
+            (map (pipe length incr) (rest (split (str row " ") "[\\*\\+]")))
         )
     )
 )
