@@ -66,7 +66,7 @@
                     a (first edge)
                     b (second edge)
                 ]
-                (and (= (cross a p b) 0) (on-segment? a p b))
+                (and (zero? (cross a p b)) (on-segment? a p b))
             )
         )
         edges
