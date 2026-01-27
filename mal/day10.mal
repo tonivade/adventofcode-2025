@@ -111,38 +111,45 @@
                 (fn* [current] 
                     (if (for-all? zero? current)
                         0
-                        (let* 
+                        (let*
                             [
                                 indicators (odd-indices (map odd? current))
                                 all-presses (get patterns (str indicators))
                             ]
                             (if (nil? all-presses)
                                 nil
-                                (min
-                                    (filter
-                                        (fn* [i] (not (nil? i)))
-                                        (map 
-                                            (fn* [presses] 
-                                                (let* [target-after (simulate-click current presses)]
+                                (reduce
+                                    (fn* [best presses]
+                                        (let* 
+                                            [
+                                                half (fn* [i] (/ i 2))
+                                                target-after 
+                                                    (simulate-click current presses)
+                                                cost
                                                     (if (exists? neg? target-after)
                                                         nil
                                                         (let* 
                                                             [
-                                                                half (fn* [i] (/ i 2))
                                                                 half-target (map half target-after)
-                                                                next-min-presses (min-presses half-target)
+                                                                next (min-presses half-target)
                                                             ]
-                                                            (if (nil? next-min-presses)
+                                                            (if next
+                                                                (+ (* next 2) (count presses))
                                                                 nil
-                                                                (+ (* next-min-presses 2) (count presses))
                                                             )
                                                         )
                                                     )
-                                                )
-                                            ) 
-                                            all-presses
+                                            ]
+                                            (cond
+                                                (nil? cost) best
+                                                (nil? best) cost
+                                                (< cost best) cost
+                                                true best
+                                            )
                                         )
                                     )
+                                    nil
+                                    all-presses
                                 )
                             )
                         )
@@ -150,7 +157,7 @@
                 )
             )
         ]
-        (min-presses target)
+        (min-presses (peek target))
     )
     
 )

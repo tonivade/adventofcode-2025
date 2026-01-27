@@ -113,10 +113,13 @@
     )
 )
 
+(def! MAX-VALUE 9223372036854775807)
+(def! MIN-VALUE -9223372036854775808)
+
 (defn sum [xs] (reduce + 0 xs))
 (defn mul [xs] (reduce * 1 xs))
-(defn max [xs] (reduce max-val -9223372036854775808 xs))
-(defn min [xs] (reduce min-val 9223372036854775807 xs))
+(defn max [xs] (reduce max-val MIN-VALUE xs))
+(defn min [xs] (reduce min-val MAX-VALUE xs))
 
 (defn max-by [f xs]
     (reduce
