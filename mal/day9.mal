@@ -1,7 +1,5 @@
 ; https://adventofcode.com/2025/day/9
 
-(import java.lang.Math abs 1)
-
 (load-file "mal/aoc.mal")
 (load-file "mal/matrix.mal")
 
@@ -170,7 +168,7 @@
                 (filter 
                     (fn* [pair]
                         (let*
-                            [p (first (peek pair)) q (second pair)]
+                            [p (first pair) q (second pair)]
                             (contains-rectangle? edges (bounds p q))
                         )
                     )
