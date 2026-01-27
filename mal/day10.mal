@@ -157,7 +157,7 @@
                 )
             )
         ]
-        (min-presses (peek target))
+        (min-presses target)
     )
     
 )
