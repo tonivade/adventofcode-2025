@@ -143,10 +143,6 @@
     )
 )
 
-(defn contains-rectangle-task [edges, rectangle]
-    (spawn (fn* [] (contains-rectangle? edges rectangle)))
-)
-
 ; part1
 (println
     (timed!
