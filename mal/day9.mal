@@ -169,7 +169,7 @@
             ]
             (max-by 
                 (fn* [pair] (area (first pair) (second pair))) 
-                (filter
+                (parallel-filter
                     (fn* [pair]
                         (let*
                             [p (first pair) q (second pair)]
