@@ -61,13 +61,13 @@
 ; part1
 (println 
     (timed!
-        (parallel-map-sum maximize (parse input))
+        (sum (parallel-map maximize (parse input)))
     )
 )
 
 ; part2
 (println 
     (timed!
-        (parallel-map-sum maximize2 (parse input))
+        (sum (parallel-map maximize2 (parse input)))
     )
 )

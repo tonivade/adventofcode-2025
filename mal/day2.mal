@@ -78,13 +78,13 @@
 ; part1
 (println
     (timed!
-        (parallel-map-sum unfold1-sum (parse input))
+        (sum (parallel-map unfold1-sum (parse input)))
     )
 )
 
 ; part2
 (println
     (timed!
-        (parallel-map-sum unfold2-sum (parse input))
+        (sum (parallel-map unfold2-sum (parse input)))
     )
 )

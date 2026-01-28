@@ -422,6 +422,3 @@
         (filter (combine not nil?) results)
     )
 )
-
-(defn parallel-map-reduce [f combine init xs] (reduce combine init (parallel-map f xs)))
-(defn parallel-map-sum [f xs] (parallel-map-reduce f + 0 xs))
