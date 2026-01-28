@@ -36,10 +36,10 @@
 (defn even? [x] (= (% x 2) 0))
 (defn odd? [x] (= (% x 2) 1))
 
-(defn join [xs]
+(defn join-str [xs]
     (if (empty? xs)
         ""
-        (str (first xs) (join (rest xs)))
+        (str (first xs) (join-str (rest xs)))
     )
 )
 
@@ -402,3 +402,26 @@
 )
 
 (defn sort-list [xs] (sort-list-by <= xs))
+
+(defn parallel-map-reduce [f combine init xs]
+    (let* 
+        [
+            handles (map (fn* [x] (spawn (fn* [] (f x)))) xs)
+            results (map join handles)
+        ]
+        (reduce combine init results)
+    )
+)
+
+(defn parallel-map-sum [f xs]
+    (parallel-map-reduce f + 0 xs)
+)
+
+(defn parallel-filter [p xs]
+    (let* 
+        [
+            handles (map (fn* [x] (spawn (fn* [] (p x)))) xs)
+        ]
+        (filter join handles)
+    )
+)

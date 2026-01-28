@@ -49,7 +49,7 @@
 (defn expand [input]
     (if (> (count input) 1)
         (let* [end (/ (count input) 2)]
-            (map (fn* [s] (map join (chunks input s))) (range 1 (incr end)))
+            (map (fn* [s] (map join-str (chunks input s))) (range 1 (incr end)))
         )
         ()
     )
@@ -77,10 +77,14 @@
 
 ; part1
 (println
-    (timed! (sum (map unfold1-sum (parse input))))
+    (timed!
+        (parallel-map-sum unfold1-sum (parse input))
+    )
 )
 
 ; part2
 (println
-    (timed! (sum (map unfold2-sum (parse input))))
+    (timed!
+        (parallel-map-sum unfold2-sum (parse input))
+    )
 )

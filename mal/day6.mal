@@ -77,7 +77,7 @@
             (map 
                 trim
                 (map 
-                    join
+                    join-str
                     (vals
                         (group-by-map
                             second

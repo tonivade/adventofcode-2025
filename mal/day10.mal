@@ -182,20 +182,12 @@
 
 (println
     (timed!
-        (->>
-            (parse input)
-            (map turn-on)
-            (sum)
-        )
+        (parallel-map-sum turn-on (parse input))
     )
 )
 
 (println
     (timed!
-        (->>
-            (parse input)
-            (map jolt-on)
-            (sum)
-        )
+        (parallel-map-sum jolt-on (parse input))
     )
 )
