@@ -25,7 +25,7 @@
     )
 )
 
-(defn jolts [item] (+ (* 10 (parseInt (first item))) (parseInt (second item))))
+(defn jolts [item] (+ (* 10 (parseInt/1 (first item))) (parseInt/1 (second item))))
 
 (defn maximize [bank]
     (max-by jolts (combinations bank))
@@ -44,12 +44,12 @@
 )
 
 (defn maximize2 [bank]
-    (parseLong 
+    (parseLong/1
         (join-to-string
             (take 
                 12
                 (reverse 
-                    (process (map parseLong bank) (list) 0 (- (count bank) 12))
+                    (process (map parseLong/1 bank) (list) 0 (- (count bank) 12))
                 ) 
             )
         )

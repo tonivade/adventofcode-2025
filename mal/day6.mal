@@ -20,7 +20,7 @@
                 (mapcat 
                     zip-with-index
                     (map 
-                        (fn* [line] (split line "\\s+"))
+                        (fn* [line] (split/1 line "\\s+"))
                         (map trim input)
                     )
                 )
@@ -34,7 +34,7 @@
     (map 
         (fn* [window] 
             (let* [start (first window) end (decr (second window))]
-                (substring line start end)
+                (substring/2 line start end)
             )
         )
         cols
@@ -46,7 +46,7 @@
         (reduce
             (fn* [acc item] (append acc (+ (last acc) item)))
             (list 0)
-            (map (combine incr length) (rest (split (str row " ") "[\\*\\+]")))
+            (map (combine incr length) (rest (split/1 (str row " ") "[\\*\\+]")))
         )
     )
 )
@@ -92,7 +92,7 @@
 )
 
 (defn solve (input)
-    (let* [op (first input) values (map parseLong (rest input))]
+    (let* [op (first input) values (map parseLong/1 (rest input))]
         (cond 
             (= op "+") (sum values)
             (= op "*") (mul values)

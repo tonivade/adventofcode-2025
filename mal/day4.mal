@@ -1,8 +1,6 @@
 ; https://adventofcode.com/2025/day/4
 
 (import java.lang.String lines)
-(import java.lang.String split 1)
-(import java.lang.Integer parseInt 1)
 
 (load-file "mal/aoc.mal")
 (load-file "mal/matrix.mal")

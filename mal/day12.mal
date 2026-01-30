@@ -13,7 +13,7 @@
     (let* 
         [
             all-lines (lines input)
-            id (first (split (first all-lines) ":"))
+            id (first (split/1 (first all-lines) ":"))
             area (count (filter (fn* [item] (= item "#")) (mapcat seq (rest all-lines))))
         ]
         (list id area)
@@ -23,9 +23,9 @@
 (defn parse-tree [line]
     (let* 
         [
-            parsed (map trim (split line ":"))
-            dimensions (map parseInt (split (first parsed) "x"))
-            presents (map parseInt (split (second parsed) " "))
+            parsed (map trim (split/1 line ":"))
+            dimensions (map parseInt/1 (split/1 (first parsed) "x"))
+            presents (map parseInt/1 (split/1 (second parsed) " "))
         ]
         (list dimensions presents)
     )
@@ -51,7 +51,7 @@
     (timed!
         (let* 
             [
-                input (split (slurp file) "\n\n")
+                input (split/1 (slurp file) "\n\n")
                 presents (list-to-map (map parse-present (drop-last input)))
                 trees (map parse-tree (lines (last input)))
             ]

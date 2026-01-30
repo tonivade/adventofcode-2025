@@ -14,18 +14,18 @@
 (defn distance3d [this other]
     (let* 
         [
-            a (pow (- (first this) (first other)) 2)
-            b (pow (- (second this) (second other)) 2)
-            c (pow (- (last this) (last other)) 2)
+            a (pow/2 (- (first this) (first other)) 2)
+            b (pow/2 (- (second this) (second other)) 2)
+            c (pow/2 (- (last this) (last other)) 2)
             s (+ a (+ b c))
         ]
-        (sqrt s)
+        (sqrt/1 s)
     )
 )
 
 (defn parse [file]
     (let* [input (lines (slurp file))]
-        (map (fn* [line] (map parseInt (split line ","))) input)
+        (map (fn* [line] (map parseInt/1 (split/1 line ","))) input)
     )
 )
 

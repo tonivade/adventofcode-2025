@@ -1,7 +1,6 @@
 ; https://adventofcode.com/2025/day/10
 
 (import java.lang.String lines)
-(import java.lang.String trim)
 (import java.lang.String length)
 (import java.lang.String split 1)
 (import java.lang.String substring 2)
@@ -30,13 +29,13 @@
 (defn parse-machine [line]
     (let* 
         [
-            splitted (split line " ")
+            splitted (split/1 line " ")
             ls (first splitted)
             bs (drop-last (rest splitted)) 
             js (last splitted)
-            lights (map (fn* [l] (= l "#")) (seq (substring ls 1 (decr (length ls)))))
-            jolts (map parseInt (split (substring js 1 (decr (length js))) ","))
-            buttons (map (fn* [b] (map parseInt (split (substring b 1 (decr (length b))) ","))) bs)
+            lights (map (fn* [l] (= l "#")) (seq (substring/2 ls 1 (decr (length ls)))))
+            jolts (map parseInt/1 (split/1 (substring/2 js 1 (decr (length js))) ","))
+            buttons (map (fn* [b] (map parseInt/1 (split/1 (substring/2 b 1 (decr (length b))) ","))) bs)
         ]
         (list lights buttons jolts)
     )

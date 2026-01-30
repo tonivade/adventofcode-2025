@@ -9,17 +9,17 @@
 (def! input (if-defined DEBUG-EVAL "input/day5-test.txt" "input/day5.txt"))
 
 (defn to-range (input)
-    (map parseLong (split input "-"))
+    (map parseLong/1 (split/1 input "-"))
 )
 
 (defn parse [file]
     (let* 
         [
-            input (split (slurp file) "\n\n")
+            input (split/1 (slurp file) "\n\n")
             ranges (first input) 
             products (second input)
         ]
-        (list (map to-range (lines ranges)) (map parseLong (lines products)))
+        (list (map to-range (lines ranges)) (map parseLong/1 (lines products)))
     )
 )
 

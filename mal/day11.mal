@@ -12,9 +12,9 @@
 (defn parse-line [line]
     (let* 
         [
-            splitted (map trim (split line ":"))
+            splitted (map trim (split/1 line ":"))
             node (first splitted)
-            connections (split (second splitted) " ")
+            connections (split/1 (second splitted) " ")
         ]
         (list node connections)
     )

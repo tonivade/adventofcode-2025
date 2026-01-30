@@ -26,7 +26,7 @@
     )
 )
 
-(defn to-pair [k] (map parseInt (split (str k) ",")))
+(defn to-pair [k] (map parseInt/1 (split/1 (str k) ",")))
 (defn to-key [p] (str (first p) "," (second p)))
 
 (defn parse-matrix [file]
@@ -54,6 +54,6 @@
     (->>
         (slurp file)
         (lines)
-        (map (fn* [line] (map parseInt (split line ","))))
+        (map (fn* [line] (map parseInt/1 (split/1 line ","))))
     )
 )

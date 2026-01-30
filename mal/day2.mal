@@ -10,23 +10,23 @@
 (load-file "mal/aoc.mal")
 
 (defn split-pair [s] 
-    (map parseLong (split (trim s) "-"))
+    (map parseLong/1 (split/1 (trim s) "-"))
 )
 
 (defn parse [file]
     (let* [input (slurp file)]
-        (map split-pair (split input ","))
+        (map split-pair (split/1 input ","))
     )
 )
 
 (defn is-repeated? [s]
     (let* [i (/ (length s) 2)]
-        (= (substring s 0 i) (substring s i (length s)))
+        (= (substring/2 s 0 i) (substring/2 s i (length s)))
     )
 )
 
 (defn is-invalid? [number]
-    (let* [s (toString number)]
+    (let* [s (toString/1 number)]
         (and (zero? (% (length s) 2)) (is-repeated? s))
     )
 )
@@ -64,7 +64,7 @@
 )
 
 (defn is-invalid2? [number]
-    (let* [s (toString number)] (is-repeated2? s))
+    (let* [s (toString/1 number)] (is-repeated2? s))
 )
 
 (defn unfold2 [r]
