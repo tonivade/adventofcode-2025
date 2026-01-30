@@ -113,14 +113,11 @@
                             [
                                 indicators (odd-indices (map odd? current))
                                 all-presses (get patterns (str indicators))
-                            ]
-                            (if (nil? all-presses)
-                                nil
-                                (reduce
+                                half (fn* [i] (/ i 2))
+                                calculate-presses
                                     (fn* [best presses]
                                         (let* 
                                             [
-                                                half (fn* [i] (/ i 2))
                                                 target-after 
                                                     (simulate-click current presses)
                                                 cost
@@ -129,7 +126,7 @@
                                                         (let* 
                                                             [
                                                                 half-target (map half target-after)
-                                                                next (min-presses half-target)
+                                                                next (min-presses half-target) ;; recursion
                                                             ]
                                                             (if next
                                                                 (+ (* next 2) (count presses))
@@ -146,9 +143,10 @@
                                             )
                                         )
                                     )
-                                    nil
-                                    all-presses
-                                )
+                            ]
+                            (if (nil? all-presses)
+                                nil
+                                (reduce calculate-presses nil all-presses)
                             )
                         )
                     )
