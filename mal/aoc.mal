@@ -19,7 +19,7 @@
 )
 
 (defn second [xs] (nth xs 1))
-(defn abs [n] (if (>= n 0) n (* n -1)))
+(defn abs [n] (if (neg? n) (* n -1) n))
 (defn incr [n] (+ n 1))
 (defn decr [n] (- n 1))
 (defn peek [i] (do (println i) i))
@@ -36,10 +36,10 @@
 (defn even? [x] (= (% x 2) 0))
 (defn odd? [x] (= (% x 2) 1))
 
-(defn join-str [xs]
+(defn join-to-string [xs]
     (if (empty? xs)
         ""
-        (str (first xs) (join-str (rest xs)))
+        (str (first xs) (join-to-string (rest xs)))
     )
 )
 

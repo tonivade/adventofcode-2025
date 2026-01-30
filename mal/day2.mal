@@ -49,7 +49,7 @@
 (defn expand [input]
     (if (> (count input) 1)
         (let* [end (/ (count input) 2)]
-            (map (fn* [s] (map join-str (chunks input s))) (range 1 (incr end)))
+            (map (fn* [s] (map join-to-string (chunks input s))) (range 1 (incr end)))
         )
         ()
     )

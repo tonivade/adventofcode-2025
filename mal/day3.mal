@@ -45,7 +45,7 @@
 
 (defn maximize2 [bank]
     (parseLong 
-        (join-str
+        (join-to-string
             (take 
                 12
                 (reverse 
