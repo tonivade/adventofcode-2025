@@ -1,33 +1,29 @@
 ; https://adventofcode.com/2025/day/2
 
-(import java.lang.String split 1)
-(import java.lang.String length)
 (import java.lang.String trim)
-(import java.lang.String substring 2)
 (import java.lang.Long parseLong 1)
-(import java.lang.Long toString 1)
 
 (load-file "mal/aoc.mal")
 
 (defn split-pair [s] 
-    (map parseLong/1 (split/1 (trim s) "-"))
+    (map Long.parseLong/1 (split (String.trim s) "-"))
 )
 
 (defn parse [file]
     (let* [input (slurp file)]
-        (map split-pair (split/1 input ","))
+        (map split-pair (split input ","))
     )
 )
 
 (defn is-repeated? [s]
-    (let* [i (/ (length s) 2)]
-        (= (substring/2 s 0 i) (substring/2 s i (length s)))
+    (let* [i (/ (count s) 2)]
+        (= (substring s 0 i) (substring s i (count s)))
     )
 )
 
 (defn is-invalid? [number]
-    (let* [s (toString/1 number)]
-        (and (zero? (% (length s) 2)) (is-repeated? s))
+    (let* [s (str number)]
+        (and (zero? (% (count s) 2)) (is-repeated? s))
     )
 )
 
@@ -64,7 +60,7 @@
 )
 
 (defn is-invalid2? [number]
-    (let* [s (toString/1 number)] (is-repeated2? s))
+    (let* [s (str number)] (is-repeated2? s))
 )
 
 (defn unfold2 [r]

@@ -36,6 +36,39 @@
 (defn even? [x] (= (% x 2) 0))
 (defn odd? [x] (= (% x 2) 1))
 
+(defn substring [s begin & args]
+    (let* [end (if (empty? args) (count s) (first args))]
+        (apply str
+            (map (fn* [i] (nth s i))
+                (range begin end)))
+    )
+)
+
+; only supports single character delimiter
+; it ignores trailing delimiter
+(defn split [s delim]
+    (let* 
+        [
+            size (count s)
+            d (nth delim 0)
+            n (if (= (nth s (decr size)) d) (decr size) size)
+            go (fn* [i current acc]
+                    (if (= i n)
+                        (conj acc current)
+                        (let* [c (nth s i)]
+                            (if (= c d)
+                                (go (incr i) "" (conj acc current))
+                                (go (incr i) (str current c) acc)
+                            )
+                        )
+                    )
+                )
+        ]
+        (go 0 "" [])
+    )
+)
+(defn lines [s] (split s "\n"))
+
 (defn join-to-string [xs]
     (if (empty? xs)
         ""

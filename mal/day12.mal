@@ -1,6 +1,5 @@
 ; https://adventofcode.com/2025/day/12
 
-(import java.lang.String lines)
 (import java.lang.String trim)
 (import java.lang.String split 1)
 (import java.lang.Integer parseInt 1)
@@ -13,7 +12,7 @@
     (let* 
         [
             all-lines (lines input)
-            id (first (split/1 (first all-lines) ":"))
+            id (first (split (first all-lines) ":"))
             area (count (filter (fn* [item] (= item "#")) (mapcat seq (rest all-lines))))
         ]
         (list id area)
@@ -23,9 +22,9 @@
 (defn parse-tree [line]
     (let* 
         [
-            parsed (map trim (split/1 line ":"))
-            dimensions (map parseInt/1 (split/1 (first parsed) "x"))
-            presents (map parseInt/1 (split/1 (second parsed) " "))
+            parsed (map String.trim (split line ":"))
+            dimensions (map Integer.parseInt/1 (split (first parsed) "x"))
+            presents (map Integer.parseInt/1 (split (second parsed) " "))
         ]
         (list dimensions presents)
     )
@@ -51,7 +50,7 @@
     (timed!
         (let* 
             [
-                input (split/1 (slurp file) "\n\n")
+                input (String.split/1 (slurp file) "\n\n")
                 presents (list-to-map (map parse-present (drop-last input)))
                 trees (map parse-tree (lines (last input)))
             ]

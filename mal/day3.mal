@@ -1,6 +1,5 @@
 ; https://adventofcode.com/2025/day/3
 
-(import java.lang.String lines)
 (import java.lang.Integer parseInt 1)
 (import java.lang.Long parseLong 1)
 
@@ -25,7 +24,7 @@
     )
 )
 
-(defn jolts [item] (+ (* 10 (parseInt/1 (first item))) (parseInt/1 (second item))))
+(defn jolts [item] (+ (* 10 (Integer.parseInt/1 (first item))) (Integer.parseInt/1 (second item))))
 
 (defn maximize [bank]
     (max-by jolts (combinations bank))
@@ -44,12 +43,12 @@
 )
 
 (defn maximize2 [bank]
-    (parseLong/1
+    (Long.parseLong/1
         (join-to-string
             (take 
                 12
                 (reverse 
-                    (process (map parseLong/1 bank) (list) 0 (- (count bank) 12))
+                    (process (map Long.parseLong/1 bank) (list) 0 (- (count bank) 12))
                 ) 
             )
         )

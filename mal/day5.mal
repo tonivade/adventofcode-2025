@@ -1,6 +1,5 @@
 ; https://adventofcode.com/2025/day/5
 
-(import java.lang.String lines)
 (import java.lang.String split 1)
 (import java.lang.Long parseLong 1)
 
@@ -9,17 +8,17 @@
 (def! input (if-defined DEBUG-EVAL "input/day5-test.txt" "input/day5.txt"))
 
 (defn to-range (input)
-    (map parseLong/1 (split/1 input "-"))
+    (map Long.parseLong/1 (String.split/1 input "-"))
 )
 
 (defn parse [file]
     (let* 
         [
-            input (split/1 (slurp file) "\n\n")
+            input (String.split/1 (slurp file) "\n\n")
             ranges (first input) 
             products (second input)
         ]
-        (list (map to-range (lines ranges)) (map parseLong/1 (lines products)))
+        (list (map to-range (lines ranges)) (map Long.parseLong/1 (lines products)))
     )
 )
 

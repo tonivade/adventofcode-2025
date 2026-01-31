@@ -1,7 +1,5 @@
 ; https://adventofcode.com/2025/day/4
 
-(import java.lang.String lines)
-
 (load-file "mal/aoc.mal")
 (load-file "mal/matrix.mal")
 

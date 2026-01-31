@@ -1,7 +1,5 @@
 ; https://adventofcode.com/2025/day/8
 
-(import java.lang.String lines)
-(import java.lang.String split 1)
 (import java.lang.Integer parseInt 1)
 (import java.lang.Math pow 2)
 (import java.lang.Math sqrt 1)
@@ -14,18 +12,18 @@
 (defn distance3d [this other]
     (let* 
         [
-            a (pow/2 (- (first this) (first other)) 2)
-            b (pow/2 (- (second this) (second other)) 2)
-            c (pow/2 (- (last this) (last other)) 2)
+            a (Math.pow/2 (- (first this) (first other)) 2)
+            b (Math.pow/2 (- (second this) (second other)) 2)
+            c (Math.pow/2 (- (last this) (last other)) 2)
             s (+ a (+ b c))
         ]
-        (sqrt/1 s)
+        (Math.sqrt/1 s)
     )
 )
 
 (defn parse [file]
     (let* [input (lines (slurp file))]
-        (map (fn* [line] (map parseInt/1 (split/1 line ","))) input)
+        (map (fn* [line] (map Integer.parseInt/1 (split line ","))) input)
     )
 )
 

@@ -1,14 +1,11 @@
 ; https://adventofcode.com/2025/day/1
 
-(import java.lang.String lines)
-(import java.lang.String charAt 1)
-(import java.lang.String substring 1)
 (import java.lang.Integer parseInt 1)
 
 (load-file "mal/aoc.mal")
 
 (defn split-pair [s] 
-    (list (charAt/1 s 0) (parseInt/1 (substring/1 s 1)))
+    (list (nth s 0) (Integer.parseInt/1 (substring s 1)))
 )
 
 (defn parse [file]

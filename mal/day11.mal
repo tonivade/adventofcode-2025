@@ -1,8 +1,6 @@
 ; https://adventofcode.com/2025/day/11
 
-(import java.lang.String lines)
 (import java.lang.String trim)
-(import java.lang.String split 1)
 
 (load-file "mal/aoc.mal")
 
@@ -12,9 +10,9 @@
 (defn parse-line [line]
     (let* 
         [
-            splitted (map trim (split/1 line ":"))
+            splitted (map String.trim (split line ":"))
             node (first splitted)
-            connections (split/1 (second splitted) " ")
+            connections (split (second splitted) " ")
         ]
         (list node connections)
     )
