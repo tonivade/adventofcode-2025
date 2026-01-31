@@ -1,7 +1,5 @@
 ; https://adventofcode.com/2025/day/6
 
-(import java.lang.String trim)
-(import java.lang.String split 1)
 (import java.lang.Long parseLong 1)
 
 (load-file "mal/aoc.mal")
@@ -17,8 +15,8 @@
                 (mapcat 
                     zip-with-index
                     (map 
-                        (fn* [line] (String.split/1 line "\\s+"))
-                        (map String.trim input)
+                        (fn* [line] (.split line "\\s+"))
+                        (map trim input)
                     )
                 )
             )
@@ -43,7 +41,7 @@
         (reduce
             (fn* [acc item] (append acc (+ (last acc) item)))
             (list 0)
-            (map (combine incr count) (rest (String.split/1 (str row " ") "[\\*\\+]")))
+            (map (combine incr count) (rest (.split (str row " ") "[\\*\\+]")))
         )
     )
 )
@@ -68,11 +66,11 @@
 )
 
 (defn transform [col]
-    (let* [op (String.trim (first col)) numbers (rest col)]
+    (let* [op (trim (first col)) numbers (rest col)]
         (cons
             op
             (map 
-                String.trim
+                trim
                 (map 
                     join-to-string
                     (vals

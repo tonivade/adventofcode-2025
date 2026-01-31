@@ -1,7 +1,5 @@
 ; https://adventofcode.com/2025/day/12
 
-(import java.lang.String trim)
-(import java.lang.String split 1)
 (import java.lang.Integer parseInt 1)
 
 (load-file "mal/aoc.mal")
@@ -22,7 +20,7 @@
 (defn parse-tree [line]
     (let* 
         [
-            parsed (map String.trim (split line ":"))
+            parsed (map trim (split line ":"))
             dimensions (map Integer.parseInt/1 (split (first parsed) "x"))
             presents (map Integer.parseInt/1 (split (second parsed) " "))
         ]
@@ -50,7 +48,7 @@
     (timed!
         (let* 
             [
-                input (String.split/1 (slurp file) "\n\n")
+                input (.split (slurp file) "\n\n")
                 presents (list-to-map (map parse-present (drop-last input)))
                 trees (map parse-tree (lines (last input)))
             ]

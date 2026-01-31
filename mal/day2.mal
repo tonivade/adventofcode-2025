@@ -1,12 +1,11 @@
 ; https://adventofcode.com/2025/day/2
 
-(import java.lang.String trim)
 (import java.lang.Long parseLong 1)
 
 (load-file "mal/aoc.mal")
 
 (defn split-pair [s] 
-    (map Long.parseLong/1 (split (String.trim s) "-"))
+    (map Long.parseLong/1 (split (trim s) "-"))
 )
 
 (defn parse [file]

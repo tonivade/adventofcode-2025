@@ -1,7 +1,5 @@
 ; https://adventofcode.com/2025/day/11
 
-(import java.lang.String trim)
-
 (load-file "mal/aoc.mal")
 
 (def! input1 (if-defined DEBUG-EVAL "input/day11-test1.txt" "input/day11.txt"))
@@ -10,7 +8,7 @@
 (defn parse-line [line]
     (let* 
         [
-            splitted (map String.trim (split line ":"))
+            splitted (map trim (split line ":"))
             node (first splitted)
             connections (split (second splitted) " ")
         ]
