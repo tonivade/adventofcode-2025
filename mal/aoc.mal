@@ -69,12 +69,6 @@
 )
 (defn lines [s] (split s "\n"))
 
-(defn join-to-string [xs]
-    (if (empty? xs)
-        ""
-        (str (first xs) (join-to-string (rest xs)))
-    )
-)
 
 (defn zip-list [l r]
     (lazy-seq
@@ -154,6 +148,7 @@
 (defn mul [xs] (reduce * 1 xs))
 (defn max [xs] (reduce max-val MIN-VALUE xs))
 (defn min [xs] (reduce min-val MAX-VALUE xs))
+(defn join-to-string [xs] (reduce str "" xs))
 
 (defn max-by [f xs]
     (reduce
