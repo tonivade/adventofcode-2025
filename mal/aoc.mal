@@ -340,7 +340,7 @@
 (defn combinations [k xs]
     (lazy-seq
         (cond
-            (= k 0) (list ())
+            (zero? k) (list ())
             (empty? xs) ()
             true
                 (concat
