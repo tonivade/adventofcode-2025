@@ -5,7 +5,7 @@
 (load-file "mal/aoc.mal")
 
 (defn split-pair [s] 
-    (map Long.parseLong/1 (split (trim s) "-"))
+    (map Long.parseLong/1 (.split (.trim s) "-"))
 )
 
 (defn parse [file]

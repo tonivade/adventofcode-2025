@@ -44,8 +44,6 @@
     )
 )
 
-(defn trim [s] (.trim s))
-
 ; only supports single character delimiter
 ; it ignores trailing delimiter
 (defn split [s delim]

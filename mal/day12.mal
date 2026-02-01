@@ -20,7 +20,7 @@
 (defn parse-tree [line]
     (let* 
         [
-            parsed (map trim (split line ":"))
+            parsed (map .trim (split line ":"))
             dimensions (map Integer.parseInt/1 (split (first parsed) "x"))
             presents (map Integer.parseInt/1 (split (second parsed) " "))
         ]

@@ -16,7 +16,7 @@
                     zip-with-index
                     (map 
                         (fn* [line] (.split line "\\s+"))
-                        (map trim input)
+                        (map .trim input)
                     )
                 )
             )
@@ -66,11 +66,11 @@
 )
 
 (defn transform [col]
-    (let* [op (trim (first col)) numbers (rest col)]
+    (let* [op (.trim (first col)) numbers (rest col)]
         (cons
             op
             (map 
-                trim
+                .trim
                 (map 
                     join-to-string
                     (vals
