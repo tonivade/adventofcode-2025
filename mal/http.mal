@@ -1,4 +1,4 @@
-(load-file "mal/basic.mal")
+(load-file "mal/aoc.mal")
 
 (import java.net.http.HttpRequest newBuilder)
 (import java.net.http.HttpClient newBuilder)
@@ -18,7 +18,7 @@
 )
 
 (defn set-headers [builder headers]
-    (if (empty? (keys headers))
+    (if (empty? headers)
         builder
         (let* [key (first (keys headers)) value (get headers key)]
             (do 
@@ -57,7 +57,7 @@
         ]
         (if (= (.statusCode response) 200)
             (.body response)
-            (throw "download error")
+            (throw (str "download error " (.statusCode response)))
         )
     )
 )
@@ -80,8 +80,6 @@
     )
 )
 
-(def! year (nth *ARGV* 0))
-(def! day (nth *ARGV* 1))
-(def! session (nth *ARGV* 2))
-
-(download-file year day session)
+(def! day (nth *ARGV* 0))
+(def! props (read-properties ".env"))
+(download-file (get props "year") day (get props "session_id"))

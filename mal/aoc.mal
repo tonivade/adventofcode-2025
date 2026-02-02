@@ -443,3 +443,12 @@
         (filter (combine not nil?) results)
     )
 )
+
+(defn read-properties [file]
+    (->> 
+        (slurp file)
+        (lines)
+        (map (fn* [line] (split line "=")))
+        (list-to-map)
+    )
+)
