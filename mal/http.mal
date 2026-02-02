@@ -80,6 +80,8 @@
     )
 )
 
-(def! day (nth *ARGV* 0))
-(def! props (read-properties ".env"))
-(download-file (get props "year") day (get props "session_id"))
+(defn download-day [day]
+    (let* [ props (read-properties ".env") ]
+        (download-file (get props "year") day (get props "session_id"))
+    )
+)
