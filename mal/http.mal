@@ -5,6 +5,7 @@
 (import java.net.http.HttpResponse$BodyHandlers ofString)
 (import java.time.Duration ofSeconds 1)
 (import java.net.URI create 1)
+(import java.nio.file.Files writeString 3)
 
 (defn new-client []
     (->
@@ -16,11 +17,25 @@
     )
 )
 
+(defn set-headers [builder headers]
+    (if (empty? (keys headers))
+        builder
+        (let* [key (first (keys headers)) value (get headers key)]
+            (do 
+                (.setHeader builder key value)
+                (set-headers builder (dissoc headers key))
+            )
+        )
+    )
+)
+
 (defn new-request [uri headers]
     (->
         (HttpRequest.newBuilder)
+        (.GET)
         (.uri (URI.create/1 uri))
         (.timeout (Duration.ofSeconds/1 10))
+        (set-headers headers)
         (.build)
     )
 )
@@ -31,7 +46,42 @@
     )
 )
 
-(def! response (http-get "http://tonivade.es/" {}))
+(defn aoc-get [year day session]
+    (let* 
+        [
+            response 
+                (http-get 
+                    (str "https://adventofcode.com/" year "/day/" day "/input") 
+                    (assoc {} "Cookie" (str "session=" session))
+                )
+        ]
+        (if (= (.statusCode response) 200)
+            (.body response)
+            (throw "download error")
+        )
+    )
+)
 
-(println (.statusCode response))
-(println (.body response))
+(defn download-file [year day session]
+    (let* 
+        [
+            file-name (str "input/day" day ".txt")
+            file (new java.io.File file-name)
+        ]
+        (if (.exists file)
+            (println "file exists" file-name)
+            (do
+                (let* [content (aoc-get year day session)]
+                    (Files.writeString/3 (.toPath file) content ())
+                )
+                (println "file saved" file-name)
+            )
+        )
+    )
+)
+
+(def! year (nth *ARGV* 0))
+(def! day (nth *ARGV* 1))
+(def! session (nth *ARGV* 2))
+
+(download-file year day session)
