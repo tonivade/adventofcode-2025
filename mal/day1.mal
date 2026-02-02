@@ -33,30 +33,32 @@
 
 (def! input (if-defined DEBUG-EVAL "input/day1-test.txt" "input/day1.txt"))
 
-(defn part1 []
-    (->> 
-        (parse input)
-        (reduce  
-            (fn* [state move] (cons (next move (first state)) state)) 
-            (list 50)
+; part1
+(println 
+    (timed! 
+        (->> 
+            (parse input)
+            (reduce  
+                (fn* [state move] (cons (next move (first state)) state)) 
+                (list 50)
+            )
+            (filter zero?)
+            (count)
         )
-        (filter zero?)
-        (count)
     )
 )
 
-(defn part2 []
-    (->>
-        (parse input)
-        (reduce  
-            (fn* [state move] 
-                (list (next move (first state)) (+ (second state) (zeros move (first state)))))
-            (list 50 0)
+; part2
+(println 
+    (timed! 
+        (->>
+            (parse input)
+            (reduce  
+                (fn* [state move] 
+                    (list (next move (first state)) (+ (second state) (zeros move (first state)))))
+                (list 50 0)
+            )
+            (second)
         )
-        (second)
     )
 )
-
-(println (timed part1))
-
-(println (timed part2))
