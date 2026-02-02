@@ -1,0 +1,37 @@
+(load-file "mal/basic.mal")
+
+(import java.net.http.HttpRequest newBuilder)
+(import java.net.http.HttpClient newBuilder)
+(import java.net.http.HttpResponse$BodyHandlers ofString)
+(import java.time.Duration ofSeconds 1)
+(import java.net.URI create 1)
+
+(defn new-client []
+    (->
+        (HttpClient.newBuilder)
+        (.version "HTTP_1_1")
+        (.followRedirects "NORMAL")
+        (.connectTimeout (Duration.ofSeconds/1 10))
+        (.build)
+    )
+)
+
+(defn new-request [uri headers]
+    (->
+        (HttpRequest.newBuilder)
+        (.uri (URI.create/1 uri))
+        (.timeout (Duration.ofSeconds/1 10))
+        (.build)
+    )
+)
+
+(defn http-get [uri headers]
+    (let* [client (new-client) request (new-request uri headers)]
+        (.send client request (HttpResponse$BodyHandlers.ofString))
+    )
+)
+
+(def! response (http-get "http://tonivade.es/" {}))
+
+(println (.statusCode response))
+(println (.body response))
