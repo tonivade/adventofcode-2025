@@ -499,9 +499,9 @@
     )
 )
 
-(defn get-input [day]
+(defn get-input [day & part]
     (if-defined DEBUG-EVAL 
-        (do (println "using test file for day" day) (slurp (str "input/day" day "-test.txt"))) 
+        (do (println "using test file for day" day) (slurp (str "input/day" day "-test" (if (empty? part) "" (first part)) ".txt"))) 
         (download-day day)
     )
 )

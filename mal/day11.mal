@@ -2,9 +2,6 @@
 
 (load-file "mal/aoc.mal")
 
-(def! input1 (if-defined DEBUG-EVAL "input/day11-test1.txt" "input/day11.txt"))
-(def! input2 (if-defined DEBUG-EVAL "input/day11-test2.txt" "input/day11.txt"))
-
 (defn parse-line [line]
     (let* 
         [
@@ -16,9 +13,9 @@
     )
 )
 
-(defn parse [file]
+(defn parse [input]
     (->>
-        (slurp file)
+        input
         (lines)
         (map parse-line)
         (list-to-map)
@@ -51,11 +48,15 @@
     )
 )
 
+(def! input1 (get-input 11 1))
+
 (println
     (timed!
         (find-all-paths (parse input1) "you" "out")
     )
 )
+
+(def! input2 (get-input 11 2))
 
 (println
     (timed!

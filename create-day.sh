@@ -52,10 +52,10 @@ cat << EOF > "mal/day${next_day}.mal"
 
 (load-file "mal/aoc.mal")
 
-(def! input (if-defined DEBUG-EVAL "input/day${next_day}-test.txt" "input/day${next_day}.txt"))
+(def! input (get-input ${next_day}))
 
 (defn parse [file]
-    (let* (input (lines (slurp file)))
+    (let* (input (lines file))
         input
     )
 )
