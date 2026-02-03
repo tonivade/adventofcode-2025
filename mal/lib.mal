@@ -1,0 +1,462 @@
+;; common methods 
+
+(load-file "mal/basic.mal")
+
+(defmacro! if-defined
+    (fn* (sym then else)
+        `(try*
+            (do ~sym ~then)
+            (catch* e ~else)
+        )
+    )
+)
+
+(defmacro! when [test & body]
+    (list
+        'if
+        test
+        (cons 'do body)
+        nil)
+)
+
+(defn second [xs] (nth xs 1))
+(defn abs [n] (if (neg? n) (* n -1) n))
+(defn incr [n] (+ n 1))
+(defn decr [n] (- n 1))
+(defn peek [i] (do (println i) i))
+(defn or-default [v default] (if (nil? v) default v))
+(defn xor [a b] (if a (not b) b))
+(defn min-val [p q] (if (< p q) p q))
+(defn max-val [p q] (if (> p q) p q))
+(defn identity [x] x)
+(defn combine [f g] (fn* [x] (f (g x))))
+(defn mapcat [f xs] (apply concat (map f xs)))
+(defn zero? [x] (= x 0))
+(defn pos? [x] (> x 0))
+(defn neg? [x] (< x 0))
+(defn even? [x] (= (% x 2) 0))
+(defn odd? [x] (= (% x 2) 1))
+
+(defn substring [s begin & args]
+    (let* [end (if (empty? args) (count s) (first args))]
+        (apply str
+            (map (fn* [i] (nth s i))
+                (range begin end)))
+    )
+)
+
+; only supports single character delimiter
+; it ignores trailing delimiter
+(defn split [s delim]
+    (let* 
+        [
+            size (count s)
+            d (nth delim 0)
+            n (if (= (nth s (decr size)) d) (decr size) size)
+            go (fn* [i current acc]
+                    (if (= i n)
+                        (conj acc current)
+                        (let* [c (nth s i)]
+                            (if (= c d)
+                                (go (incr i) "" (conj acc current))
+                                (go (incr i) (str current c) acc)
+                            )
+                        )
+                    )
+                )
+        ]
+        (go 0 "" [])
+    )
+)
+(defn lines [s] (split s "\n"))
+
+
+(defn zip-list [l r]
+    (lazy-seq
+        (if (or (empty? l) (empty? r))
+            (list)
+            (cons (list (first l) (first r)) (zip-list (rest l) (rest r)))
+        )
+    )
+)
+
+(defn zip-with-index [xs]
+    (lazy-seq
+        (let* [go (fn* [xs i]
+                (if (empty? xs)
+                    ()
+                    (cons (list (first xs) i)
+                            (go (rest xs) (incr i)))))]
+            (go xs 0)
+        )
+    )
+)
+
+(defn take [i xs]
+    (lazy-seq
+        (if (empty? xs)
+            xs
+            (if (> i 0)
+                (cons (first xs) (take (decr i) (rest xs)))
+                (list)
+            )
+        )
+    )
+)
+
+(defn drop [i xs]
+    (lazy-seq
+        (if (empty? xs)
+            xs
+            (if (> i 0)
+                (drop (decr i) (rest xs))
+                xs
+            )
+        )
+    )
+)
+
+(defn for-all? [cmp xs]
+    (if (empty? xs)
+        true
+        (and (cmp (first xs)) (for-all? cmp (rest xs)))
+    )
+)
+
+(defn exists? [cmp xs]
+    (if (empty? xs)
+        false
+        (or (cmp (first xs)) (exists? cmp (rest xs)))
+    )
+)
+
+(defn filter [cmp xs]
+    (lazy-seq
+        (if (empty? xs)
+            xs
+            (if (cmp (first xs))
+                (cons (first xs) (filter cmp (rest xs)))
+                (filter cmp (rest xs))
+            )
+        )
+    )
+)
+
+(def! MAX-VALUE 9223372036854775807)
+(def! MIN-VALUE -9223372036854775808)
+
+(defn sum [xs] (reduce + 0 xs))
+(defn mul [xs] (reduce * 1 xs))
+(defn max [xs] (reduce max-val MIN-VALUE xs))
+(defn min [xs] (reduce min-val MAX-VALUE xs))
+(defn join-to-string [xs] (reduce str "" xs))
+
+(defn max-by [f xs]
+    (reduce
+        (fn* [best x] (let* [v (f x)] (if (> v best) v best)))
+        (f (first xs))
+        (rest xs)
+    )
+)
+
+(defn min-by [f xs]
+    (reduce
+        (fn* [best x] (let* [v (f x)] (if (< v best) v best)))
+        (f (first xs))
+        (rest xs)
+    )
+)
+
+(defn chunks [xs size]
+    (lazy-seq
+        (if (or (= size 0) (empty? xs))
+            (list)
+            (let* [group (take size xs) rst (drop size xs)]
+                (cons group (chunks rst size))
+            )
+        )
+    )
+)
+
+(defn timed [func]
+    (let* [start (time-ms) result (func) end (time-ms)]
+        (do
+            (println "Elapsed time:" (- end start) "ms")
+            result
+        )
+    )
+)
+
+(defmacro! timed! 
+    (fn* (& body) 
+        `(timed (fn* [] ~@body))
+    )
+)
+
+(defn range-step [start end step]
+    (lazy-seq
+        (if 
+            (and 
+                end
+                (if (> step 0)
+                    (>= start end)
+                    (<= start end)
+                )
+            )
+            ()
+            (cons start (range-step (+ start step) end step))
+        )
+    )
+)
+
+(defn range [start end]
+    (range-step start end 1)
+)
+
+(defn last [xs] 
+    (let* [pos (decr (count xs))]
+        (nth xs pos)
+    )
+)
+
+(defn drop-last [xs] 
+    (if (or (empty? xs) (empty? (rest xs)))
+        ()
+        (cons (first xs) (drop-last (rest xs)))
+    )
+)
+
+(defn append [xs item] (concat xs (list item)))
+
+(defn list-to-map [xs]
+    (reduce 
+        (fn* [m pair] (assoc m (first pair) (second pair)))
+        {}
+        xs
+    )
+)
+
+(defn replace-nth [xs n val]
+    (if (empty? xs)
+        ()
+        (if (= n 0)
+            (cons val (rest xs))               ; replace head
+            (cons (first xs)                   ; keep head, recurse
+                (replace-nth (rest xs) (decr n) val))
+        )
+    )
+)
+
+(defn index-where [xs cmp]
+    (let* [go (fn* [xs cmp i]
+              (if (empty? xs)
+                  nil
+                  (if (cmp (first xs))
+                      i
+                      (go (rest xs) cmp (incr i)))))]
+        (go xs cmp 0)
+    )
+)
+
+(defn for-each [xs func]
+    (if (empty? xs)
+        nil
+        (do
+            (func (first xs))
+            (for-each (rest xs) func)
+        )
+    )
+)
+
+(defn group-by-map [func mapper xs]
+    (reduce
+        (fn* [acc item]
+            (let* [k (str (func item))]
+                (if (contains? acc k)
+                    (assoc acc k (cons (mapper item) (get acc k)))
+                    (assoc acc k (list (mapper item)))
+                )
+            )
+        )
+        {}
+        xs
+    )
+)
+
+(defn group-by [func xs]
+    (group-by-map func identity xs)
+)
+
+(defn sliding2 [xs]
+    (lazy-seq
+        (if (or (empty? xs) (empty? (rest xs)))
+            ()
+            (cons 
+                (list (first xs) (first (rest xs))) 
+                (sliding2 (rest xs))
+            )
+        )
+    )
+)
+
+(defn reverse [xs]
+    (let* [go (fn* (l acc)
+              (if (empty? l)
+                  acc
+                  (go (rest l) (cons (first l) acc))))]
+        (go xs ())
+    )
+)
+
+(defn keys-by-value [m target]
+    (let* [ks (keys m)]
+        (let* [go (fn* (ks acc)
+                (if (empty? ks)
+                    acc
+                    (let* (k (first ks))
+                        (if (= (get m k) target)
+                            (go (rest ks) (cons k acc))
+                            (go (rest ks) acc)))))]
+            (go ks ())
+        )
+    )
+)
+
+(defn assoc-many [m pairs]
+    (if (empty? pairs)
+        m
+        (let* [p (first pairs) k (first p) v (second p)]
+            (assoc-many (assoc m k v) (rest pairs))
+        )
+    )
+)
+
+(defn dissoc-many [m to-remove]
+    (if (empty? to-remove)
+        m
+        (dissoc-many (dissoc m (first to-remove)) (rest to-remove))
+    )
+)
+
+(defn combinations [k xs]
+    (lazy-seq
+        (cond
+            (zero? k) (list ())
+            (empty? xs) ()
+            true
+                (concat
+                    (map (fn* (c) (cons (first xs) c)) (combinations (decr k) (rest xs)))
+                    (combinations k (rest xs))
+                )
+        )
+    )
+)
+
+(defn combinations2 [lst] (combinations 2 lst))
+
+(defn set-from-list [xs]
+    (if (empty? xs)
+        {}
+        (assoc (set-from-list (rest xs)) (first xs) true)
+    )
+)
+
+(defn set-contains? [s x] (not (= (get s x) nil)))
+(defn set-add [s x] (assoc s x true))
+(defn set-remove [s x] (dissoc s x))
+(defn set-to-list [s] (keys s))
+
+(defn set-union [a b]
+    (let* [ks (keys b)]
+        (let* 
+            [go
+                (fn* [ks acc]
+                    (if (empty? ks)
+                        acc
+                        (go (rest ks) (assoc acc (first ks) true))
+                    )
+                )
+            ]
+            (go ks a)
+        )
+    )
+)
+
+(defn set-difference [a b]
+    (let* [ks (keys a)]
+        (let* 
+            [go
+                (fn* (ks acc)
+                    (if (empty? ks)
+                        acc
+                        (let* [k (first ks)]
+                        (if (set-contains? b k)
+                            (go (rest ks) acc)
+                            (go (rest ks) (assoc acc k true)))
+                        )
+                    )
+                )
+            ]
+        )
+        (go ks {})
+    )
+)
+
+(defn merge-list [cmp a b]
+    (lazy-seq
+        (cond
+            (empty? a) b
+            (empty? b) a
+            (cmp (first a) (first b))
+                (cons (first a) (merge-list cmp (rest a) b))
+            true
+                (cons (first b) (merge-list cmp a (rest b)))
+        )
+    )
+)
+
+(defn sort-list-by [cmp xs]
+    (if (or (empty? xs) (empty? (rest xs)))
+        xs
+        (let* 
+            [
+                n (count xs)
+                mid (/ n 2)
+                left (take mid xs)
+                right (drop mid xs)
+            ]
+            (merge-list cmp (sort-list-by cmp left) (sort-list-by cmp right))
+        )
+    )
+)
+
+(defn sort-list [xs] (sort-list-by <= xs))
+
+(defn parallel-map [f xs]
+    (let* 
+        [
+            handles (map (fn* [x] (spawn (fn* [] (f x)))) xs)
+            results (map join handles)
+        ]
+        results
+    )
+)
+
+(defn parallel-filter [p xs]
+    (let* 
+        [
+            handles (map (fn* [x] (spawn (fn* [] (if (p x) x nil)))) xs)
+            results (map join handles)
+        ]
+        (filter (combine not nil?) results)
+    )
+)
+
+(defn read-properties [file]
+    (->> 
+        (slurp file)
+        (lines)
+        (map (fn* [line] (split line "=")))
+        (list-to-map)
+    )
+)
