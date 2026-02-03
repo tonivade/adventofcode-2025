@@ -6,9 +6,6 @@
 
 (load-file "mal/aoc.mal")
 
-(def! input (if-defined DEBUG-EVAL "input/day8-test.txt" "input/day8.txt"))
-(def! max-connections (if-defined DEBUG-EVAL 10 1000))
-
 (defn distance3d [this other]
     (let* 
         [
@@ -22,7 +19,7 @@
 )
 
 (defn parse [file]
-    (let* [input (lines (slurp file))]
+    (let* [input (lines file)]
         (map (fn* [line] (map Integer.parseInt/1 (split line ","))) input)
     )
 )
@@ -78,6 +75,9 @@
         )
     )
 )
+
+(def! input (get-input 8))
+(def! max-connections (if-defined DEBUG-EVAL 10 1000))
 
 (println
     (timed!

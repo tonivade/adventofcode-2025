@@ -8,10 +8,8 @@
     (map Long.parseLong/1 (.split (.trim s) "-"))
 )
 
-(defn parse [file]
-    (let* [input (slurp file)]
-        (map split-pair (split input ","))
-    )
+(defn parse [input]
+    (map split-pair (split input ","))
 )
 
 (defn is-repeated? [s]
@@ -68,7 +66,7 @@
 
 (defn unfold2-sum [r] (sum (unfold2 r)))
 
-(def! input (if-defined DEBUG-EVAL "input/day2-test.txt" "input/day2.txt"))
+(def! input (get-input 2))
 
 ; part1
 (println

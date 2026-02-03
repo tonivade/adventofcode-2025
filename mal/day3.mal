@@ -5,9 +5,9 @@
 
 (load-file "mal/aoc.mal")
 
-(defn parse [file]
+(defn parse [input]
     (->>
-        (slurp file)
+        input
         (lines)
         (map seq)
     )
@@ -55,7 +55,7 @@
     )
 )
 
-(def! input (if-defined DEBUG-EVAL "input/day3-test.txt" "input/day3.txt"))
+(def! input (get-input 3))
 
 ; part1
 (println 

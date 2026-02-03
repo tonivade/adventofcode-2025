@@ -3,8 +3,6 @@
 (load-file "mal/aoc.mal")
 (load-file "mal/matrix.mal")
 
-(def! input (if-defined DEBUG-EVAL "input/day7-test.txt" "input/day7.txt"))
-
 (defn move-beam [matrix position]
     (let* [value (get matrix (to-key (up position)))]
         (cond
@@ -80,6 +78,8 @@
         )
     )
 )
+
+(def! input (get-input 7))
 
 (println 
     (timed!

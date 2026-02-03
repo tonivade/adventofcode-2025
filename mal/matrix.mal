@@ -27,9 +27,9 @@
 (defn to-pair [k] (map Integer.parseInt/1 (split (str k) ",")))
 (defn to-key [p] (str (first p) "," (second p)))
 
-(defn parse-matrix [file]
+(defn parse-matrix [input]
     (->>
-        (slurp file)
+        input
         (lines)
         (map seq)
         (map zip-with-index)
@@ -48,9 +48,9 @@
     )
 )
 
-(defn parse-points [file]
+(defn parse-points [input]
     (->>
-        (slurp file)
+        input
         (lines)
         (map (fn* [line] (map Integer.parseInt/1 (split line ","))))
     )

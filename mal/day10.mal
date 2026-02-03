@@ -4,8 +4,6 @@
 
 (load-file "mal/aoc.mal")
 
-(def! input (if-defined DEBUG-EVAL "input/day10-test.txt" "input/day10.txt"))
-
 (defn all-combinations [size]
     (let* [xs (range 0 size)]
         (lazy-seq
@@ -165,13 +163,15 @@
     )
 )
 
-(defn parse [file]
+(defn parse [input]
     (->> 
-        (slurp file)
+        input
         (lines)
         (map parse-machine)
     )
 )
+
+(def! input (get-input 10))
 
 (println
     (timed!

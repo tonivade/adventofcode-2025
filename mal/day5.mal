@@ -4,8 +4,6 @@
 
 (load-file "mal/aoc.mal")
 
-(def! input (if-defined DEBUG-EVAL "input/day5-test.txt" "input/day5.txt"))
-
 (defn to-range (input)
     (map Long.parseLong/1 (split input "-"))
 )
@@ -13,7 +11,7 @@
 (defn parse [file]
     (let* 
         [
-            input (.split (slurp file) "\n\n")
+            input (.split file "\n\n")
             ranges (first input) 
             products (second input)
         ]
@@ -77,6 +75,8 @@
         (sort-ranges ranges)
     )
 )
+
+(def! input (get-input 5))
 
 (println 
     (timed! 

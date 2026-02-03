@@ -452,3 +452,56 @@
         (list-to-map)
     )
 )
+
+(load-file "mal/http.mal")
+
+(defn aoc-get [year day session]
+    (let* 
+        [
+            response 
+                (http-get 
+                    (str "https://adventofcode.com/" year "/day/" day "/input") 
+                    (assoc {} "Cookie" (str "session=" session))
+                )
+        ]
+        (if (= (.statusCode response) 200)
+            (.body response)
+            (throw (str "download error " (.statusCode response)))
+        )
+    )
+)
+
+(defn download-file [year day session]
+    (let* 
+        [
+            file-name (str "input/day" day ".txt")
+            file (new java.io.File file-name)
+        ]
+        (if (.exists file)
+            (do
+                (println "file exists" file-name)
+                (slurp file-name)
+            )
+            (let* [content (aoc-get year day session)]
+                (do
+                    (Files.writeString/3 (.toPath file) content ())
+                    (println "file saved" file-name)
+                    content
+                )
+            )
+        )
+    )
+)
+
+(defn download-day [day]
+    (let* [ props (read-properties ".env") ]
+        (download-file (get props "year") day (get props "session_id"))
+    )
+)
+
+(defn get-input [day]
+    (if-defined DEBUG-EVAL 
+        (do (println "using test file for day" day) (slurp (str "input/day" day "-test.txt"))) 
+        (download-day day)
+    )
+)

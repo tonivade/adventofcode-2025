@@ -38,7 +38,7 @@
     )
 )
 
-(def! input (if-defined DEBUG-EVAL "input/day4-test.txt" "input/day4.txt"))
+(def! input (get-input 4))
 
 (println (timed! (count (removable (parse-matrix input)))))
 

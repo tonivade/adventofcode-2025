@@ -4,8 +4,6 @@
 
 (load-file "mal/aoc.mal")
 
-(def! file (if-defined DEBUG-EVAL "input/day12-test.txt" "input/day12.txt"))
-
 (defn parse-present [input]
     (let* 
         [
@@ -34,6 +32,8 @@
     )
 )
 
+(def! file (get-input 12))
+
 (defn required-area [tree presents]
     (reduce 
         (fn* [acc pair]
@@ -48,7 +48,7 @@
     (timed!
         (let* 
             [
-                input (.split (slurp file) "\n\n")
+                input (.split file "\n\n")
                 presents (list-to-map (map parse-present (drop-last input)))
                 trees (map parse-tree (lines (last input)))
             ]

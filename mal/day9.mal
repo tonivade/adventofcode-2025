@@ -3,8 +3,6 @@
 (load-file "mal/aoc.mal")
 (load-file "mal/matrix.mal")
 
-(def! file (if-defined DEBUG-EVAL "input/day9-test.txt" "input/day9.txt"))
-
 (defn area [p q]
     (let* 
         [
@@ -142,6 +140,8 @@
         (and in-polygon? (not (intersects? bounds edges)))
     )
 )
+
+(def! file (get-input 9))
 
 ; part1
 (println

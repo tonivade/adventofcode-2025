@@ -4,10 +4,8 @@
 
 (load-file "mal/aoc.mal")
 
-(def! input (if-defined DEBUG-EVAL "input/day6-test.txt" "input/day6.txt"))
-
 (defn parse1 [file]
-    (let* [input (lines (slurp file))]
+    (let* [input (lines file)]
         (->>
             (group-by-map 
                 second
@@ -47,7 +45,7 @@
 )
 
 (defn parse2 [file]
-    (let* [input (lines (slurp file)) cols (columns (last input))]
+    (let* [input (lines file) cols (columns (last input))]
         (->>
             (group-by-map
                 second
@@ -94,6 +92,8 @@
         )
     )
 )
+
+(def! input (get-input 6))
 
 (println 
     (timed! 
