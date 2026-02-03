@@ -1,3 +1,5 @@
+;; utility methods to work with matrixes
+
 (import java.lang.Integer parseInt 1)
 
 (defn right [point] (list (incr (first point)) (second point)))

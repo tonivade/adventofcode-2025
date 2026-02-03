@@ -11,13 +11,8 @@
     )
 )
 
-(defmacro! when [test & body]
-    (list
-        'if
-        test
-        (cons 'do body)
-        nil)
-)
+(defmacro! unless (fn* [test a b] `(if (not ~test) ~a ~b)))
+(defmacro! when (fn* [test & body] `(if ~test (do ~@body))))
 
 (defn second [xs] (nth xs 1))
 (defn abs [n] (if (neg? n) (* n -1) n))
