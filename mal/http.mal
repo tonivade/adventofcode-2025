@@ -69,12 +69,16 @@
             file (new java.io.File file-name)
         ]
         (if (.exists file)
-            (println "file exists" file-name)
+            (do
+                (println "file exists" file-name)
+                (slurp file-name)
+            )
             (do
                 (let* [content (aoc-get year day session)]
                     (Files.writeString/3 (.toPath file) content ())
                 )
                 (println "file saved" file-name)
+                content
             )
         )
     )
@@ -83,5 +87,12 @@
 (defn download-day [day]
     (let* [ props (read-properties ".env") ]
         (download-file (get props "year") day (get props "session_id"))
+    )
+)
+
+(defn get-input [day]
+    (if-defined DEBUG-EVAL 
+        (do (println "using test file for day" day) (slurp (str "input/day" day "-test.txt"))) 
+        (download-day day)
     )
 )
