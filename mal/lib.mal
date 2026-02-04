@@ -234,7 +234,7 @@
 (defn replace-nth [xs n val]
     (if (empty? xs)
         ()
-        (if (= n 0)
+        (if (zero? n)
             (cons val (rest xs))               ; replace head
             (cons (first xs)                   ; keep head, recurse
                 (replace-nth (rest xs) (decr n) val))
@@ -356,7 +356,7 @@
     )
 )
 
-(defn set-contains? [s x] (not (= (get s x) nil)))
+(defn set-contains? [s x] (not (nil? (get s x))))
 (defn set-add [s x] (assoc s x true))
 (defn set-remove [s x] (dissoc s x))
 (defn set-to-list [s] (keys s))
@@ -440,7 +440,7 @@
 (defn parallel-filter [p xs]
     (let* 
         [
-            handles (map (fn* [x] (spawn (fn* [] (if (p x) x nil)))) xs)
+            handles (map (fn* [x] (spawn (fn* [] (when (p x) x)))) xs)
             results (map join handles)
         ]
         (filter (combine not nil?) results)
