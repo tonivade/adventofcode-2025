@@ -1,0 +1,19 @@
+plugins {
+  id 'java'
+}
+
+repositories {
+  mavenLocal()
+  mavenCentral()
+}
+
+java {
+  toolchain {
+    languageVersion = JavaLanguageVersion.of(25)
+  }
+}
+
+dependencies {
+  implementation 'com.github.tonivade:diesel:0.8'
+  implementation 'org.pcollections:pcollections:5.0.0'
+}
