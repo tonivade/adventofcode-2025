@@ -80,9 +80,9 @@ class Day11 {
     });
   }
 
-  static void main() throws IOException {
+  public static void main(String...args) throws IOException {
     var input = Files.readString(Paths.get("input/day11.txt"));
-    println(part1(input).getOrElseThrow());
-    println(part2(input).getOrElseThrow());
+    println(part1(input).timed().getOrElseThrow());
+    println(part2(input).timed().getOrElseThrow());
   }
 }
