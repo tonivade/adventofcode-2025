@@ -1,6 +1,10 @@
 import static com.github.tonivade.diesel.Program.memoize;
+import static com.github.tonivade.diesel.Program.pipe;
 import static com.github.tonivade.diesel.Program.sequence;
+import static com.github.tonivade.diesel.Program.success;
+import static com.github.tonivade.diesel.Program.supply;
 import static com.github.tonivade.diesel.Program.suspend;
+import static com.github.tonivade.diesel.Program.zip;
 import static java.lang.IO.println;
 import static java.util.Map.entry;
 import static java.util.stream.Collectors.toMap;
@@ -18,20 +22,22 @@ import com.github.tonivade.diesel.Program;
 
 class Day11 {
 
-  static int part1(String input) {
-    var servers = parse(input).plus("out", List.of());
-
-    return new Dfs(servers, "you", "out").findAllPaths().getOrElseThrow();
+  static Program<Void, Void, Integer> part1(String input) {
+    return pipe(
+      parse(input), 
+      success(s -> s.plus("out", List.of())), 
+      s -> new Dfs(s, "you", "out").findAllPaths());
   }
 
-  static long part2(String input) {
-    var servers = parse(input).plus("out", List.of());
-
-    int svrToFft = new Dfs(servers, "svr", "fft").findAllPaths().getOrElseThrow();
-    int fftToDac = new Dfs(servers, "fft", "dac").findAllPaths().getOrElseThrow();
-    int dacToOut = new Dfs(servers, "dac", "out").findAllPaths().getOrElseThrow();
-
-    return (long) svrToFft * (long) fftToDac * dacToOut;
+  static Program<Void, Void, Long> part2(String input) {
+    return pipe(
+      parse(input), 
+      success(s -> s.plus("out", List.of())), 
+      s -> zip(
+        new Dfs(s, "svr", "fft").findAllPaths(), 
+        new Dfs(s, "fft", "dac").findAllPaths(),
+        new Dfs(s, "dac", "out").findAllPaths(),
+        (svrToFft, fftToDac, dacToOut) -> (long) svrToFft * (long) fftToDac * dacToOut));
   }
 
   static class Dfs {
@@ -63,18 +69,20 @@ class Day11 {
     }
   }
 
-  static PMap<String, List<String>> parse(String input) {
-    return TreePMap.from(input.lines()
-      .map(line -> {
-        var splitted = line.split(":");
-        return entry(splitted[0], List.of(splitted[1].trim().split(" ")));
-      })
-      .collect(toMap(Map.Entry::getKey, Map.Entry::getValue)));
+  static Program<Void, Void, PMap<String, List<String>>> parse(String input) {
+    return supply(() -> {
+      return TreePMap.from(input.lines()
+        .map(line -> {
+          var splitted = line.split(":");
+          return entry(splitted[0], List.of(splitted[1].trim().split(" ")));
+        })
+        .collect(toMap(Map.Entry::getKey, Map.Entry::getValue)));
+    });
   }
 
   static void main() throws IOException {
     var input = Files.readString(Paths.get("input/day11.txt"));
-    println(part1(input));
-    println(part2(input));
+    println(part1(input).getOrElseThrow());
+    println(part2(input).getOrElseThrow());
   }
 }
