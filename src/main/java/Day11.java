@@ -24,20 +24,25 @@ class Day11 {
 
   static Program<Void, Void, Integer> part1(String input) {
     return pipe(
-      parse(input), 
-      success(s -> s.plus("out", List.of())), 
-      s -> new Dfs(s, "you", "out").findAllPaths());
+      parse(input),
+      success(s -> s.plus("out", List.of())),
+      graph -> findAllPaths(graph, "you", "out"));
   }
 
   static Program<Void, Void, Long> part2(String input) {
     return pipe(
-      parse(input), 
-      success(s -> s.plus("out", List.of())), 
-      s -> zip(
-        new Dfs(s, "svr", "fft").findAllPaths(), 
-        new Dfs(s, "fft", "dac").findAllPaths(),
-        new Dfs(s, "dac", "out").findAllPaths(),
+      parse(input),
+      success(s -> s.plus("out", List.of())),
+      graph -> zip(
+        findAllPaths(graph, "svr", "fft"),
+        findAllPaths(graph, "fft", "dac"),
+        findAllPaths(graph, "dac", "out"),
         (svrToFft, fftToDac, dacToOut) -> (long) svrToFft * (long) fftToDac * dacToOut));
+  }
+
+  static Program<Void, Void, Integer> findAllPaths(
+      PMap<String, List<String>> graph, String start, String end) {
+    return new Dfs(graph, start, end).findAllPaths();
   }
 
   static class Dfs {
@@ -60,7 +65,8 @@ class Day11 {
           }
           return suspend(() -> dfs.apply(output));
         }).toList();
-        return sequence(result).map(list -> list.stream().reduce(0, Integer::sum));
+        return sequence(result)
+            .map(list -> list.stream().reduce(0, Integer::sum));
       }
     });
 
