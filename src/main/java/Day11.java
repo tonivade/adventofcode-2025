@@ -1,13 +1,14 @@
+import com.github.tonivade.diesel.Combine;
 import static com.github.tonivade.diesel.Combine.pipe;
 import static com.github.tonivade.diesel.Combine.sequence;
-import static com.github.tonivade.diesel.Combine.zip;
-import static com.github.tonivade.diesel.Program.memoize;
+import static com.github.tonivade.diesel.Concurrent.parZip;
 import static com.github.tonivade.diesel.Program.success;
 import static com.github.tonivade.diesel.Program.supply;
-import static com.github.tonivade.diesel.Program.suspend;
 import static java.lang.IO.println;
 import static java.util.Map.entry;
 import static java.util.stream.Collectors.toMap;
+
+import com.github.tonivade.diesel.Program;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -15,10 +16,9 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+
 import org.pcollections.PMap;
 import org.pcollections.TreePMap;
-
-import com.github.tonivade.diesel.Program;
 
 class Day11 {
 
@@ -33,7 +33,7 @@ class Day11 {
     return pipe(
       parse(input),
       success(s -> s.plus("out", List.of())),
-      graph -> zip(
+      graph -> parZip(
         findAllPaths(graph, "svr", "fft"),
         findAllPaths(graph, "fft", "dac"),
         findAllPaths(graph, "dac", "out"),
@@ -42,37 +42,17 @@ class Day11 {
 
   static Program<Void, Void, Integer> findAllPaths(
       PMap<String, List<String>> graph, String start, String end) {
-    return new Dfs(graph, start, end).findAllPaths();
-  }
-
-  static class Dfs {
-
-    final PMap<String, List<String>> graph;
-    final String start;
-    final String end;
-
-    public Dfs(PMap<String, List<String>> graph, String start, String end) {
-      this.graph = graph;
-      this.start = start;
-      this.end = end;
-    }
-
-    private final Function<String, Program<Void, Void, Integer>> dfs = memoize(new Function<>() {
-      public Program<Void, Void, Integer> apply(String current) {
-        var result = graph.get(current).stream().map(output -> {
-          if (output.equals(end)) {
-            return Program.<Void, Void, Integer>success(1);
-          }
-          return suspend(() -> dfs.apply(output));
-        }).toList();
-        return sequence(result)
-            .map(list -> list.stream().reduce(0, Integer::sum));
-      }
-    });
-
-    Program<Void, Void, Integer> findAllPaths() {
-      return dfs.apply(start);
-    }
+    return Program.<Void, Void, String, Integer>memoizeRecursive((self, current) -> {
+          var result = graph.get(current).stream().map(output -> {
+            if (output.equals(end)) {
+              return Program.<Void, Void, Integer>success(1);
+            }
+            return self.apply(output);
+          }).toList();
+          return sequence(result)
+              .map(list -> list.stream().reduce(0, Integer::sum));
+        }
+      ).apply(start);
   }
 
   static Program<Void, Void, PMap<String, List<String>>> parse(String input) {
