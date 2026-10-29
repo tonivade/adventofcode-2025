@@ -1,10 +1,10 @@
+import static com.github.tonivade.diesel.Combine.pipe;
+import static com.github.tonivade.diesel.Combine.sequence;
+import static com.github.tonivade.diesel.Combine.zip;
 import static com.github.tonivade.diesel.Program.memoize;
-import static com.github.tonivade.diesel.Program.pipe;
-import static com.github.tonivade.diesel.Program.sequence;
 import static com.github.tonivade.diesel.Program.success;
 import static com.github.tonivade.diesel.Program.supply;
 import static com.github.tonivade.diesel.Program.suspend;
-import static com.github.tonivade.diesel.Program.zip;
 import static java.lang.IO.println;
 import static java.util.Map.entry;
 import static java.util.stream.Collectors.toMap;
@@ -88,7 +88,7 @@ class Day11 {
 
   public static void main(String...args) throws IOException {
     var input = Files.readString(Paths.get("input/day11.txt"));
-    println(part1(input).timed().getOrElseThrow());
-    println(part2(input).timed().getOrElseThrow());
+    println(part1(input).timed().evalOrElseThrow());
+    println(part2(input).timed().evalOrElseThrow());
   }
 }

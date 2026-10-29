@@ -14,6 +14,9 @@
 (defmacro! unless (fn* [test a b] `(if (not ~test) ~a ~b)))
 (defmacro! when (fn* [test & body] `(if ~test (do ~@body))))
 
+;; blocks without using cpu, until it's cancelled
+(def! wait-forever (fn* [] (do (sleep 3600) (wait-forever))))
+
 (defn second [xs] (nth xs 1))
 (defn abs [n] (if (neg? n) (* n -1) n))
 (defn incr [n] (+ n 1))
@@ -446,6 +449,31 @@
         (filter (combine not nil?) results)
     )
 )
+
+;; joins the fibers at the same time, returns the value of the first one to finish,
+;; or throws its error, and cancels the rest
+(def! race 
+  (fn* [& fibers]
+    (if (empty? fibers)
+      nil    
+      (let* [winner (atom nil)
+             ;; the caller waits on this fiber, the first watcher to finish cancels it
+             gate (spawn (fn* [] (wait-forever)))
+             watch (fn* [f]
+                     (spawn (fn* []
+                       (let* [result (try* {:value (join f)} (catch* e {:error e}))]
+                         (do
+                           ;; only the first result is kept, swap! is atomic
+                           (swap! winner (fn* [w] (if (nil? w) result w)))
+                           (cancel gate))))))]
+        (do
+          (map watch fibers)
+          (try* (join gate) (catch* _ nil))
+          (map cancel fibers)
+          (let* [result @winner]
+            (if (contains? result :error)
+              (throw (get result :error))
+              (get result :value))))))))
 
 (defn read-properties [file]
     (->> 

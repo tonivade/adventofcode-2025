@@ -11,7 +11,7 @@ lazy val root = project
     libraryDependencies ++= Seq(
       "org.scalameta" %% "munit" % "1.2.1" % Test,
       "org.scala-lang.modules" %% "scala-parallel-collections" % "1.2.0",
-      "com.github.tonivade" % "diesel" % "0.8",
+      "com.github.tonivade" % "diesel" % "0.12",
       "org.pcollections" % "pcollections" % "5.0.0"
     )
   )
