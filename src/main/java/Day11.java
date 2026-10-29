@@ -1,4 +1,3 @@
-import com.github.tonivade.diesel.Combine;
 import static com.github.tonivade.diesel.Combine.pipe;
 import static com.github.tonivade.diesel.Combine.sequence;
 import static com.github.tonivade.diesel.Concurrent.parZip;
