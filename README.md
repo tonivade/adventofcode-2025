@@ -43,37 +43,37 @@
 I completed the exercises using MAL (Make a Lisp) language as described in the [mal project](https://github.com/kanaka/mal), using my own [implementation](https://github.com/tonivade/mal/tree/impl/java25/impls/java25)
 
 - Day 01:
-    - part1: 568ms
-    - part2: 985ms
+    - part1: 449ms
+    - part2: 240ms
 - Day 02:
-    - part1: 93956ms
-    - part2: 740980ms
+    - part1: 18135ms
+    - part2: 103522ms
 - Day 03:
-    - part1: 4003ms
-    - part2: 1277ms
+    - part1: 2797ms
+    - part2: 272ms
 - Day 04:
-    - part1: 9501ms
-    - part2: 220393ms
+    - part1: 1758ms
+    - part2: 25039ms
 - Day 05:
-    - part1: 10718ms
-    - part2: 2720ms
+    - part1: 866ms
+    - part2: 452ms
 - Day 06:
-    - part1: 490ms
-    - part2: 686ms
+    - part1: 413ms
+    - part2: 601ms
 - Day 07:
-    - part1: 16642ms
-    - part2: 17136ms
+    - part1: 8661ms
+    - part2: 8959ms
 - Day 08:
-    - part1: 208616ms
-    - part2: 4209897ms
+    - part1: 58965ms
+    - part2: 1566982ms
 - Day 09:
-    - part1: 9112ms
-    - part2: 18358783ms
+    - part1: 2091ms
+    - part2: 2370128ms
 - Day 10:
-    - part1: 6773ms
-    - part2: 2994163ms
+    - part1: 2137ms
+    - part2: 968019ms
 - Day 11:
-    - part1: 176ms
-    - part2: 157ms
+    - part1: 298ms
+    - part2: 160ms
 - Day 12:
-    - part1: 358ms
+    - part1: 556ms
